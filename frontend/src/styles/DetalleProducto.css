@@ -1,0 +1,53 @@
+/* Bloque de header propio del detalle, al 100% del ancho. */
+.detalle__header {
+  width: 100%;
+  background-color: var(--color-primario);
+  color: var(--color-texto-invertido);
+}
+
+.detalle__header-contenido {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-block: 20px;
+}
+
+.detalle__titulo {
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  text-align: left;
+}
+
+.detalle__volver {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--color-acento);
+  color: var(--color-primario-oscuro);
+  font-size: 1.4rem;
+  line-height: 1;
+  transition: background-color var(--transicion);
+}
+
+.detalle__volver:hover {
+  background-color: var(--color-acento-oscuro);
+}
+
+.detalle__cuerpo {
+  padding-block: 32px 60px;
+}
+
+.detalle__descripcion p {
+  max-width: 75ch;
+  color: var(--color-texto-suave);
+  font-size: 1.02rem;
+}
+
+.detalle__error {
+  padding-block: 60px;
+  text-align: center;
+}
