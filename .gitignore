@@ -1,0 +1,25 @@
+# Dependencias
+node_modules/
+
+# Builds
+dist/
+target/
+build/
+
+# Archivos subidos en tiempo de ejecución
+backend/uploads/
+
+# Entorno
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editores / sistema operativo
+.idea/
+.vscode/
+*.iml
+.DS_Store
