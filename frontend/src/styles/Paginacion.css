@@ -1,0 +1,23 @@
+.paginacion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.paginacion__contador {
+  padding-inline: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-texto-suave);
+}
+
+@media (max-width: 560px) {
+  .paginacion__contador {
+    order: -1;
+    width: 100%;
+    text-align: center;
+  }
+}

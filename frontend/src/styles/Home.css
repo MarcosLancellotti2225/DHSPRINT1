@@ -1,0 +1,25 @@
+.recomendaciones,
+.listado {
+  padding-block: 36px;
+}
+
+.listado {
+  padding-bottom: 60px;
+  scroll-margin-top: calc(var(--alto-header) + 12px);
+}
+
+/*
+ * Dos columnas por cinco filas: con 10 productos como máximo por bloque,
+ * la grilla queda exactamente en 2 x 5.
+ */
+.grilla-productos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+@media (max-width: 720px) {
+  .grilla-productos {
+    grid-template-columns: 1fr;
+  }
+}
