@@ -7,4 +7,10 @@ export default defineConfig({
     // El 5173 (default de Vite) se deja libre para otro proyecto.
     port: 5174,
   },
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: "./src/test/setup.js",
+    css: false,
+  },
 });
