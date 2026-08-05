@@ -1,0 +1,98 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background-color: var(--color-primario);
+  color: var(--color-texto-invertido);
+  box-shadow: var(--sombra);
+}
+
+.header__contenido {
+  width: 100%;
+  max-width: var(--ancho-maximo);
+  margin-inline: auto;
+  min-height: var(--alto-header);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* --- Bloque izquierdo: logo + lema, ambos enlazan al home ------------------ */
+
+.header__marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header__logo {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: var(--radio-chico);
+  background-color: var(--color-acento);
+  color: var(--color-primario-oscuro);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.header__lema {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* --- Bloque derecho: acciones de cuenta ----------------------------------- */
+
+.header__acciones {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header__boton.boton--contorno {
+  color: var(--color-texto-invertido);
+}
+
+.header__boton.boton--contorno:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
+/* --- Adaptación a pantallas chicas ---------------------------------------- */
+
+@media (max-width: 780px) {
+  .header__lema {
+    display: none;
+  }
+
+  .header__boton {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .header__contenido {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .header__marca {
+    justify-content: center;
+  }
+
+  .header__acciones {
+    justify-content: center;
+  }
+
+  .header__boton {
+    flex: 1;
+  }
+}

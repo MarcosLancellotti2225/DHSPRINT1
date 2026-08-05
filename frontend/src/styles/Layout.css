@@ -1,0 +1,15 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/*
+ * flex: 1 hace que el main ocupe todo el alto disponible entre header y footer,
+ * incluso cuando la página tiene poco contenido.
+ */
+.layout__main {
+  flex: 1;
+  width: 100%;
+  background-color: var(--color-fondo);
+}
