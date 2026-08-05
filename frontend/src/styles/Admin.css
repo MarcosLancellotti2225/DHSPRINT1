@@ -1,0 +1,197 @@
+.admin {
+  padding-block: 36px 60px;
+}
+
+.admin__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.admin__migas {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-texto-suave);
+}
+
+.admin__titulo {
+  font-size: 1.75rem;
+  color: var(--color-primario);
+}
+
+.admin__acciones {
+  display: flex;
+  gap: 10px;
+}
+
+/* --- Aviso en dispositivos móviles ---------------------------------------- */
+
+.admin__bloqueado {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 64px 24px;
+  text-align: center;
+  color: var(--color-texto-suave);
+}
+
+.admin__bloqueado-titulo {
+  font-size: 1.5rem;
+  color: var(--color-primario);
+  margin-bottom: 12px;
+}
+
+.admin__bloqueado .boton {
+  margin-top: 22px;
+}
+
+/* --- Menú del panel ------------------------------------------------------- */
+
+.admin__menu {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.admin__tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  height: 100%;
+  padding: 24px;
+  background-color: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+.admin__tarjeta-titulo {
+  font-size: 1.2rem;
+  color: var(--color-primario);
+}
+
+.admin__tarjeta-texto {
+  flex: 1;
+  color: var(--color-texto-suave);
+  font-size: 0.95rem;
+}
+
+/* --- Tabla de productos --------------------------------------------------- */
+
+.admin__tabla-contenedor {
+  overflow-x: auto;
+  background-color: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+.admin__tabla {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 520px;
+}
+
+.admin__tabla-caption {
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 0.88rem;
+  color: var(--color-texto-suave);
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.admin__tabla th,
+.admin__tabla td {
+  padding: 13px 18px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.admin__tabla thead th {
+  background-color: var(--color-superficie-alt);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-texto-suave);
+}
+
+.admin__tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin__tabla tbody tr:hover {
+  background-color: rgba(27, 73, 101, 0.04);
+}
+
+.admin__boton-tabla {
+  padding: 7px 14px;
+  font-size: 0.85rem;
+}
+
+/* --- Formulario de alta --------------------------------------------------- */
+
+.admin__formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 680px;
+  padding: 26px;
+  background-color: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+.admin__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin__campo label {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.admin__campo input[type="text"],
+.admin__campo textarea {
+  padding: 11px 12px;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-chico);
+  background-color: var(--color-superficie);
+  resize: vertical;
+}
+
+.admin__ayuda {
+  font-size: 0.85rem;
+  color: var(--color-texto-suave);
+}
+
+.admin__error-campo {
+  font-size: 0.85rem;
+  color: var(--color-error);
+}
+
+.admin__lista-archivos {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--color-texto-suave);
+  list-style: disc;
+  padding-left: 20px;
+}
+
+.admin__formulario-acciones {
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .admin__menu {
+    grid-template-columns: 1fr;
+  }
+}
