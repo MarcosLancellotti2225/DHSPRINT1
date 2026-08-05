@@ -8,11 +8,14 @@ export default function Footer() {
       <div className="footer__contenido">
         <div className="footer__marca">
           <span className="footer__isologo" aria-hidden="true">
-            Db
+            NH
           </span>
-          <p className="footer__copyright">
-            {anio} &copy; Todos los derechos reservados
-          </p>
+          <div>
+            <p className="footer__nombre">NextHome</p>
+            <p className="footer__copyright">
+              {anio} &copy; Todos los derechos reservados
+            </p>
+          </div>
         </div>
 
         <p className="footer__nota">Reservá tu próxima estadía</p>

@@ -1,4 +1,4 @@
-package com.db.reservas.dto;
+package com.nexthome.reservas.dto;
 
 import java.util.List;
 

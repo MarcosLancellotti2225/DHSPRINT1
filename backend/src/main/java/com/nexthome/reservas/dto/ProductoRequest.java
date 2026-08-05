@@ -1,4 +1,4 @@
-package com.db.reservas.dto;
+package com.nexthome.reservas.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;

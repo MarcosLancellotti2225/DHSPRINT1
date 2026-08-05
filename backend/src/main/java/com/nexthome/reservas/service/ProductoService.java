@@ -1,13 +1,13 @@
-package com.db.reservas.service;
+package com.nexthome.reservas.service;
 
-import com.db.reservas.dto.PaginaResponse;
-import com.db.reservas.dto.ProductoRequest;
-import com.db.reservas.dto.ProductoResponse;
-import com.db.reservas.exception.NombreDuplicadoException;
-import com.db.reservas.exception.RecursoNoEncontradoException;
-import com.db.reservas.model.Producto;
-import com.db.reservas.model.ProductoImagen;
-import com.db.reservas.repository.ProductoRepository;
+import com.nexthome.reservas.dto.PaginaResponse;
+import com.nexthome.reservas.dto.ProductoRequest;
+import com.nexthome.reservas.dto.ProductoResponse;
+import com.nexthome.reservas.exception.NombreDuplicadoException;
+import com.nexthome.reservas.exception.RecursoNoEncontradoException;
+import com.nexthome.reservas.model.Producto;
+import com.nexthome.reservas.model.ProductoImagen;
+import com.nexthome.reservas.repository.ProductoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

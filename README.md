@@ -1,6 +1,6 @@
-# Db · Reservá tu próxima estadía
+# NextHome · Reservá tu próxima estadía
 
-Db es un sitio de reservas de alojamientos: hoteles, departamentos, cabañas y hostels.
+NextHome es un sitio de reservas de alojamientos: hoteles, departamentos, cabañas y hostels.
 Lo armé como Sprint 1 del Desafío Profesional, tomando como referencia sitios del estilo
 de Booking pero con identidad propia.
 
@@ -61,7 +61,7 @@ el backend**. Es lo esperable en desarrollo, y más abajo está cómo pasar a un
 verdad.
 
 Si querés espiar la base por dentro, la consola de H2 está en `http://localhost:8080/h2-console`
-(URL `jdbc:h2:mem:dbreservas`, usuario `sa`, sin contraseña).
+(URL `jdbc:h2:mem:nexthome`, usuario `sa`, sin contraseña).
 
 En la segunda terminal, el frontend:
 

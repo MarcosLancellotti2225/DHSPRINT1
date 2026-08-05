@@ -1,6 +1,6 @@
-package com.db.reservas.config;
+package com.nexthome.reservas.config;
 
-import com.db.reservas.service.AlmacenamientoService;
+import com.nexthome.reservas.service.AlmacenamientoService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

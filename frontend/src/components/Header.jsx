@@ -9,11 +9,14 @@ export default function Header() {
   return (
     <header className="header">
       <div className="header__contenido">
-        <Link to="/" className="header__marca" aria-label="Db, ir al inicio">
+        <Link to="/" className="header__marca" aria-label="NextHome, ir al inicio">
           <span className="header__logo" aria-hidden="true">
-            Db
+            NH
           </span>
-          <span className="header__lema">Reservá tu próxima estadía</span>
+          <span className="header__identidad">
+            <span className="header__nombre">NextHome</span>
+            <span className="header__lema">Reservá tu próxima estadía</span>
+          </span>
         </Link>
 
         <nav className="header__acciones" aria-label="Cuenta de usuario">

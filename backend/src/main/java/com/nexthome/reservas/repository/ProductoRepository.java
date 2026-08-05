@@ -1,6 +1,6 @@
-package com.db.reservas.repository;
+package com.nexthome.reservas.repository;
 
-import com.db.reservas.model.Producto;
+import com.nexthome.reservas.model.Producto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

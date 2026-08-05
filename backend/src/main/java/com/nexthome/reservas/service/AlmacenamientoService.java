@@ -1,6 +1,6 @@
-package com.db.reservas.service;
+package com.nexthome.reservas.service;
 
-import com.db.reservas.exception.AlmacenamientoException;
+import com.nexthome.reservas.exception.AlmacenamientoException;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

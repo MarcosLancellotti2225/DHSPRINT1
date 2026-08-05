@@ -1,6 +1,6 @@
-package com.db.reservas.exception;
+package com.nexthome.reservas.exception;
 
-import com.db.reservas.dto.ErrorResponse;
+import com.nexthome.reservas.dto.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

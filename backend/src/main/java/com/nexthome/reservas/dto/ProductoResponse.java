@@ -1,6 +1,6 @@
-package com.db.reservas.dto;
+package com.nexthome.reservas.dto;
 
-import com.db.reservas.model.Producto;
+import com.nexthome.reservas.model.Producto;
 
 import java.util.List;
 

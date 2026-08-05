@@ -1,4 +1,4 @@
-package com.db.reservas.model;
+package com.nexthome.reservas.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

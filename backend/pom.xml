@@ -11,11 +11,11 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.db</groupId>
-    <artifactId>reservas</artifactId>
+    <groupId>com.nexthome</groupId>
+    <artifactId>nexthome</artifactId>
     <version>0.1.0</version>
-    <name>db-reservas</name>
-    <description>API de reservas de alojamientos</description>
+    <name>nexthome</name>
+    <description>NextHome, API de reservas de alojamientos</description>
 
     <properties>
         <java.version>21</java.version>

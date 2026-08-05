@@ -1,9 +1,9 @@
-package com.db.reservas.config;
+package com.nexthome.reservas.config;
 
-import com.db.reservas.model.Producto;
-import com.db.reservas.model.ProductoImagen;
-import com.db.reservas.repository.ProductoRepository;
-import com.db.reservas.service.AlmacenamientoService;
+import com.nexthome.reservas.model.Producto;
+import com.nexthome.reservas.model.ProductoImagen;
+import com.nexthome.reservas.repository.ProductoRepository;
+import com.nexthome.reservas.service.AlmacenamientoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

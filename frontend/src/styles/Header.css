@@ -37,13 +37,26 @@
   border-radius: var(--radio-chico);
   background-color: var(--color-acento);
   color: var(--color-primario-oscuro);
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.5px;
 }
 
+/* Nombre de la marca y lema, apilados al lado del isologo. */
+.header__identidad {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.header__nombre {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
 .header__lema {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-style: italic;
   color: rgba(255, 255, 255, 0.85);
 }

@@ -1,9 +1,9 @@
-package com.db.reservas.controller;
+package com.nexthome.reservas.controller;
 
-import com.db.reservas.dto.PaginaResponse;
-import com.db.reservas.dto.ProductoRequest;
-import com.db.reservas.dto.ProductoResponse;
-import com.db.reservas.service.ProductoService;
+import com.nexthome.reservas.dto.PaginaResponse;
+import com.nexthome.reservas.dto.ProductoRequest;
+import com.nexthome.reservas.dto.ProductoResponse;
+import com.nexthome.reservas.service.ProductoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

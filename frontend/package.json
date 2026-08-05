@@ -1,8 +1,8 @@
 {
-  "name": "db-reservas-frontend",
+  "name": "nexthome-frontend",
   "private": true,
   "version": "0.1.0",
-  "description": "Frontend de Db, sitio de reservas de alojamientos",
+  "description": "Frontend de NextHome, sitio de reservas de alojamientos",
   "author": "Marcos Lancellotti",
   "type": "module",
   "scripts": {

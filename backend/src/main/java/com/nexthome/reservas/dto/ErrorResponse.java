@@ -1,4 +1,4 @@
-package com.db.reservas.dto;
+package com.nexthome.reservas.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

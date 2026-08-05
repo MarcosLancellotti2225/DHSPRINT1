@@ -12,7 +12,7 @@ export default function ProductoCard({ producto }) {
           <img src={urlImagen(portada.url)} alt={producto.nombre} loading="lazy" />
         ) : (
           <div className="tarjeta__sin-imagen" aria-hidden="true">
-            Db
+            NH
           </div>
         )}
       </div>

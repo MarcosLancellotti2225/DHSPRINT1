@@ -1,4 +1,4 @@
-package com.db.reservas.exception;
+package com.nexthome.reservas.exception;
 
 /** Se lanza cuando no existe el recurso pedido. Se traduce a HTTP 404. */
 public class RecursoNoEncontradoException extends RuntimeException {
