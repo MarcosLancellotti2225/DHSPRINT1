@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
@@ -28,6 +29,7 @@ import java.util.List;
  * duplica datos.
  */
 @Configuration
+@Profile("!test")
 public class CargaInicialDatos {
 
     private static final Logger log = LoggerFactory.getLogger(CargaInicialDatos.class);
