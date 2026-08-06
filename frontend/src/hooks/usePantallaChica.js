@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 /** Ancho por debajo del cual el panel de administración no está disponible. */
-export const ANCHO_MINIMO_ADMIN = 768;
+export const ANCHO_MINIMO_ADMIN = 880;
 
 /**
  * Chequeo simple de ancho de viewport (sin detección de user-agent) usado para

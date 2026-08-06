@@ -57,7 +57,7 @@ describe("Listado de productos del panel", () => {
     await usuario.click(await screen.findByRole("button", { name: /eliminar producto/i }));
 
     const modal = screen.getByRole("dialog");
-    expect(modal).toHaveTextContent(/¿Confirmás que querés eliminar "Hotel del Valle"\?/);
+    expect(modal).toHaveTextContent(/¿Confirmás que querés eliminar «Hotel del Valle»\?/);
     expect(eliminarProducto).not.toHaveBeenCalled();
   });
 
@@ -86,7 +86,7 @@ describe("Listado de productos del panel", () => {
     const botones = await screen.findAllByRole("button", { name: /eliminar producto/i });
     await usuario.click(botones[0]);
     // El segundo "Eliminar producto" es el del modal de confirmación.
-    await usuario.click(within(screen.getByRole("dialog")).getByRole("button", { name: /eliminar producto/i }));
+    await usuario.click(within(screen.getByRole("dialog")).getByRole("button", { name: /^eliminar$/i }));
 
     await waitFor(() => expect(eliminarProducto).toHaveBeenCalledWith(7));
     await waitFor(() =>
@@ -106,7 +106,7 @@ describe("Listado de productos del panel", () => {
     renderizarListado();
 
     await usuario.click(await screen.findByRole("button", { name: /eliminar producto/i }));
-    await usuario.click(within(screen.getByRole("dialog")).getByRole("button", { name: /eliminar producto/i }));
+    await usuario.click(within(screen.getByRole("dialog")).getByRole("button", { name: /^eliminar$/i }));
 
     expect(await screen.findByText("No existe un producto con id 7")).toBeInTheDocument();
   });

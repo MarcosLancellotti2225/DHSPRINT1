@@ -20,26 +20,23 @@ export default function AdminListaProductos() {
   const [aEliminar, setAEliminar] = useState(null);
   const [eliminando, setEliminando] = useState(false);
 
-  const cargar = useCallback(
-    async (numeroPagina) => {
-      setCargando(true);
-      setError("");
-      try {
-        const datos = await listarProductos(numeroPagina, TAMANIO_PAGINA);
-        // Al borrar el último ítem de una página hay que retroceder una posición.
-        if (datos.contenido.length === 0 && numeroPagina > 0) {
-          setPagina(numeroPagina - 1);
-          return;
-        }
-        setDatosPagina(datos);
-      } catch (e) {
-        setError(mensajeDeError(e, "No se pudo cargar el listado de productos"));
-      } finally {
-        setCargando(false);
+  const cargar = useCallback(async (numeroPagina) => {
+    setCargando(true);
+    setError("");
+    try {
+      const datos = await listarProductos(numeroPagina, TAMANIO_PAGINA);
+      // Al borrar el último ítem de una página hay que retroceder una posición.
+      if (datos.contenido.length === 0 && numeroPagina > 0) {
+        setPagina(numeroPagina - 1);
+        return;
       }
-    },
-    []
-  );
+      setDatosPagina(datos);
+    } catch (e) {
+      setError(mensajeDeError(e, "No se pudo cargar el listado de productos"));
+    } finally {
+      setCargando(false);
+    }
+  }, []);
 
   useEffect(() => {
     cargar(pagina);
@@ -62,8 +59,8 @@ export default function AdminListaProductos() {
   }
 
   const acciones = (
-    <Link to="/administracion/productos/nuevo" className="boton boton--acento">
-      Agregar producto
+    <Link to="/administracion" className="btn btn-secondary">
+      ← Volver al panel
     </Link>
   );
 
@@ -79,10 +76,7 @@ export default function AdminListaProductos() {
       ) : (
         <>
           <div className="admin__tabla-contenedor">
-            <table className="admin__tabla">
-              <caption className="admin__tabla-caption">
-                {datosPagina.totalElementos} producto(s) en el sitio
-              </caption>
+            <table className="table">
               <thead>
                 <tr>
                   <th scope="col">Id</th>
@@ -98,7 +92,7 @@ export default function AdminListaProductos() {
                     <td>
                       <button
                         type="button"
-                        className="boton boton--peligro admin__boton-tabla"
+                        className="btn btn-ghost"
                         onClick={() => {
                           setAviso("");
                           setAEliminar(producto);
@@ -124,8 +118,8 @@ export default function AdminListaProductos() {
       {aEliminar && (
         <ModalConfirmacion
           titulo="Eliminar producto"
-          mensaje={`¿Confirmás que querés eliminar "${aEliminar.nombre}"? Esta acción no se puede deshacer.`}
-          textoConfirmar="Eliminar producto"
+          mensaje={`¿Confirmás que querés eliminar «${aEliminar.nombre}»? Esta acción no se puede deshacer.`}
+          textoConfirmar="Eliminar"
           procesando={eliminando}
           onConfirmar={confirmarEliminacion}
           onCancelar={() => setAEliminar(null)}

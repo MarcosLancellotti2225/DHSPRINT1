@@ -1,36 +1,35 @@
 .tarjeta {
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+}
+
+.tarjeta__enlace {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
-  background-color: var(--color-superficie);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio);
-  box-shadow: var(--sombra);
-  transition: transform var(--transicion), box-shadow var(--transicion);
+  color: inherit;
+  text-decoration: none;
 }
 
-.tarjeta:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--sombra-alta);
-}
-
-.tarjeta__imagen {
-  aspect-ratio: 16 / 10;
-  background-color: var(--color-superficie-alt);
+.tarjeta__imagen,
+.tarjeta .imagen-producto__respaldo {
+  width: 100%;
+  height: 170px;
+  flex-shrink: 0;
 }
 
 .tarjeta__cuerpo {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-2);
   flex: 1;
-  padding: 18px;
+  padding: var(--space-3) var(--space-4);
 }
 
 .tarjeta__titulo {
-  font-size: 1.15rem;
-  color: var(--color-primario);
+  font-size: 16px;
+  margin: 0;
 }
 
 /* Recorta la descripción a tres líneas para que todas las tarjetas midan igual. */
@@ -40,11 +39,15 @@
   line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  font-size: 0.92rem;
-  color: var(--color-texto-suave);
 }
 
-.tarjeta__enlace {
-  align-self: flex-start;
+.tarjeta__ver {
   margin-top: auto;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-accent);
+}
+
+.tarjeta:hover .tarjeta__ver {
+  text-decoration: underline;
 }

@@ -1,25 +1,41 @@
-.recomendaciones,
-.listado {
-  padding-block: 36px;
+.home {
+  flex: 1;
+  padding: var(--space-6) var(--padding-lateral) var(--space-8);
 }
 
-.listado {
-  padding-bottom: 60px;
-  scroll-margin-top: calc(var(--alto-header) + 12px);
+.home__bloque {
+  margin-bottom: var(--space-8);
+}
+
+.home__bloque:last-child {
+  margin-bottom: 0;
+  scroll-margin-top: 90px;
+}
+
+.home__encabezado {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.home__titulo {
+  margin: 0;
+  white-space: nowrap;
 }
 
 /*
- * Dos columnas por cinco filas: con 10 productos como máximo por bloque,
- * la grilla queda exactamente en 2 x 5.
+ * Dos columnas: con 10 productos como máximo por bloque, la grilla queda
+ * exactamente en 2 x 5. En pantallas chicas pasa a una sola columna.
  */
-.grilla-productos {
+.nh-products {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 22px;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
 }
 
-@media (max-width: 720px) {
-  .grilla-productos {
+@media (max-width: 860px) {
+  .nh-products {
     grid-template-columns: 1fr;
   }
 }

@@ -1,89 +1,71 @@
-.galeria {
+.nh-gallery {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--space-3);
+  height: 420px;
   position: relative;
-  width: 100%;
+  margin-bottom: var(--space-6);
+}
+
+.nh-gallery-side {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 32px;
+  grid-template-rows: 1fr 1fr;
+  gap: var(--space-3);
+  height: 100%;
 }
 
-.galeria__principal,
-.galeria__item {
-  overflow: hidden;
-  border-radius: var(--radio);
-  background-color: var(--color-superficie-alt);
-}
-
-.galeria__principal {
-  aspect-ratio: 4 / 3;
-}
-
-.galeria__principal img,
-.galeria__item img {
+.nh-gallery__principal,
+.nh-gallery__item {
   width: 100%;
   height: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.nh-gallery__principal.imagen-producto,
+.nh-gallery__item.imagen-producto {
   object-fit: cover;
 }
 
-/* Mitad derecha: cuadrícula 2x2 con las cuatro imágenes restantes. */
-.galeria__grilla {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 12px;
-  aspect-ratio: 4 / 3;
-}
-
-.galeria__item {
-  min-height: 0;
-}
-
-.galeria__ver-mas {
+.nh-gallery__ver-mas {
   position: absolute;
-  right: 16px;
-  bottom: 16px;
-  padding: 9px 16px;
-  border: none;
-  border-radius: var(--radio-chico);
-  background-color: rgba(31, 41, 51, 0.82);
-  color: var(--color-texto-invertido);
-  font-size: 0.9rem;
-  font-weight: 600;
-  backdrop-filter: blur(2px);
-  transition: background-color var(--transicion);
+  right: 12px;
+  bottom: 12px;
+  background: var(--color-surface);
 }
-
-.galeria__ver-mas:hover {
-  background-color: var(--color-primario);
-}
-
-/* --- Tablet y mobile: las imágenes se apilan ------------------------------ */
 
 @media (max-width: 860px) {
-  .galeria {
+  .nh-gallery {
     grid-template-columns: 1fr;
+    height: auto;
   }
 
-  .galeria__principal,
-  .galeria__grilla {
-    aspect-ratio: 16 / 10;
+  .nh-gallery__principal {
+    height: 260px;
+  }
+
+  .nh-gallery-side {
+    grid-template-columns: 1fr 1fr;
+    height: 320px;
   }
 }
 
 @media (max-width: 520px) {
-  .galeria__grilla {
+  .nh-gallery-side {
     grid-template-columns: 1fr;
     grid-template-rows: none;
-    aspect-ratio: auto;
+    height: auto;
   }
 
-  .galeria__item {
-    aspect-ratio: 16 / 10;
+  .nh-gallery__item {
+    height: 160px;
   }
 
-  .galeria__ver-mas {
+  .nh-gallery__ver-mas {
     position: static;
     width: 100%;
-    margin-top: 4px;
+    margin-top: var(--space-3);
   }
 }

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import { Isotipo } from "./Logo";
 import "../styles/Footer.css";
 
 export default function Footer() {
@@ -5,21 +7,14 @@ export default function Footer() {
 
   return (
     <footer className="footer">
-      <div className="footer__contenido">
-        <div className="footer__marca">
-          <span className="footer__isologo" aria-hidden="true">
-            NH
-          </span>
-          <div>
-            <p className="footer__nombre">NextHome</p>
-            <p className="footer__copyright">
-              {anio} &copy; Todos los derechos reservados
-            </p>
-          </div>
-        </div>
-
-        <p className="footer__nota">Reservá tu próxima estadía</p>
+      <div className="footer__marca">
+        <Isotipo tamanio={18} />
+        <span>&copy; {anio} NextHome. Todos los derechos reservados.</span>
       </div>
+
+      <Link to="/administracion" className="footer__enlace">
+        Panel de administración
+      </Link>
     </footer>
   );
 }

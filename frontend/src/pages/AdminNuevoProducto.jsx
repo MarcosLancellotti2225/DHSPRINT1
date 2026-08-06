@@ -52,8 +52,8 @@ export default function AdminNuevoProducto() {
   }
 
   const acciones = (
-    <Link to="/administracion/productos" className="boton boton--contorno">
-      Lista de productos
+    <Link to="/administracion" className="btn btn-secondary">
+      ← Volver al panel
     </Link>
   );
 
@@ -62,13 +62,15 @@ export default function AdminNuevoProducto() {
       {error && <p className="mensaje mensaje--error">{error}</p>}
 
       <form className="admin__formulario" onSubmit={alEnviar} noValidate>
-        <div className="admin__campo">
-          <label htmlFor="nombre">Nombre del alojamiento</label>
+        <div className="field admin__campo">
+          <label htmlFor="nombre">Nombre</label>
           <input
             id="nombre"
             name="nombre"
+            className="input"
             type="text"
             maxLength={150}
+            placeholder="Ej: Hotel Costanera"
             value={formulario.nombre}
             onChange={alCambiar}
             required
@@ -76,13 +78,15 @@ export default function AdminNuevoProducto() {
           {erroresCampo.nombre && <span className="admin__error-campo">{erroresCampo.nombre}</span>}
         </div>
 
-        <div className="admin__campo">
+        <div className="field admin__campo">
           <label htmlFor="descripcion">Descripción</label>
           <textarea
             id="descripcion"
             name="descripcion"
-            rows={6}
+            className="input"
+            rows={4}
             maxLength={4000}
+            placeholder="Describí el alojamiento"
             value={formulario.descripcion}
             onChange={alCambiar}
             required
@@ -92,19 +96,20 @@ export default function AdminNuevoProducto() {
           )}
         </div>
 
-        <div className="admin__campo">
+        <div className="field admin__campo">
           <label htmlFor="imagenes">Imágenes</label>
           <input
             id="imagenes"
             name="imagenes"
+            className="input"
             type="file"
             accept="image/*"
             multiple
             onChange={alElegirImagenes}
           />
           <span className="admin__ayuda">
-            Se pueden seleccionar varias imágenes a la vez. Para la galería del detalle se
-            recomiendan al menos cinco.
+            Se pueden seleccionar varias a la vez. Para la galería del detalle se recomiendan al
+            menos cinco.
           </span>
 
           {imagenes.length > 0 && (
@@ -116,13 +121,10 @@ export default function AdminNuevoProducto() {
           )}
         </div>
 
-        <div className="admin__formulario-acciones">
-          <button type="submit" className="boton boton--primario" disabled={guardando}>
+        <div className="admin__acciones-formulario">
+          <button type="submit" className="btn btn-primary" disabled={guardando}>
             {guardando ? "Guardando…" : "Guardar producto"}
           </button>
-          <Link to="/administracion" className="boton boton--contorno">
-            Cancelar
-          </Link>
         </div>
       </form>
     </PanelAdmin>

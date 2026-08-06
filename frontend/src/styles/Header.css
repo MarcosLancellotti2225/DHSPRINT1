@@ -1,111 +1,51 @@
 .header {
   position: sticky;
   top: 0;
-  z-index: 100;
-  width: 100%;
-  background-color: var(--color-primario);
-  color: var(--color-texto-invertido);
-  box-shadow: var(--sombra);
+  z-index: 10;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  /* Alineado con el margen lateral del contenido. */
+  padding-inline: var(--padding-lateral);
+  padding-block: var(--space-4);
 }
-
-.header__contenido {
-  width: 100%;
-  max-width: var(--ancho-maximo);
-  margin-inline: auto;
-  min-height: var(--alto-header);
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-/* --- Bloque izquierdo: logo + lema, ambos enlazan al home ------------------ */
 
 .header__marca {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
 }
 
-.header__logo {
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  flex-shrink: 0;
-  border-radius: var(--radio-chico);
-  background-color: var(--color-acento);
-  color: var(--color-primario-oscuro);
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
-
-/* Nombre de la marca y lema, apilados al lado del isologo. */
 .header__identidad {
   display: flex;
   flex-direction: column;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .header__nombre {
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: -0.2px;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 19px;
+}
+
+.header__nombre-acento {
+  color: var(--color-accent);
 }
 
 .header__lema {
-  font-size: 0.85rem;
-  font-style: italic;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: 11px;
+  color: var(--color-neutral-400);
 }
-
-/* --- Bloque derecho: acciones de cuenta ----------------------------------- */
 
 .header__acciones {
+  margin-left: auto;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
-.header__boton.boton--contorno {
-  color: var(--color-texto-invertido);
-}
-
-.header__boton.boton--contorno:hover {
-  background-color: rgba(255, 255, 255, 0.14);
-}
-
-/* --- Adaptación a pantallas chicas ---------------------------------------- */
-
-@media (max-width: 780px) {
+@media (max-width: 560px) {
   .header__lema {
     display: none;
-  }
-
-  .header__boton {
-    padding: 8px 12px;
-    font-size: 0.85rem;
-  }
-}
-
-@media (max-width: 420px) {
-  .header__contenido {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  .header__marca {
-    justify-content: center;
-  }
-
-  .header__acciones {
-    justify-content: center;
-  }
-
-  .header__boton {
-    flex: 1;
   }
 }

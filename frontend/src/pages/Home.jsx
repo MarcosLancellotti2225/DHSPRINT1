@@ -9,7 +9,7 @@ import useTituloPagina from "../hooks/useTituloPagina";
 import "../styles/Home.css";
 
 export default function Home() {
-  useTituloPagina("Reservá tu próxima estadía");
+  useTituloPagina("Tu próxima estadía, en un clic");
 
   const [recomendados, setRecomendados] = useState([]);
   const [cargandoRecomendados, setCargandoRecomendados] = useState(true);
@@ -56,14 +56,17 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <div className="home">
       <Buscador />
       <Categorias />
 
-      <section className="recomendaciones contenedor" aria-labelledby="recomendaciones-titulo">
-        <h2 id="recomendaciones-titulo" className="titulo-seccion">
-          Recomendaciones
-        </h2>
+      <section className="home__bloque" aria-labelledby="recomendaciones-titulo">
+        <div className="home__encabezado">
+          <h2 id="recomendaciones-titulo" className="titulo-seccion home__titulo">
+            Recomendados para vos
+          </h2>
+          <span className="tag tag-outline">Aleatorio</span>
+        </div>
 
         {error && <p className="mensaje mensaje--error">{error}</p>}
 
@@ -72,7 +75,7 @@ export default function Home() {
         ) : recomendados.length === 0 ? (
           <p className="estado-vacio">Todavía no hay alojamientos cargados.</p>
         ) : (
-          <ul className="grilla-productos">
+          <ul className="nh-products">
             {recomendados.map((producto) => (
               <li key={producto.id}>
                 <ProductoCard producto={producto} />
@@ -82,7 +85,7 @@ export default function Home() {
         )}
       </section>
 
-      <section className="listado contenedor" aria-labelledby="listado-titulo" ref={listadoRef}>
+      <section className="home__bloque" aria-labelledby="listado-titulo" ref={listadoRef}>
         <h2 id="listado-titulo" className="titulo-seccion">
           Todos los alojamientos
         </h2>
@@ -93,7 +96,7 @@ export default function Home() {
           <p className="estado-vacio">Todavía no hay alojamientos cargados.</p>
         ) : (
           <>
-            <ul className="grilla-productos">
+            <ul className="nh-products">
               {datosPagina.contenido.map((producto) => (
                 <li key={producto.id}>
                   <ProductoCard producto={producto} />
@@ -109,6 +112,6 @@ export default function Home() {
           </>
         )}
       </section>
-    </>
+    </div>
   );
 }

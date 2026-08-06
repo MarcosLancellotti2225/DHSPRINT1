@@ -8,16 +8,14 @@ const FUNCIONES = [
   {
     id: "listado",
     titulo: "Lista de productos",
-    descripcion: "Ver todos los alojamientos cargados y eliminar los que ya no se ofrecen.",
+    descripcion: "Ver, buscar y eliminar alojamientos publicados.",
     ruta: "/administracion/productos",
-    etiquetaBoton: "Lista de productos",
   },
   {
     id: "alta",
     titulo: "Agregar producto",
-    descripcion: "Dar de alta un alojamiento nuevo con su descripción y sus imágenes.",
+    descripcion: "Publicar un nuevo alojamiento en el catálogo.",
     ruta: "/administracion/productos/nuevo",
-    etiquetaBoton: "Agregar producto",
   },
 ];
 
@@ -25,17 +23,14 @@ export default function Administracion() {
   useTituloPagina("Panel de administración");
 
   return (
-    <PanelAdmin titulo="Panel de administración">
+    <PanelAdmin titulo="Panel de administración" ruta="/administracion">
       <ul className="admin__menu">
         {FUNCIONES.map((funcion) => (
           <li key={funcion.id}>
-            <article className="admin__tarjeta">
-              <h2 className="admin__tarjeta-titulo">{funcion.titulo}</h2>
-              <p className="admin__tarjeta-texto">{funcion.descripcion}</p>
-              <Link to={funcion.ruta} className="boton boton--primario">
-                {funcion.etiquetaBoton}
-              </Link>
-            </article>
+            <Link to={funcion.ruta} className="card elev-sm admin__opcion">
+              <span className="card-title">{funcion.titulo}</span>
+              <span className="card-body">{funcion.descripcion}</span>
+            </Link>
           </li>
         ))}
       </ul>

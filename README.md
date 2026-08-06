@@ -128,3 +128,9 @@ Sobre los estilos: no usé ningún framework de UI, es CSS propio. Todos los col
 tipografías y medidas viven como variables en `frontend/src/styles/index.css`. Si algún día
 cambia la identidad de marca, se toca ese bloque y se actualiza el sitio entero sin entrar a
 ningún componente.
+
+## Créditos
+
+Los íconos de la interfaz son [Uicons de Flaticon](https://www.flaticon.com/uicons).
+Su licencia permite el uso gratuito siempre que se acredite la autoría, que es lo que hace
+esta sección.

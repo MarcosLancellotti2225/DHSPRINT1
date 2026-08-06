@@ -29,7 +29,7 @@ function imagenFalsa(nombre = "foto.png") {
 }
 
 async function completarFormulario(usuario, { conImagen = true } = {}) {
-  await usuario.type(screen.getByLabelText(/nombre del alojamiento/i), "Hotel del Valle");
+  await usuario.type(screen.getByLabelText(/^nombre$/i), "Hotel del Valle");
   await usuario.type(screen.getByLabelText(/descripción/i), "Un hotel con vista al valle.");
   if (conImagen) {
     await usuario.upload(screen.getByLabelText(/imágenes/i), imagenFalsa());

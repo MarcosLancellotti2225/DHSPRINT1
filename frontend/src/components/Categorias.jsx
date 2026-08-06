@@ -1,32 +1,32 @@
 import "../styles/Categorias.css";
 
 /**
- * Bloque de categorías del home. Todavía no filtra: el filtrado por categoría
- * llega en un sprint posterior.
+ * Categorías del home. Todavía no filtran ni traen conteos: el backend no
+ * expone categorías, así que se muestran los tipos sin el contador que
+ * aparece en el diseño (ver README).
  */
 const CATEGORIAS = [
-  { id: "hoteles", nombre: "Hoteles", icono: "🏨" },
-  { id: "departamentos", nombre: "Departamentos", icono: "🏢" },
-  { id: "cabanias", nombre: "Cabañas", icono: "🌲" },
-  { id: "hostels", nombre: "Hostels", icono: "🛏️" },
+  "Hoteles",
+  "Departamentos",
+  "Cabañas",
+  "Hostels",
+  "Resorts",
+  "Casas",
 ];
 
 export default function Categorias() {
   return (
-    <section className="categorias contenedor" aria-labelledby="categorias-titulo">
+    <section className="categorias" aria-labelledby="categorias-titulo">
       <h2 id="categorias-titulo" className="titulo-seccion">
-        Buscar por tipo de alojamiento
+        Categorías
       </h2>
 
-      <ul className="categorias__grilla">
-        {CATEGORIAS.map((categoria) => (
-          <li key={categoria.id}>
-            <article className="categorias__tarjeta">
-              <span className="categorias__icono" aria-hidden="true">
-                {categoria.icono}
-              </span>
-              <h3 className="categorias__nombre">{categoria.nombre}</h3>
-            </article>
+      <ul className="categorias__lista">
+        {CATEGORIAS.map((nombre) => (
+          <li key={nombre}>
+            <div className="card categorias__tarjeta">
+              <div className="categorias__nombre">{nombre}</div>
+            </div>
           </li>
         ))}
       </ul>

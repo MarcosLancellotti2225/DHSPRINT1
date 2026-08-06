@@ -1,45 +1,61 @@
 /* ---------------------------------------------------------------------------
-   Identidad visual de NextHome.
-   Todo el color, la tipografía y el espaciado del sitio salen de estas
-   variables: cambiando este bloque se re-skinnea la marca completa sin tocar
-   un solo componente.
+   Nocturne — sistema de diseño de NextHome.
+   Los tokens y las clases de componente salen del design system del proyecto
+   de Claude Design. Cambiando este bloque se re-skinnea el sitio entero sin
+   tocar un solo componente.
    --------------------------------------------------------------------------- */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
 :root {
-  /* Marca */
-  --color-primario: #1b4965;
-  --color-primario-oscuro: #123243;
-  --color-primario-claro: #62b6cb;
-  --color-acento: #f2a65a;
-  --color-acento-oscuro: #d98836;
+  --color-bg: #161826;
+  --color-surface: #232532;
+  --color-text: #e9e9ed;
+  --color-accent: #9184d9;
+  --color-accent-2: #a7a1db;
+  --color-divider: color-mix(in srgb, #e9e9ed 16%, transparent);
 
-  /* Superficies */
-  --color-fondo: #f4f1ec;
-  --color-superficie: #ffffff;
-  --color-superficie-alt: #ebe6de;
+  /* Rampas tonales */
+  --color-neutral-100: #f3f5fe;
+  --color-neutral-200: #e4e7f5;
+  --color-neutral-300: #cfd3e5;
+  --color-neutral-400: #b2b6ca;
+  --color-neutral-500: #9397ab;
+  --color-neutral-600: #75798c;
+  --color-neutral-700: #595d6c;
+  --color-neutral-800: #3f424d;
+  --color-neutral-900: #292b31;
 
-  /* Texto */
-  --color-texto: #1f2933;
-  --color-texto-suave: #5b6b7a;
-  --color-texto-invertido: #ffffff;
+  --color-accent-100: #f5f4ff;
+  --color-accent-200: #e7e5fe;
+  --color-accent-300: #d2cefd;
+  --color-accent-400: #b5abfc;
+  --color-accent-500: #968ae0;
+  --color-accent-600: #796cbf;
+  --color-accent-700: #5d5294;
+  --color-accent-800: #423a6a;
+  --color-accent-900: #2b2741;
 
-  /* Estados */
-  --color-borde: #d8d2c8;
-  --color-error: #b3261e;
-  --color-error-fondo: #fdecea;
-  --color-exito: #2e7d32;
-  --color-exito-fondo: #e8f5e9;
+  --font-heading: "Inter", system-ui, sans-serif;
+  --font-heading-weight: 500;
+  --font-body: "Inter", system-ui, sans-serif;
 
-  /* Tipografía */
-  --fuente-base: "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --space-1: 2.8px;
+  --space-2: 5.6px;
+  --space-3: 8.4px;
+  --space-4: 11.2px;
+  --space-6: 16.8px;
+  --space-8: 22.4px;
 
-  /* Medidas */
-  --ancho-maximo: 1200px;
-  --alto-header: 76px;
-  --radio: 10px;
-  --radio-chico: 6px;
-  --sombra: 0 2px 10px rgba(31, 41, 51, 0.08);
-  --sombra-alta: 0 8px 28px rgba(31, 41, 51, 0.18);
-  --transicion: 160ms ease-in-out;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+
+  --shadow-sm: 0 0 0 1px #3f424d;
+  --shadow-md: 0 0 0 1px #595d6c, 0 6px 18px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 0 0 1px #9397ab, 0 16px 40px rgba(0, 0, 0, 0.65);
+
+  /* Medida propia de la app, no del sistema */
+  --padding-lateral: clamp(20px, 5vw, 72px);
 }
 
 *,
@@ -48,34 +64,37 @@
   box-sizing: border-box;
 }
 
-body,
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
 h1,
 h2,
 h3,
 h4,
-p,
-figure,
-ul,
-ol {
-  margin: 0;
-  padding: 0;
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--space-2);
 }
 
-ul,
-ol {
-  list-style: none;
+p {
+  margin: 0 0 var(--space-3);
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: var(--fuente-base);
-  color: var(--color-texto);
-  background-color: var(--color-fondo);
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
+a {
+  color: var(--color-accent);
+  text-underline-offset: 3px;
 }
 
 img {
@@ -83,119 +102,400 @@ img {
   max-width: 100%;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-button,
-input,
-textarea {
-  font: inherit;
-  color: inherit;
+figure {
+  margin: 0;
 }
 
-button {
-  cursor: pointer;
+:focus {
+  outline: none;
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-acento);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
-/* --- Utilidades compartidas ------------------------------------------------ */
-
-.contenedor {
-  width: 100%;
-  max-width: var(--ancho-maximo);
-  margin-inline: auto;
-  padding-inline: 20px;
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
 }
 
-.titulo-seccion {
-  font-size: 1.6rem;
-  color: var(--color-primario);
-  margin-bottom: 20px;
+.text-muted {
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
 }
 
-.boton {
+/* --- Reglas: se desvanecen en los extremos, firma del sistema ------------- */
+
+.hr {
+  height: 1px;
+  border: 0;
+  margin: var(--space-4) 0;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-divider) 48px,
+    var(--color-divider) calc(100% - 48px),
+    transparent
+  );
+}
+
+/* --- Botones -------------------------------------------------------------- */
+
+.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--color-text);
+  background: transparent;
   border: 1px solid transparent;
-  border-radius: var(--radio-chico);
-  padding: 10px 18px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition: background-color var(--transicion), color var(--transicion),
-    border-color var(--transicion);
+  padding: var(--space-2) calc(var(--space-3) * 1.2);
+  border-radius: var(--radius-md);
 }
 
-.boton--primario {
-  background-color: var(--color-primario);
-  color: var(--color-texto-invertido);
+.btn svg {
+  display: block;
 }
 
-.boton--primario:hover:not(:disabled) {
-  background-color: var(--color-primario-oscuro);
-}
-
-.boton--acento {
-  background-color: var(--color-acento);
-  color: var(--color-primario-oscuro);
-}
-
-.boton--acento:hover:not(:disabled) {
-  background-color: var(--color-acento-oscuro);
-}
-
-.boton--contorno {
-  background-color: transparent;
-  border-color: currentColor;
-  color: var(--color-primario);
-}
-
-.boton--contorno:hover:not(:disabled) {
-  background-color: rgba(27, 73, 101, 0.08);
-}
-
-.boton--peligro {
-  background-color: var(--color-error);
-  color: var(--color-texto-invertido);
-}
-
-.boton--peligro:hover:not(:disabled) {
-  background-color: #8c1d17;
-}
-
-.boton:disabled {
-  opacity: 0.55;
+.btn:disabled {
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
-.mensaje {
-  border-radius: var(--radio-chico);
-  padding: 12px 16px;
-  margin-bottom: 20px;
-  font-size: 0.95rem;
+.btn-primary {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
-.mensaje--error {
-  background-color: var(--color-error-fondo);
-  color: var(--color-error);
-  border: 1px solid currentColor;
+.btn-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
 }
 
-.mensaje--exito {
-  background-color: var(--color-exito-fondo);
-  color: var(--color-exito);
-  border: 1px solid currentColor;
+.btn-primary:active:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+
+.btn-secondary {
+  border-color: var(--color-divider);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-text) 7%, transparent);
+}
+
+.btn-secondary:active:not(:disabled) {
+  background: color-mix(in srgb, var(--color-text) 14%, transparent);
+}
+
+.btn-ghost {
+  color: var(--color-accent);
+  padding-inline: var(--space-1);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+.btn-ghost:active:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+}
+
+.btn-block {
+  width: 100%;
+  margin-top: var(--space-2);
+}
+
+/* --- Formularios ---------------------------------------------------------- */
+
+.field > label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 5px;
+  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+}
+
+.input {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--color-text);
+  caret-color: var(--color-accent);
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+}
+
+.input:hover {
+  border-color: color-mix(in srgb, var(--color-text) 45%, transparent);
+}
+
+.input:focus-visible {
+  border-color: var(--color-accent);
+  outline-offset: 0;
+}
+
+textarea.input {
+  min-height: 90px;
+  resize: vertical;
+}
+
+/* --- Tarjetas ------------------------------------------------------------- */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.card-kicker {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.card-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.card-body {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.8;
+  flex: 1;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: color-mix(in srgb, var(--color-text) 50%, transparent);
+}
+
+.elev-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.elev-md {
+  box-shadow: var(--shadow-md);
+}
+
+.elev-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+/* --- Etiquetas ------------------------------------------------------------ */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 3px 10px;
+  border-radius: calc(var(--radius-md) * 0.75);
+}
+
+.tag-accent {
+  background: var(--color-accent-800);
+  color: var(--color-accent-100);
+}
+
+.tag-neutral {
+  background: var(--color-neutral-800);
+  color: var(--color-neutral-100);
+}
+
+.tag-outline {
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* --- Navegación ----------------------------------------------------------- */
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: none;
+}
+
+.nav a {
+  color: inherit;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.nav a:hover,
+.nav a[aria-current="page"] {
+  color: var(--color-accent);
+}
+
+/* --- Tablas --------------------------------------------------------------- */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  padding: var(--space-2);
+  border-bottom: 1px solid transparent;
+}
+
+.table td {
+  padding: var(--space-2);
+  border-bottom: 1px solid transparent;
+}
+
+/* Las reglas se pintan a nivel de fila, así el degradado abarca toda la fila. */
+.table thead tr {
+  background: linear-gradient(
+      to right,
+      transparent,
+      var(--color-divider) 48px,
+      var(--color-divider) calc(100% - 48px),
+      transparent
+    )
+    no-repeat bottom / 100% 1px;
+}
+
+.table tbody tr {
+  background: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in srgb, var(--color-text) 8%, transparent) 48px,
+      color-mix(in srgb, var(--color-text) 8%, transparent) calc(100% - 48px),
+      transparent
+    )
+    no-repeat bottom / 100% 1px;
+}
+
+.table tbody tr:hover {
+  background:
+    linear-gradient(
+        color-mix(in srgb, var(--color-text) 4%, transparent),
+        color-mix(in srgb, var(--color-text) 4%, transparent)
+      )
+      no-repeat 0 0 / 100% 100%,
+    linear-gradient(
+        to right,
+        transparent,
+        color-mix(in srgb, var(--color-text) 8%, transparent) 48px,
+        color-mix(in srgb, var(--color-text) 8%, transparent) calc(100% - 48px),
+        transparent
+      )
+      no-repeat bottom / 100% 1px;
+}
+
+/* --- Diálogos ------------------------------------------------------------- */
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--color-neutral-900) 50%, transparent);
+}
+
+.dialog {
+  width: min(440px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.dialog-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 20px;
+}
+
+.dialog-body {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+/* --- Utilidades propias de la app ---------------------------------------- */
+
+.seccion {
+  padding-inline: var(--padding-lateral);
+}
+
+.titulo-seccion {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 20px;
+  margin: 0 0 var(--space-3);
 }
 
 .estado-vacio {
+  padding: var(--space-8) var(--space-4);
   text-align: center;
-  color: var(--color-texto-suave);
-  padding: 48px 20px;
+  color: var(--color-neutral-400);
+}
+
+.mensaje {
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+  font-size: 14px;
+}
+
+.mensaje--error {
+  background: var(--color-accent-900);
+  color: var(--color-accent-200);
+  border: 1px solid var(--color-accent-700);
+}
+
+.mensaje--exito {
+  background: var(--color-neutral-900);
+  color: var(--color-neutral-200);
+  border: 1px solid var(--color-neutral-700);
 }

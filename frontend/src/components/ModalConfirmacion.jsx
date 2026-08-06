@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import "../styles/ModalConfirmacion.css";
+import useModal from "../hooks/useModal";
 
 /** Modal de confirmación para acciones destructivas. */
 export default function ModalConfirmacion({
@@ -11,32 +10,28 @@ export default function ModalConfirmacion({
   onConfirmar,
   onCancelar,
 }) {
-  useEffect(() => {
-    function alPresionarTecla(evento) {
-      if (evento.key === "Escape") onCancelar();
-    }
-    document.addEventListener("keydown", alPresionarTecla);
-    return () => document.removeEventListener("keydown", alPresionarTecla);
-  }, [onCancelar]);
+  const panelRef = useModal(onCancelar);
 
   return (
-    <div
-      className="modal-confirmacion"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="confirmacion-titulo"
-      onClick={onCancelar}
-    >
-      <div className="modal-confirmacion__panel" onClick={(evento) => evento.stopPropagation()}>
-        <h2 id="confirmacion-titulo" className="modal-confirmacion__titulo">
+    <div className="dialog-backdrop" onClick={onCancelar}>
+      <div
+        ref={panelRef}
+        tabIndex={-1}
+        className="dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirmacion-titulo"
+        onClick={(evento) => evento.stopPropagation()}
+      >
+        <div className="dialog-title" id="confirmacion-titulo">
           {titulo}
-        </h2>
-        <p className="modal-confirmacion__mensaje">{mensaje}</p>
+        </div>
+        <div className="dialog-body">{mensaje}</div>
 
-        <div className="modal-confirmacion__acciones">
+        <div className="dialog-actions">
           <button
             type="button"
-            className="boton boton--contorno"
+            className="btn btn-secondary"
             onClick={onCancelar}
             disabled={procesando}
           >
@@ -44,7 +39,7 @@ export default function ModalConfirmacion({
           </button>
           <button
             type="button"
-            className="boton boton--peligro"
+            className="btn btn-primary"
             onClick={onConfirmar}
             disabled={procesando}
           >

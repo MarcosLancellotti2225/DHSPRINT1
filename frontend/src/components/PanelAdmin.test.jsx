@@ -43,19 +43,20 @@ describe("PanelAdmin", () => {
     simularAncho(390);
     renderizarPanel();
 
-    expect(screen.getByText(/panel no disponible/i)).toBeInTheDocument();
-    expect(screen.getByText(/no está disponible en dispositivos móviles/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/no está disponible en este dispositivo/i)
+    ).toBeInTheDocument();
     expect(screen.queryByText("Contenido del panel")).not.toBeInTheDocument();
   });
 
-  it("justo por debajo de 768px sigue bloqueado", () => {
-    simularAncho(767);
+  it("justo por debajo de 880px sigue bloqueado", () => {
+    simularAncho(879);
     renderizarPanel();
     expect(screen.queryByText("Contenido del panel")).not.toBeInTheDocument();
   });
 
-  it("a partir de 768px ya se puede usar", () => {
-    simularAncho(768);
+  it("a partir de 880px ya se puede usar", () => {
+    simularAncho(880);
     renderizarPanel();
     expect(screen.getByText("Contenido del panel")).toBeInTheDocument();
   });

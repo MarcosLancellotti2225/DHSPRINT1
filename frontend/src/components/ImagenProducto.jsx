@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { urlImagen } from "../api/client";
+import { Isotipo } from "./Logo";
 import "../styles/ImagenProducto.css";
 
 /**
@@ -17,7 +18,7 @@ export default function ImagenProducto({ url, alt, className = "", loading }) {
         role="img"
         aria-label={`${alt} (imagen no disponible)`}
       >
-        <span aria-hidden="true">NH</span>
+        <Isotipo tamanio={48} className="imagen-producto__isotipo" />
       </div>
     );
   }

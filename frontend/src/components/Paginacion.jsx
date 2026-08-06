@@ -1,8 +1,8 @@
 import "../styles/Paginacion.css";
 
 /**
- * Controles de paginación: ir al inicio del listado, retroceder, avanzar,
- * y contador de páginas.
+ * Controles de paginación: ir al inicio del listado, atrás y adelante,
+ * más el contador de páginas.
  */
 export default function Paginacion({ pagina, totalPaginas, onCambiarPagina }) {
   if (totalPaginas <= 1) return null;
@@ -14,7 +14,7 @@ export default function Paginacion({ pagina, totalPaginas, onCambiarPagina }) {
     <nav className="paginacion" aria-label="Paginación de alojamientos">
       <button
         type="button"
-        className="boton boton--contorno"
+        className="btn btn-secondary"
         onClick={() => onCambiarPagina(0)}
         disabled={esPrimera}
       >
@@ -23,11 +23,11 @@ export default function Paginacion({ pagina, totalPaginas, onCambiarPagina }) {
 
       <button
         type="button"
-        className="boton boton--contorno"
+        className="btn btn-secondary"
         onClick={() => onCambiarPagina(pagina - 1)}
         disabled={esPrimera}
       >
-        ‹ Anterior
+        ‹ Atrás
       </button>
 
       <span className="paginacion__contador" aria-live="polite">
@@ -36,20 +36,11 @@ export default function Paginacion({ pagina, totalPaginas, onCambiarPagina }) {
 
       <button
         type="button"
-        className="boton boton--contorno"
+        className="btn btn-secondary"
         onClick={() => onCambiarPagina(pagina + 1)}
         disabled={esUltima}
       >
-        Siguiente ›
-      </button>
-
-      <button
-        type="button"
-        className="boton boton--contorno"
-        onClick={() => onCambiarPagina(totalPaginas - 1)}
-        disabled={esUltima}
-      >
-        Final »
+        Adelante ›
       </button>
     </nav>
   );

@@ -1,4 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#1B4965"/>
-  <text x="32" y="43" text-anchor="middle" font-family="Verdana, sans-serif" font-size="26" font-weight="bold" fill="#F2A65A">NH</text>
+  <rect width="64" height="64" rx="14" fill="#3F424D"/>
+  <g fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"
+     transform="translate(32 32) scale(0.78) translate(-32 -32)">
+    <path d="M6 40 L32 12 L58 40" stroke="#9184D9"/>
+    <path d="M41.5 37.5 L51 46.8 L41.5 56" stroke="#9796B7"/>
+    <path d="M29 36.5 L39.5 46.8 L29 57" stroke="#D2CEFD"/>
+  </g>
 </svg>

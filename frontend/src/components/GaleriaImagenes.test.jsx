@@ -39,7 +39,7 @@ describe("GaleriaImagenes", () => {
     await userEvent.click(screen.getByRole("button", { name: /ver más/i }));
     expect(screen.getByRole("dialog")).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: /cerrar galería/i }));
+    await userEvent.click(screen.getByRole("button", { name: /^cerrar$/i }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });

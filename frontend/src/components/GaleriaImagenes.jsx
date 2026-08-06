@@ -4,9 +4,9 @@ import ModalGaleria from "./ModalGaleria";
 import "../styles/GaleriaImagenes.css";
 
 /**
- * Galería del detalle: imagen principal a la izquierda y grilla 2x2 con las
- * cuatro siguientes a la derecha (cinco en total). "Ver más" abre el modal con
- * todas las imágenes del producto.
+ * Galería del detalle: foto principal a la izquierda y grilla 2x2 con las
+ * cuatro siguientes a la derecha (cinco en total). "Ver más" abre el modal
+ * con todas las fotos del alojamiento.
  */
 export default function GaleriaImagenes({ nombre, imagenes = [] }) {
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -19,24 +19,30 @@ export default function GaleriaImagenes({ nombre, imagenes = [] }) {
   const secundarias = imagenes.slice(1, 5);
 
   return (
-    <section className="galeria" aria-label={`Imágenes de ${nombre}`}>
-      <figure className="galeria__principal">
-        <ImagenProducto url={principal.url} alt={`${nombre}, imagen principal`} />
-      </figure>
+    <section className="nh-gallery" aria-label={`Imágenes de ${nombre}`}>
+      <ImagenProducto
+        url={principal.url}
+        alt={`${nombre}, imagen principal`}
+        className="nh-gallery__principal"
+      />
 
-      <div className="galeria__grilla">
+      <div className="nh-gallery-side">
         {secundarias.map((imagen, indice) => (
-          <figure key={imagen.id} className="galeria__item">
-            <ImagenProducto
-              url={imagen.url}
-              alt={`${nombre}, imagen ${indice + 2}`}
-              loading="lazy"
-            />
-          </figure>
+          <ImagenProducto
+            key={imagen.id}
+            url={imagen.url}
+            alt={`${nombre}, imagen ${indice + 2}`}
+            className="nh-gallery__item"
+            loading="lazy"
+          />
         ))}
       </div>
 
-      <button type="button" className="galeria__ver-mas" onClick={() => setModalAbierto(true)}>
+      <button
+        type="button"
+        className="btn btn-secondary nh-gallery__ver-mas"
+        onClick={() => setModalAbierto(true)}
+      >
         Ver más
       </button>
 

@@ -47,9 +47,9 @@ export default function DetalleProducto() {
 
   if (error) {
     return (
-      <div className="contenedor detalle__error">
+      <div className="detalle__error">
         <p className="mensaje mensaje--error">{error}</p>
-        <button type="button" className="boton boton--primario" onClick={() => navegar("/")}>
+        <button type="button" className="btn btn-primary" onClick={() => navegar("/")}>
           Volver al inicio
         </button>
       </div>
@@ -58,29 +58,22 @@ export default function DetalleProducto() {
 
   return (
     <article className="detalle">
-      {/* Header propio del detalle: título a la izquierda, volver a la derecha. */}
+      {/* Encabezado propio del detalle: título a la izquierda, volver a la derecha. */}
       <header className="detalle__header">
-        <div className="detalle__header-contenido contenedor">
-          <h1 className="detalle__titulo">{producto.nombre}</h1>
-          <button
-            type="button"
-            className="detalle__volver"
-            onClick={volver}
-            aria-label="Volver a la página anterior"
-          >
-            <span aria-hidden="true">←</span>
-          </button>
-        </div>
+        <h1 className="detalle__titulo">{producto.nombre}</h1>
+        <button type="button" className="btn btn-secondary" onClick={volver}>
+          ← Volver
+        </button>
       </header>
 
-      <div className="contenedor detalle__cuerpo">
+      <div className="detalle__cuerpo">
         <GaleriaImagenes nombre={producto.nombre} imagenes={producto.imagenes} />
 
         <section className="detalle__descripcion" aria-labelledby="descripcion-titulo">
           <h2 id="descripcion-titulo" className="titulo-seccion">
             Sobre el alojamiento
           </h2>
-          <p>{producto.descripcion}</p>
+          <p className="detalle__texto">{producto.descripcion}</p>
         </section>
       </div>
     </article>
