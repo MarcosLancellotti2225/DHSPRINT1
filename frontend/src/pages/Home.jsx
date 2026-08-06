@@ -5,9 +5,12 @@ import ProductoCard from "../components/ProductoCard";
 import Paginacion from "../components/Paginacion";
 import { listarProductos, listarProductosAleatorios, TAMANIO_PAGINA } from "../api/productos";
 import { mensajeDeError } from "../api/client";
+import useTituloPagina from "../hooks/useTituloPagina";
 import "../styles/Home.css";
 
 export default function Home() {
+  useTituloPagina("Reservá tu próxima estadía");
+
   const [recomendados, setRecomendados] = useState([]);
   const [cargandoRecomendados, setCargandoRecomendados] = useState(true);
 

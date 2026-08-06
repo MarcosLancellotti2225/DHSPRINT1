@@ -3,11 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import PanelAdmin from "../components/PanelAdmin";
 import { crearProducto } from "../api/productos";
 import { mensajeDeError } from "../api/client";
+import useTituloPagina from "../hooks/useTituloPagina";
 import "../styles/Admin.css";
 
 const FORMULARIO_VACIO = { nombre: "", descripcion: "" };
 
 export default function AdminNuevoProducto() {
+  useTituloPagina("Agregar producto");
+
   const navegar = useNavigate();
 
   const [formulario, setFormulario] = useState(FORMULARIO_VACIO);

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import GaleriaImagenes from "../components/GaleriaImagenes";
 import { obtenerProducto } from "../api/productos";
 import { mensajeDeError } from "../api/client";
+import useTituloPagina from "../hooks/useTituloPagina";
 import "../styles/DetalleProducto.css";
 
 export default function DetalleProducto() {
@@ -12,6 +13,9 @@ export default function DetalleProducto() {
   const [producto, setProducto] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
+
+  // Hasta que llega la respuesta no hay nombre, así que el título no se toca.
+  useTituloPagina(producto?.nombre);
 
   useEffect(() => {
     let vigente = true;

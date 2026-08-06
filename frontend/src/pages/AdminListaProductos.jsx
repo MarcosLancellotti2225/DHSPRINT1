@@ -5,9 +5,12 @@ import ModalConfirmacion from "../components/ModalConfirmacion";
 import Paginacion from "../components/Paginacion";
 import { eliminarProducto, listarProductos, TAMANIO_PAGINA } from "../api/productos";
 import { mensajeDeError } from "../api/client";
+import useTituloPagina from "../hooks/useTituloPagina";
 import "../styles/Admin.css";
 
 export default function AdminListaProductos() {
+  useTituloPagina("Lista de productos");
+
   const [pagina, setPagina] = useState(0);
   const [datosPagina, setDatosPagina] = useState(null);
   const [cargando, setCargando] = useState(true);

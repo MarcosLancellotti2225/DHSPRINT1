@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import PanelAdmin from "../components/PanelAdmin";
+import useTituloPagina from "../hooks/useTituloPagina";
 import "../styles/Admin.css";
 
 /** Funciones de administración disponibles en este sprint. */
@@ -21,6 +22,8 @@ const FUNCIONES = [
 ];
 
 export default function Administracion() {
+  useTituloPagina("Panel de administración");
+
   return (
     <PanelAdmin titulo="Panel de administración">
       <ul className="admin__menu">
