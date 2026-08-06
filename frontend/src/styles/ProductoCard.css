@@ -20,22 +20,6 @@
   background-color: var(--color-superficie-alt);
 }
 
-.tarjeta__imagen img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.tarjeta__sin-imagen {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--color-texto-suave);
-}
-
 .tarjeta__cuerpo {
   display: flex;
   flex-direction: column;

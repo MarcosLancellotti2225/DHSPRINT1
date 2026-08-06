@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { urlImagen } from "../api/client";
+import ImagenProducto from "./ImagenProducto";
 import "../styles/ProductoCard.css";
 
 export default function ProductoCard({ producto }) {
@@ -8,13 +8,7 @@ export default function ProductoCard({ producto }) {
   return (
     <article className="tarjeta">
       <div className="tarjeta__imagen">
-        {portada ? (
-          <img src={urlImagen(portada.url)} alt={producto.nombre} loading="lazy" />
-        ) : (
-          <div className="tarjeta__sin-imagen" aria-hidden="true">
-            NH
-          </div>
-        )}
+        <ImagenProducto url={portada?.url} alt={producto.nombre} loading="lazy" />
       </div>
 
       <div className="tarjeta__cuerpo">

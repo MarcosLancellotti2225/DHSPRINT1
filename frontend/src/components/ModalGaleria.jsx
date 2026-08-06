@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { urlImagen } from "../api/client";
+import ImagenProducto from "./ImagenProducto";
 import "../styles/ModalGaleria.css";
 
 /** Muestra todas las imágenes disponibles del producto. */
@@ -44,7 +44,7 @@ export default function ModalGaleria({ nombre, imagenes, onCerrar }) {
         <div className="modal-galeria__grilla">
           {imagenes.map((imagen, indice) => (
             <figure key={imagen.id} className="modal-galeria__item">
-              <img src={urlImagen(imagen.url)} alt={`${nombre}, imagen ${indice + 1}`} />
+              <ImagenProducto url={imagen.url} alt={`${nombre}, imagen ${indice + 1}`} />
             </figure>
           ))}
         </div>

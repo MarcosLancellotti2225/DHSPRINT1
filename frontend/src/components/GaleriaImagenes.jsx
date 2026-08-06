@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { urlImagen } from "../api/client";
+import ImagenProducto from "./ImagenProducto";
 import ModalGaleria from "./ModalGaleria";
 import "../styles/GaleriaImagenes.css";
 
@@ -21,13 +21,17 @@ export default function GaleriaImagenes({ nombre, imagenes = [] }) {
   return (
     <section className="galeria" aria-label={`Imágenes de ${nombre}`}>
       <figure className="galeria__principal">
-        <img src={urlImagen(principal.url)} alt={`${nombre}, imagen principal`} />
+        <ImagenProducto url={principal.url} alt={`${nombre}, imagen principal`} />
       </figure>
 
       <div className="galeria__grilla">
         {secundarias.map((imagen, indice) => (
           <figure key={imagen.id} className="galeria__item">
-            <img src={urlImagen(imagen.url)} alt={`${nombre}, imagen ${indice + 2}`} loading="lazy" />
+            <ImagenProducto
+              url={imagen.url}
+              alt={`${nombre}, imagen ${indice + 2}`}
+              loading="lazy"
+            />
           </figure>
         ))}
       </div>
