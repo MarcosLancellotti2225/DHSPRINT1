@@ -13,14 +13,15 @@ import org.springframework.context.annotation.Profile;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Con H2 en memoria la base arranca vacía en cada ejecución, así que se cargan
@@ -113,34 +114,63 @@ public class CargaInicialDatos {
         };
     }
 
-    /** Genera una imagen de muestra con degradado y rótulo, para no depender de archivos externos. */
+    /**
+     * Genera una foto genérica de paisaje: cielo con degradado, sol y capas de
+     * relieve recortadas contra el horizonte. No depende de archivos ni de red,
+     * y cada imagen sale distinta según el alojamiento y el número de foto.
+     */
     private byte[] generarImagen(Alojamiento alojamiento, int numero) throws IOException {
         BufferedImage imagen = new BufferedImage(ANCHO, ALTO, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = imagen.createGraphics();
+
+        // Semilla estable: la misma foto se ve siempre igual, pero cada una difiere.
+        Random azar = new Random(alojamiento.nombre().hashCode() * 31L + numero);
+
         try {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-            // El ángulo del degradado cambia por imagen para que la galería no se vea repetida.
-            float desplazamiento = (numero - 1) / (float) IMAGENES_POR_PRODUCTO;
-            g.setPaint(new GradientPaint(
-                    ANCHO * desplazamiento, 0, alojamiento.desde(),
-                    ANCHO, ALTO * (1 - desplazamiento * 0.5f), alojamiento.hasta()));
+            // --- Cielo ---
+            g.setPaint(new GradientPaint(0, 0, aclarar(alojamiento.desde(), 0.55f),
+                    0, ALTO * 0.72f, alojamiento.hasta()));
             g.fillRect(0, 0, ANCHO, ALTO);
 
-            g.setColor(new Color(255, 255, 255, 38));
-            for (int i = 0; i < 5; i++) {
-                int radio = 260 + i * 150;
-                g.drawOval(ANCHO - 320 - radio / 2, ALTO - 120 - radio / 2, radio, radio);
+            // --- Sol, en distinta posición por foto ---
+            int solX = (int) (ANCHO * (0.18 + 0.64 * azar.nextDouble()));
+            int solY = (int) (ALTO * (0.14 + 0.20 * azar.nextDouble()));
+            int solR = 70 + azar.nextInt(45);
+            for (int halo = 5; halo >= 1; halo--) {
+                g.setColor(new Color(255, 245, 220, 16));
+                int r = solR + halo * 46;
+                g.fillOval(solX - r, solY - r, r * 2, r * 2);
+            }
+            g.setColor(new Color(255, 248, 232, 235));
+            g.fillOval(solX - solR, solY - solR, solR * 2, solR * 2);
+
+            // --- Capas de relieve: de la más lejana y clara a la más cercana y oscura ---
+            int capas = 4;
+            for (int capa = 0; capa < capas; capa++) {
+                double avance = (capa + 1) / (double) capas;
+                int base = (int) (ALTO * (0.46 + 0.16 * capa));
+                int amplitud = (int) (ALTO * (0.16 - 0.025 * capa));
+
+                Polygon relieve = new Polygon();
+                relieve.addPoint(0, ALTO);
+                int puntos = 5 + capa;
+                for (int p = 0; p <= puntos; p++) {
+                    int x = (int) (ANCHO * p / (double) puntos);
+                    int y = base - (int) (amplitud * Math.abs(Math.sin(p * 1.7 + azar.nextDouble() * 2)));
+                    relieve.addPoint(x, y);
+                }
+                relieve.addPoint(ANCHO, ALTO);
+
+                g.setColor(mezclar(alojamiento.desde(), Color.BLACK, (float) (0.15 + 0.5 * avance)));
+                g.fillPolygon(relieve);
             }
 
-            g.setColor(new Color(255, 255, 255, 235));
-            g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 64));
-            g.drawString(alojamiento.nombre(), 72, ALTO - 132);
-
-            g.setColor(new Color(255, 255, 255, 170));
-            g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 34));
-            g.drawString("Foto " + numero + " de " + IMAGENES_POR_PRODUCTO, 72, ALTO - 76);
+            // --- Neblina sobre el horizonte, para dar profundidad ---
+            g.setPaint(new GradientPaint(0, ALTO * 0.42f, new Color(255, 255, 255, 46),
+                    0, ALTO * 0.68f, new Color(255, 255, 255, 0)));
+            g.fillRect(0, (int) (ALTO * 0.42f), ANCHO, (int) (ALTO * 0.30f));
         } finally {
             g.dispose();
         }
@@ -148,5 +178,18 @@ public class CargaInicialDatos {
         ByteArrayOutputStream salida = new ByteArrayOutputStream();
         ImageIO.write(imagen, "png", salida);
         return salida.toByteArray();
+    }
+
+    private static Color aclarar(Color color, float proporcion) {
+        return mezclar(color, Color.WHITE, proporcion);
+    }
+
+    /** Interpola entre dos colores; proporcion 0 devuelve el primero, 1 el segundo. */
+    private static Color mezclar(Color a, Color b, float proporcion) {
+        float p = Math.clamp(proporcion, 0f, 1f);
+        return new Color(
+                Math.round(a.getRed() + (b.getRed() - a.getRed()) * p),
+                Math.round(a.getGreen() + (b.getGreen() - a.getGreen()) * p),
+                Math.round(a.getBlue() + (b.getBlue() - a.getBlue()) * p));
     }
 }

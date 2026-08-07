@@ -54,8 +54,15 @@
   --shadow-md: 0 0 0 1px #595d6c, 0 6px 18px rgba(0, 0, 0, 0.55);
   --shadow-lg: 0 0 0 1px #9397ab, 0 16px 40px rgba(0, 0, 0, 0.65);
 
-  /* Medida propia de la app, no del sistema */
-  --padding-lateral: clamp(20px, 5vw, 72px);
+  /* Medidas propias de la app, no del sistema.
+     El contenido se centra y deja de crecer pasado --ancho-contenido, pero las
+     barras (header, footer) siguen ocupando el 100% del ancho: el sobrante lo
+     absorbe el padding en vez de limitar el elemento. */
+  --ancho-contenido: 1320px;
+  --padding-lateral: max(
+    clamp(20px, 5vw, 72px),
+    calc((100% - var(--ancho-contenido)) / 2)
+  );
 }
 
 *,
