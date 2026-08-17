@@ -124,13 +124,12 @@ El frontend tiene una carpeta por tipo de cosa: `pages` (una por ruta), `compone
 reutilizable: header, footer, galería, modales), `api` (las llamadas al backend), `hooks` y
 `styles`.
 
-Sobre los estilos: no usé ningún framework de UI, es CSS propio. Todos los colores,
-tipografías y medidas viven como variables en `frontend/src/styles/index.css`. Si algún día
-cambia la identidad de marca, se toca ese bloque y se actualiza el sitio entero sin entrar a
-ningún componente.
+Sobre los estilos: no usé ningún framework de UI, es CSS propio. El sistema de diseño
+—colores, tipografía, espaciado y las clases de componente (`.btn`, `.card`, `.tag`,
+`.input`, `.table`, `.dialog`)— vive entero en `frontend/src/styles/index.css`. Si algún día
+cambia la identidad de marca, se toca ese bloque y se actualiza el sitio sin entrar a ningún
+componente.
 
-## Créditos
-
-Los íconos de la interfaz son [Uicons de Flaticon](https://www.flaticon.com/uicons).
-Su licencia permite el uso gratuito siempre que se acredite la autoría, que es lo que hace
-esta sección.
+La única dependencia visual externa es la tipografía **Inter**, que se carga desde Google
+Fonts. Si el proyecto tiene que funcionar sin internet, conviene descargarla y servirla
+desde `public/`.

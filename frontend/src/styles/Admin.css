@@ -1,32 +1,9 @@
-.admin__nav {
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
-  padding-inline: var(--padding-lateral);
-  padding-block: var(--space-4);
-}
-
-.admin__marca {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: inherit;
-}
-
-.admin__marca-texto {
-  font-family: var(--font-heading);
-  font-weight: var(--font-heading-weight);
-  font-size: 17px;
-}
-
-.admin__marca-acento {
-  color: var(--color-accent);
-}
-
-.admin__marca-seccion {
+.admin__seccion {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--color-neutral-400);
-  font-weight: 400;
-  font-size: 14px;
+  margin: 0 0 var(--space-1);
 }
 
 .admin__bloqueado {
