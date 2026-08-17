@@ -1,9 +1,4 @@
-/* ---------------------------------------------------------------------------
-   Nocturne — sistema de diseño de NextHome.
-   Los tokens y las clases de componente salen del design system del proyecto
-   de Claude Design. Cambiando este bloque se re-skinnea el sitio entero sin
-   tocar un solo componente.
-   --------------------------------------------------------------------------- */
+
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
