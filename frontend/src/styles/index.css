@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 
+=======
+/* ---------------------------------------------------------------------------
+   Nocturne — sistema de diseño de NextHome.
+   Acá viven los tokens y las clases de componente. Cambiando este bloque se
+   re-skinnea el sitio entero sin tocar un solo componente.
+   --------------------------------------------------------------------------- */
+>>>>>>> cf32fed (feat: suma la base de autenticacion con jwt y bcrypt)
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
@@ -126,6 +134,19 @@ figure {
 
 ::selection {
   background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+/* Texto disponible para lectores de pantalla pero no visible en el diseño. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 .text-muted {
