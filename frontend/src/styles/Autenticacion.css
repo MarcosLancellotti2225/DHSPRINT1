@@ -1,0 +1,74 @@
+.autenticacion {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: var(--space-8) var(--padding-lateral);
+}
+
+.autenticacion__panel {
+  width: min(460px, 100%);
+  gap: var(--space-3);
+  padding: var(--space-8);
+}
+
+.autenticacion__titulo {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 24px;
+  margin: 0;
+}
+
+.autenticacion__bajada {
+  margin: 0 0 var(--space-4);
+  font-size: 14px;
+  color: var(--color-neutral-400);
+}
+
+.autenticacion__formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Nombre y apellido conviven en una fila y se apilan en pantallas chicas. */
+.autenticacion__fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.autenticacion__error {
+  display: block;
+  color: var(--color-accent-300);
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.autenticacion__ayuda {
+  display: block;
+  font-size: 12px;
+  color: var(--color-neutral-500);
+  margin-top: 5px;
+}
+
+.autenticacion__pie {
+  margin: var(--space-4) 0 0;
+  font-size: 13px;
+  color: var(--color-neutral-400);
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .autenticacion {
+    padding-block: var(--space-6);
+  }
+
+  .autenticacion__panel {
+    padding: var(--space-6);
+  }
+
+  .autenticacion__fila {
+    grid-template-columns: 1fr;
+  }
+}
