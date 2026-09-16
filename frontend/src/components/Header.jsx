@@ -1,12 +1,17 @@
 import { Link } from "react-router-dom";
 import { Isotipo } from "./Logo";
+import AvatarUsuario from "./AvatarUsuario";
+import useSesion from "../hooks/useSesion";
 import "../styles/Header.css";
 
 /**
- * Barra superior del sitio público: marca a la izquierda (enlaza al home) y
- * accesos de cuenta a la derecha. Fija arriba, según el diseño.
+ * Barra superior del sitio: marca a la izquierda (enlaza al home) y accesos de
+ * cuenta a la derecha. Con sesión iniciada, en lugar de los botones se muestra el
+ * avatar con las iniciales del usuario. Fija arriba, según el diseño.
  */
 export default function Header() {
+  const { autenticado, cargando } = useSesion();
+
   return (
     <header className="nav header">
       <Link to="/" className="header__marca" aria-label="NextHome, ir al inicio">
@@ -20,12 +25,18 @@ export default function Header() {
       </Link>
 
       <nav className="header__acciones" aria-label="Cuenta de usuario">
-        <button type="button" className="btn btn-ghost">
-          Crear cuenta
-        </button>
-        <button type="button" className="btn btn-primary">
-          Iniciar sesión
-        </button>
+        {cargando ? null : autenticado ? (
+          <AvatarUsuario />
+        ) : (
+          <>
+            <Link to="/crear-cuenta" className="btn btn-ghost">
+              Crear cuenta
+            </Link>
+            <Link to="/ingresar" className="btn btn-primary">
+              Iniciar sesión
+            </Link>
+          </>
+        )}
       </nav>
     </header>
   );
