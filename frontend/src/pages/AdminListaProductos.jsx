@@ -81,6 +81,7 @@ export default function AdminListaProductos() {
                 <tr>
                   <th scope="col">Id</th>
                   <th scope="col">Nombre</th>
+                  <th scope="col">Categoría</th>
                   <th scope="col">Acciones</th>
                 </tr>
               </thead>
@@ -89,7 +90,14 @@ export default function AdminListaProductos() {
                   <tr key={producto.id}>
                     <td>{producto.id}</td>
                     <td>{producto.nombre}</td>
-                    <td>
+                    <td>{producto.categoria?.titulo ?? "Sin categoría"}</td>
+                    <td className="admin__acciones-fila">
+                      <Link
+                        to={`/administracion/productos/${producto.id}/editar`}
+                        className="btn btn-ghost"
+                      >
+                        Editar
+                      </Link>
                       <button
                         type="button"
                         className="btn btn-ghost"

@@ -1,6 +1,7 @@
 package com.nexthome.reservas.controller;
 
 import com.nexthome.reservas.dto.PaginaResponse;
+import com.nexthome.reservas.dto.ProductoEdicionRequest;
 import com.nexthome.reservas.dto.ProductoRequest;
 import com.nexthome.reservas.dto.ProductoResponse;
 import com.nexthome.reservas.service.ProductoService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -37,11 +39,22 @@ public class ProductoController {
         return ResponseEntity.created(URI.create("/api/productos/" + creado.id())).body(creado);
     }
 
+    @PutMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ProductoResponse editar(@PathVariable Long id,
+                                   @Valid @ModelAttribute ProductoEdicionRequest request) {
+        return service.actualizar(id, request);
+    }
+
+    /**
+     * Catálogo paginado. Con {@code categorias} se acota el listado a esas categorías;
+     * el filtro y la paginación se resuelven juntos en la base.
+     */
     @GetMapping
     public PaginaResponse<ProductoResponse> listar(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return service.listarPaginado(page, size);
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) List<Long> categorias) {
+        return service.listarPaginado(page, size, categorias);
     }
 
     @GetMapping("/random")

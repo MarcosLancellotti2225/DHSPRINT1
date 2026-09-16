@@ -1,14 +1,18 @@
 package com.nexthome.reservas.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-/** Datos del formulario de alta de producto (multipart/form-data). */
-public class ProductoRequest {
+/**
+ * Datos del formulario de edición de producto (multipart/form-data).
+ *
+ * A diferencia del alta, las imágenes son opcionales: si no se manda ninguna se
+ * conservan las que ya tenía el producto, y si se mandan reemplazan a las anteriores.
+ */
+public class ProductoEdicionRequest {
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 150, message = "El nombre no puede superar los 150 caracteres")
@@ -18,13 +22,10 @@ public class ProductoRequest {
     @Size(max = 4000, message = "La descripción no puede superar los 4000 caracteres")
     private String descripcion;
 
-    /** Opcional: un producto puede quedar sin categoría. */
     private Long categoriaId;
 
-    /** Opcional: ids de las características asociadas al producto. */
     private List<Long> caracteristicaIds;
 
-    @NotEmpty(message = "Se debe cargar al menos una imagen")
     private List<MultipartFile> imagenes;
 
     public String getNombre() {

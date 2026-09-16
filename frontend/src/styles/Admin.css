@@ -117,3 +117,78 @@
 .admin__tabla-contenedor .table {
   min-width: 520px;
 }
+
+/* --- Formularios de categorías y características -------------------------- */
+
+.admin__formulario--linea {
+  max-width: 460px;
+}
+
+.admin__fieldset {
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  margin: var(--space-3) 0 0;
+}
+
+.admin__fieldset > legend {
+  font-size: 12px;
+  padding-inline: var(--space-2);
+  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+}
+
+.admin__caracteristicas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: var(--space-2);
+}
+
+.admin__caracteristica {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.admin__caracteristica input {
+  accent-color: var(--color-accent);
+}
+
+.admin__icono-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.admin__icono-vista {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-900);
+  color: var(--color-accent-300);
+}
+
+/* --- Tablas del panel ----------------------------------------------------- */
+
+.admin__acciones-fila {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  white-space: nowrap;
+}
+
+.admin__celda-larga {
+  max-width: 42ch;
+  color: var(--color-neutral-400);
+}
+
+.admin__miniatura {
+  width: 64px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
