@@ -3,6 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import Home from "./Home";
 import { listarProductos, listarProductosAleatorios } from "../api/productos";
+import { listarCategorias } from "../api/categorias";
 
 vi.mock("../api/productos", async () => {
   const real = await vi.importActual("../api/productos");
@@ -12,6 +13,8 @@ vi.mock("../api/productos", async () => {
     listarProductosAleatorios: vi.fn(),
   };
 });
+
+vi.mock("../api/categorias", () => ({ listarCategorias: vi.fn() }));
 
 function producto(id) {
   return {
@@ -33,13 +36,14 @@ function renderizarHome() {
 describe("Home", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    listarCategorias.mockResolvedValue([]);
   });
 
   it("muestra las recomendaciones que devuelve la API", async () => {
     listarProductosAleatorios.mockResolvedValue([producto(1), producto(2)]);
     listarProductos.mockResolvedValue({
-      contenido: [], pagina: 0, tamanio: 10, totalElementos: 0, totalPaginas: 0,
-      primera: true, ultima: true,
+      contenido: [], pagina: 0, tamanio: 10, totalElementos: 0, totalSinFiltro: 0,
+      totalPaginas: 0, primera: true, ultima: true,
     });
 
     renderizarHome();
@@ -51,8 +55,8 @@ describe("Home", () => {
   it("pide como máximo 10 recomendaciones", async () => {
     listarProductosAleatorios.mockResolvedValue([]);
     listarProductos.mockResolvedValue({
-      contenido: [], pagina: 0, tamanio: 10, totalElementos: 0, totalPaginas: 0,
-      primera: true, ultima: true,
+      contenido: [], pagina: 0, tamanio: 10, totalElementos: 0, totalSinFiltro: 0,
+      totalPaginas: 0, primera: true, ultima: true,
     });
 
     renderizarHome();
@@ -63,8 +67,8 @@ describe("Home", () => {
   it("muestra el paginador cuando hay más de una página", async () => {
     listarProductosAleatorios.mockResolvedValue([]);
     listarProductos.mockResolvedValue({
-      contenido: [producto(1)], pagina: 0, tamanio: 10, totalElementos: 12, totalPaginas: 2,
-      primera: true, ultima: false,
+      contenido: [producto(1)], pagina: 0, tamanio: 10, totalElementos: 12, totalSinFiltro: 12,
+      totalPaginas: 2, primera: true, ultima: false,
     });
 
     renderizarHome();
@@ -84,8 +88,8 @@ describe("Home", () => {
   it("avisa cuando todavía no hay alojamientos cargados", async () => {
     listarProductosAleatorios.mockResolvedValue([]);
     listarProductos.mockResolvedValue({
-      contenido: [], pagina: 0, tamanio: 10, totalElementos: 0, totalPaginas: 0,
-      primera: true, ultima: true,
+      contenido: [], pagina: 0, tamanio: 10, totalElementos: 0, totalSinFiltro: 0,
+      totalPaginas: 0, primera: true, ultima: true,
     });
 
     renderizarHome();

@@ -10,6 +10,9 @@ vi.mock("../api/productos", async () => {
   return { ...real, crearProducto: vi.fn() };
 });
 
+vi.mock("../api/categorias", () => ({ listarCategorias: vi.fn().mockResolvedValue([]) }));
+vi.mock("../api/caracteristicas", () => ({ listarCaracteristicas: vi.fn().mockResolvedValue([]) }));
+
 const navegar = vi.fn();
 vi.mock("react-router-dom", async () => {
   const real = await vi.importActual("react-router-dom");
