@@ -17,6 +17,24 @@ const FUNCIONES = [
     descripcion: "Publicar un nuevo alojamiento en el catálogo.",
     ruta: "/administracion/productos/nuevo",
   },
+  {
+    id: "categorias",
+    titulo: "Agregar categoría",
+    descripcion: "Crear y editar las categorías con las que se organiza el catálogo.",
+    ruta: "/administracion/categorias",
+  },
+  {
+    id: "caracteristicas",
+    titulo: "Administrar características",
+    descripcion: "Añadir, editar y eliminar las características de los alojamientos.",
+    ruta: "/administracion/caracteristicas",
+  },
+  {
+    id: "usuarios",
+    titulo: "Usuarios registrados",
+    descripcion: "Ver los usuarios y otorgarles o quitarles permisos de administrador.",
+    ruta: "/administracion/usuarios",
+  },
 ];
 
 export default function Administracion() {
