@@ -2,18 +2,73 @@
   margin-bottom: var(--space-6);
 }
 
-.categorias__lista {
+.categorias__encabezado {
   display: flex;
+  align-items: baseline;
+  justify-content: space-between;
   gap: var(--space-3);
-  flex-wrap: wrap;
+  margin-bottom: var(--space-3);
 }
 
+.categorias__titulo {
+  margin: 0;
+}
+
+.categorias__lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+
+/* Cada categoría es un botón de filtro; el estado activo se marca con el acento. */
 .categorias__tarjeta {
+  width: 100%;
+  height: 100%;
+  gap: var(--space-1);
   padding: var(--space-3) var(--space-4);
-  min-width: 140px;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  border: 1px solid transparent;
+}
+
+.categorias__tarjeta:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+}
+
+.categorias__tarjeta--activa {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface));
 }
 
 .categorias__nombre {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
   font-size: 15px;
   color: var(--color-text);
+}
+
+.categorias__descripcion {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-neutral-400);
+}
+
+.categorias__contador {
+  margin: var(--space-3) 0 0;
+  font-size: 13px;
+  color: var(--color-neutral-400);
+}
+
+.categorias__vacio {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-neutral-400);
+}
+
+@media (max-width: 560px) {
+  .categorias__lista {
+    grid-template-columns: 1fr;
+  }
 }
