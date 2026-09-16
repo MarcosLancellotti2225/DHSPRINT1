@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import GaleriaImagenes from "../components/GaleriaImagenes";
+import CaracteristicasProducto from "../components/CaracteristicasProducto";
 import { obtenerProducto } from "../api/productos";
 import { mensajeDeError } from "../api/client";
 import useTituloPagina from "../hooks/useTituloPagina";
@@ -60,7 +61,12 @@ export default function DetalleProducto() {
     <article className="detalle">
       {/* Encabezado propio del detalle: título a la izquierda, volver a la derecha. */}
       <header className="detalle__header">
-        <h1 className="detalle__titulo">{producto.nombre}</h1>
+        <div className="detalle__identidad">
+          <h1 className="detalle__titulo">{producto.nombre}</h1>
+          {producto.categoria && (
+            <span className="tag tag-outline detalle__categoria">{producto.categoria.titulo}</span>
+          )}
+        </div>
         <button type="button" className="btn btn-secondary" onClick={volver}>
           ← Volver
         </button>
@@ -75,6 +81,8 @@ export default function DetalleProducto() {
           </h2>
           <p className="detalle__texto">{producto.descripcion}</p>
         </section>
+
+        <CaracteristicasProducto caracteristicas={producto.caracteristicas ?? []} />
       </div>
     </article>
   );

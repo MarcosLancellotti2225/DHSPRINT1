@@ -7,6 +7,13 @@
   border-bottom: 1px solid var(--color-neutral-800);
 }
 
+.detalle__identidad {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
 .detalle__titulo {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
@@ -36,7 +43,14 @@
     align-items: flex-start;
   }
 
-  .detalle__titulo {
+  .detalle__identidad {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.detalle__titulo {
     font-size: 22px;
   }
 }

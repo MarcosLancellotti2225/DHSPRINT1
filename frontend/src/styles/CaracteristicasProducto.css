@@ -1,0 +1,50 @@
+.caracteristicas {
+  margin-top: var(--space-8);
+}
+
+/*
+ * Grilla fluida: en desktop entran cuatro por fila, en tablet dos y en mobile
+ * una sola, sin necesidad de media queries por punto de corte.
+ */
+.caracteristicas__lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3);
+}
+
+.caracteristicas__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.caracteristicas__icono {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-900);
+  color: var(--color-accent-300);
+}
+
+.caracteristicas__nombre {
+  font-size: 14px;
+  color: var(--color-neutral-200);
+}
+
+.caracteristicas__vacio {
+  color: var(--color-neutral-400);
+  font-size: 14px;
+}
+
+@media (max-width: 560px) {
+  .caracteristicas__lista {
+    grid-template-columns: 1fr;
+  }
+}
