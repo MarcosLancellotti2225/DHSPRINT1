@@ -7,6 +7,10 @@
   margin-bottom: var(--space-8);
 }
 
+.home__encabezado .btn {
+  margin-left: auto;
+}
+
 .home__bloque:last-child {
   margin-bottom: 0;
   scroll-margin-top: 90px;

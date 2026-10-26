@@ -1,8 +1,10 @@
 import "../styles/Categorias.css";
 
 /**
- * Filtro por categorías del home. Se pueden seleccionar varias a la vez y el
- * filtrado lo resuelve el backend: acá sólo se maneja la selección.
+ * Filtro por categorías sobre el resultado de una búsqueda. Se pueden seleccionar
+ * varias a la vez y el filtrado lo resuelve el backend: acá sólo se maneja la
+ * selección. `nombreDelConjunto` es el destino buscado, para que el contador diga
+ * sobre qué se está filtrando.
  */
 export default function Categorias({
   categorias,
@@ -11,6 +13,7 @@ export default function Categorias({
   onLimpiar,
   cantidadFiltrada,
   totalProductos,
+  nombreDelConjunto,
   cargando = false,
 }) {
   const hayFiltro = seleccionadas.length > 0;
@@ -57,7 +60,8 @@ export default function Categorias({
       <p className="categorias__contador" aria-live="polite">
         {hayFiltro
           ? `Mostrando ${cantidadFiltrada} de ${totalProductos} alojamientos`
-          : `${totalProductos} alojamientos en el catálogo`}
+          : `${totalProductos} ${totalProductos === 1 ? "alojamiento" : "alojamientos"}` +
+            (nombreDelConjunto ? ` en ${nombreDelConjunto}` : " en el catálogo")}
       </p>
     </section>
   );

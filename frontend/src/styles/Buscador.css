@@ -1,5 +1,21 @@
 .buscador {
+  gap: 0;
   margin-bottom: var(--space-6);
+  padding: var(--space-6);
+}
+
+.buscador__titulo {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 24px;
+  margin: 0 0 var(--space-2);
+}
+
+.buscador__bajada {
+  margin: 0 0 var(--space-6);
+  font-size: 14px;
+  max-width: 68ch;
+  color: var(--color-neutral-300);
 }
 
 .buscador__campos {
@@ -14,21 +30,101 @@
   min-width: 140px;
 }
 
+/* El desplegable de sugerencias se ancla a este campo. */
 .buscador__campo--destino {
+  position: relative;
   flex: 2;
-  min-width: 200px;
+  min-width: 220px;
 }
 
 .buscador__campo--huespedes {
+  flex: 0 0 110px;
   min-width: 110px;
+}
+
+/* Las dos fechas viajan juntas: forman un solo rango. */
+.buscador__rango {
+  display: flex;
+  gap: var(--space-3);
+  flex: 2;
+  min-width: 300px;
 }
 
 .buscador__enviar {
   height: 36px;
 }
 
-.buscador__aviso {
-  margin: var(--space-3) 0 0;
+/* --- Sugerencias de destino ---------------------------------------------- */
+
+.buscador__sugerencias {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: var(--space-1);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.buscador__sugerencia {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+}
+
+.buscador__sugerencia:hover,
+.buscador__sugerencia:focus-visible {
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+}
+
+.buscador__sugerencia-nombre {
+  font-size: 14px;
+}
+
+.buscador__sugerencia-pais {
   font-size: 12px;
   color: var(--color-neutral-400);
+}
+
+.buscador__sin-sugerencias {
+  padding: var(--space-3);
+  font-size: 13px;
+  color: var(--color-neutral-400);
+}
+
+.buscador__error {
+  margin: var(--space-4) 0 0;
+  font-size: 13px;
+  color: var(--color-accent-300);
+}
+
+@media (max-width: 720px) {
+  .buscador {
+    padding: var(--space-4);
+  }
+
+  .buscador__titulo {
+    font-size: 20px;
+  }
+
+  .buscador__rango {
+    min-width: 100%;
+  }
+
+  .buscador__enviar {
+    width: 100%;
+  }
 }
