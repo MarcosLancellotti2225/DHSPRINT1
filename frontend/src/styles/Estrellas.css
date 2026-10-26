@@ -1,0 +1,28 @@
+.estrellas {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--color-accent-400);
+  line-height: 0;
+}
+
+.estrellas__boton {
+  padding: 2px;
+  cursor: pointer;
+  color: inherit;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  line-height: 0;
+}
+
+.estrellas__boton:hover {
+  color: var(--color-accent-300);
+}
+
+/* En pantallas táctiles las estrellas necesitan más superficie para el dedo. */
+@media (pointer: coarse) {
+  .estrellas--editable .estrellas__boton {
+    padding: 6px;
+  }
+}

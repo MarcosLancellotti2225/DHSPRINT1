@@ -1,0 +1,138 @@
+.calendario {
+  width: 100%;
+}
+
+.calendario__barra {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+/* Calendario doble: dos meses lado a lado, uno solo en pantallas chicas. */
+.calendario__meses {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+.calendario__nombre-mes {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 15px;
+  text-align: center;
+  text-transform: capitalize;
+  margin: 0 0 var(--space-3);
+}
+
+.calendario__dias {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.calendario__dia-semana {
+  font-size: 11px;
+  text-align: center;
+  padding-bottom: var(--space-1);
+  color: var(--color-neutral-500);
+}
+
+.calendario__celda {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+}
+
+.calendario__celda--libre:hover {
+  border-color: var(--color-accent);
+}
+
+/* Las fechas ocupadas se distinguen por color y por el tachado. */
+.calendario__celda--ocupado {
+  color: var(--color-neutral-600);
+  background: color-mix(in srgb, var(--color-neutral-700) 35%, transparent);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.calendario__celda--pasado {
+  color: var(--color-neutral-700);
+  cursor: not-allowed;
+}
+
+.calendario__celda--extremo {
+  color: var(--color-accent-100);
+  background: var(--color-accent-600);
+}
+
+/* Noche ocupada que cae dentro del rango elegido: es la que impide reservar. */
+.calendario__celda--conflicto {
+  color: var(--color-accent-100);
+  background: color-mix(in srgb, var(--color-accent-800) 70%, var(--color-neutral-700));
+  border-color: var(--color-accent-400);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.calendario__celda--dentro {
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+
+.calendario__referencias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  font-size: 12px;
+  color: var(--color-neutral-400);
+}
+
+.calendario__referencias li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.calendario__muestra {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.calendario__muestra--libre {
+  border: 1px solid var(--color-neutral-600);
+}
+
+.calendario__muestra--ocupado {
+  background: color-mix(in srgb, var(--color-neutral-700) 35%, transparent);
+}
+
+.calendario__muestra--extremo {
+  background: var(--color-accent-600);
+}
+
+.calendario__muestra--conflicto {
+  background: color-mix(in srgb, var(--color-accent-800) 70%, var(--color-neutral-700));
+  border: 1px solid var(--color-accent-400);
+}
+
+.calendario__error {
+  padding: var(--space-6) 0;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .calendario__meses {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}

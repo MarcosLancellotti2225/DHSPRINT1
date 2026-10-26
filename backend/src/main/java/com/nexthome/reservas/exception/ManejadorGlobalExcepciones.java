@@ -27,6 +27,24 @@ public class ManejadorGlobalExcepciones {
                 .body(new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage()));
     }
 
+    @ExceptionHandler(NoPuedeValorarException.class)
+    public ResponseEntity<ErrorResponse> manejarNoPuedeValorar(NoPuedeValorarException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse(HttpStatus.FORBIDDEN.value(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(SinDisponibilidadException.class)
+    public ResponseEntity<ErrorResponse> manejarSinDisponibilidad(SinDisponibilidadException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(FechasInvalidasException.class)
+    public ResponseEntity<ErrorResponse> manejarFechasInvalidas(FechasInvalidasException ex) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
+    }
+
     @ExceptionHandler(EmailDuplicadoException.class)
     public ResponseEntity<ErrorResponse> manejarEmailDuplicado(EmailDuplicadoException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)

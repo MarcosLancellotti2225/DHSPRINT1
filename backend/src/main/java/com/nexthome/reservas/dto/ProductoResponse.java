@@ -12,9 +12,15 @@ public record ProductoResponse(
         CiudadResponse ciudad,
         CategoriaResponse categoria,
         List<CaracteristicaResponse> caracteristicas,
-        List<ImagenResponse> imagenes) {
+        List<ImagenResponse> imagenes,
+        double puntuacion,
+        long valoraciones) {
 
     public static ProductoResponse desde(Producto producto) {
+        return desde(producto, 0, 0);
+    }
+
+    public static ProductoResponse desde(Producto producto, double puntuacion, long valoraciones) {
         List<ImagenResponse> imagenes = producto.getImagenes().stream()
                 .map(imagen -> new ImagenResponse(imagen.getId(), imagen.getUrl()))
                 .toList();
@@ -31,6 +37,8 @@ public record ProductoResponse(
                 CiudadResponse.desde(producto.getCiudad()),
                 CategoriaResponse.desde(producto.getCategoria()),
                 caracteristicas,
-                imagenes);
+                imagenes,
+                puntuacion,
+                valoraciones);
     }
 }

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import ImagenProducto from "./ImagenProducto";
 import BotonFavorito from "./BotonFavorito";
+import Estrellas from "./Estrellas";
 import "../styles/ProductoCard.css";
 
 export default function ProductoCard({ producto }) {
@@ -20,6 +21,17 @@ export default function ProductoCard({ producto }) {
 
         <div className="tarjeta__cuerpo">
           <h3 className="card-title tarjeta__titulo">{producto.nombre}</h3>
+
+          {producto.valoraciones > 0 && (
+            <span className="tarjeta__puntuacion">
+              <Estrellas
+                valor={producto.puntuacion}
+                tamanio={14}
+                etiqueta={`${producto.puntuacion} de 5 estrellas`}
+              />
+              {producto.puntuacion} ({producto.valoraciones})
+            </span>
+          )}
           <p className="card-body tarjeta__descripcion">{producto.descripcion}</p>
           <span className="tarjeta__ver">Ver detalle</span>
         </div>

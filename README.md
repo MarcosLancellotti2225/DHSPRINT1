@@ -30,9 +30,29 @@ contador te dice cuántos cumplen el filtro sobre el total. El filtrado y la bú
 resuelve el backend, no el navegador, así que se combinan bien con la paginación. Con "Ver
 todos los destinos" volvés al catálogo completo.
 
-Las fechas y los huéspedes todavía no acotan el resultado, y el buscador lo aclara: la
-disponibilidad por fecha necesita un modelo de reservas que no existe todavía. Lo que sí
-validan es que el check-out sea posterior al check-in.
+Si cargás las dos fechas, la búsqueda deja afuera lo que ya está reservado en ese rango.
+Con una sola fecha no alcanza para saber qué está ocupado, así que en ese caso no filtra.
+
+En el detalle, el bloque **Disponibilidad** muestra un calendario doble, dos meses a la
+vista, con las fechas ocupadas tachadas y en gris. Al elegir la entrada se propone sola
+una estadía de un mes exacto, que es lo más habitual; si querés otra cosa, el siguiente
+clic cambia la salida. Si el rango elegido pisa noches ya reservadas, esas noches se
+marcan aparte dentro de la selección y el botón de reservar queda bloqueado hasta que
+elijas otras fechas. La noche del check-out queda libre para el
+siguiente huésped, así que dos estadías pueden encadenarse. Si la consulta de fechas falla,
+el bloque te avisa y te deja reintentar.
+
+Más abajo está **Opiniones**: el promedio de estrellas, las reseñas publicadas con su
+autor y su fecha, y, si ya te hospedaste ahí, el formulario para puntuar del 1 al 5 y
+dejar un comentario. Sólo opina quien terminó una estadía, y cada persona deja una sola
+opinión: si vuelve a puntuar, actualiza la suya. El promedio también se ve en las tarjetas
+del listado.
+
+Abajo del todo, en cada alojamiento, está el bloque **"Qué tenés que saber"**, con las
+políticas de uso repartidas en columnas: normas de la casa, salud y seguridad, y
+cancelación. Y desde el botón **Compartir** del encabezado abrís una ventana con la foto,
+la descripción y el enlace del alojamiento, un mensaje que podés editar y los botones para
+mandarlo por Facebook, X, WhatsApp o copiar el enlace.
 
 Si entrás a cualquier alojamiento, arriba te espera una galería: una foto grande a la
 izquierda y cuatro más en una grilla a la derecha. Con el "Ver más" de la esquina se abren
@@ -198,6 +218,24 @@ frontend es una SPA aparte.
   filtros) y `totalSinFiltro` (el total de referencia: el destino buscado, o el catálogo
   entero si no se buscó ninguno).
 - `GET /ciudades` trae los destinos disponibles para el buscador. Es público.
+- `GET /politicas` trae las políticas de uso que se muestran en el detalle. Es público.
+- `GET /productos?entrada=2026-11-10&salida=2026-11-13` deja afuera lo reservado en ese
+  rango. Se combina con `ciudad` y `categorias`.
+
+**Reservas**
+
+- `GET /reservas/disponibilidad/{productoId}` trae los tramos ocupados de un alojamiento,
+  de hoy en adelante. Es público: se consulta antes de decidirse.
+- `POST /reservas` crea una reserva. Hace falta sesión iniciada. Responde `409` si esas
+  fechas ya están tomadas y `400` si el rango no tiene sentido o supera las 30 noches.
+- `GET /reservas/mias` trae las reservas del usuario identificado.
+
+**Valoraciones**
+
+- `GET /productos/{id}/valoraciones` trae el promedio, la cantidad y las reseñas. Es
+  público; con sesión, además dice si esa persona puede puntuar y qué había puesto.
+- `POST /productos/{id}/valoraciones` publica o actualiza la opinión. Responde `403` si
+  quien puntúa no terminó ninguna estadía en ese alojamiento.
 
 **Favoritos** (hace falta sesión iniciada, de cualquier rol)
 
@@ -246,8 +284,8 @@ esa persona siga teniendo su token vigente.
 ## Las pruebas
 
 ```bash
-cd backend && mvn test        # 78 pruebas de la API
-cd frontend && npm test       # 102 pruebas de componentes y páginas
+cd backend && mvn test        # 110 pruebas de la API
+cd frontend && npm test       # 146 pruebas de componentes y páginas
 ```
 
 Del lado del backend se prueban el registro, el login con credenciales válidas e inválidas,
@@ -255,12 +293,18 @@ el acceso denegado a los endpoints protegidos sin token y con rol insuficiente, 
 categorías y características, la edición y categorización de productos, la búsqueda por
 destino y el filtrado por categoría combinados entre sí y con la paginación, y los
 favoritos: marcarlos, desmarcarlos, que no se dupliquen y que cada usuario vea sólo los
-suyos.
+suyos. También las reservas: que no se superpongan, que se puedan encadenar cuando una
+termina donde empieza la otra, que se rechacen las fechas pasadas o invertidas, y que la
+búsqueda por fechas descarte lo ocupado. Y las valoraciones: que sólo puntúe quien se
+hospedó, que volver a puntuar actualice en vez de duplicar, y que el promedio se calcule
+bien.
 
 Del lado del frontend, los formularios de registro y login con sus validaciones, el avatar
 con las iniciales, el cierre de sesión, el bloque de características del detalle, la validación del buscador y
 su autocompletado, la búsqueda por destino en el home, el filtro por categorías, el corazón
-de favoritos, la lista de favoritos y el listado de usuarios del panel.
+de favoritos, la lista de favoritos, el bloque de políticas, la ventana para compartir en
+redes, el calendario de disponibilidad con su manejo de errores, las estrellas y el bloque de
+opiniones, y el listado de usuarios del panel.
 
 ## Fotos de ejemplo
 

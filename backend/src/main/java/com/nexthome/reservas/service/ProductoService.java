@@ -15,6 +15,10 @@ import com.nexthome.reservas.repository.CaracteristicaRepository;
 import com.nexthome.reservas.repository.CategoriaRepository;
 import com.nexthome.reservas.repository.CiudadRepository;
 import com.nexthome.reservas.repository.FavoritoRepository;
+import com.nexthome.reservas.repository.ReservaRepository;
+import com.nexthome.reservas.repository.ValoracionRepository;
+
+import java.time.LocalDate;
 import com.nexthome.reservas.repository.ProductoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +47,8 @@ public class ProductoService {
     private final CategoriaRepository categoriaRepository;
     private final CiudadRepository ciudadRepository;
     private final FavoritoRepository favoritoRepository;
+    private final ReservaRepository reservaRepository;
+    private final ValoracionRepository valoracionRepository;
     private final CaracteristicaRepository caracteristicaRepository;
     private final AlmacenamientoService almacenamiento;
     private final SecureRandom random = new SecureRandom();
@@ -51,12 +57,16 @@ public class ProductoService {
                            CategoriaRepository categoriaRepository,
                            CiudadRepository ciudadRepository,
                            FavoritoRepository favoritoRepository,
+                           ReservaRepository reservaRepository,
+                           ValoracionRepository valoracionRepository,
                            CaracteristicaRepository caracteristicaRepository,
                            AlmacenamientoService almacenamiento) {
         this.repository = repository;
         this.categoriaRepository = categoriaRepository;
         this.ciudadRepository = ciudadRepository;
         this.favoritoRepository = favoritoRepository;
+        this.reservaRepository = reservaRepository;
+        this.valoracionRepository = valoracionRepository;
         this.caracteristicaRepository = caracteristicaRepository;
         this.almacenamiento = almacenamiento;
     }
@@ -137,7 +147,8 @@ public class ProductoService {
      */
     @Transactional(readOnly = true)
     public PaginaResponse<ProductoResponse> listarPaginado(
-            int pagina, int tamanio, Long ciudadId, List<Long> categoriaIds) {
+            int pagina, int tamanio, Long ciudadId, List<Long> categoriaIds,
+            LocalDate entrada, LocalDate salida) {
         int paginaSegura = Math.max(pagina, 0);
         int tamanioSeguro = Math.clamp(tamanio, 1, TAMANIO_MAXIMO_PAGINA);
         var orden = PageRequest.of(paginaSegura, tamanioSeguro, Sort.by(Sort.Direction.DESC, "id"));
@@ -146,11 +157,22 @@ public class ProductoService {
         // El in necesita una lista no vacía aunque la bandera lo desactive.
         List<Long> categorias = sinFiltroDeCategorias ? List.of(-1L) : categoriaIds;
 
-        Page<Long> paginaDeIds = repository.buscarPagina(ciudadId, sinFiltroDeCategorias, categorias, orden);
+        // Sólo se filtra por fechas con el rango completo y coherente; media fecha no
+        // alcanza para saber qué está ocupado.
+        boolean sinFiltroDeFechas = entrada == null || salida == null || !salida.isAfter(entrada);
+        List<Long> ocupados = sinFiltroDeFechas
+                ? List.of(-1L)
+                : reservaRepository.buscarIdsOcupados(entrada, salida);
+        if (!sinFiltroDeFechas && ocupados.isEmpty()) {
+            ocupados = List.of(-1L);
+        }
+
+        Page<Long> paginaDeIds = repository.buscarPagina(
+                ciudadId, sinFiltroDeCategorias, categorias, sinFiltroDeFechas, ocupados, orden);
 
         // El total de referencia es el del destino elegido: dentro de una búsqueda,
         // comparar contra el catálogo entero no le diría nada al usuario.
-        long totalSinFiltro = sinFiltroDeCategorias
+        long totalSinFiltro = sinFiltroDeCategorias && sinFiltroDeFechas
                 ? paginaDeIds.getTotalElements()
                 : (ciudadId == null ? repository.count() : repository.countByCiudadId(ciudadId));
 
@@ -180,7 +202,12 @@ public class ProductoService {
                 .orElseThrow(() -> new RecursoNoEncontradoException("No existe un producto con id " + id));
         // Completa categoría y características sobre la misma entidad ya cargada.
         repository.buscarPorIdsConCaracteristicas(List.of(id));
-        return ProductoResponse.desde(producto);
+
+        Double promedio = valoracionRepository.promedioDe(id);
+        return ProductoResponse.desde(
+                producto,
+                promedio == null ? 0 : Math.round(promedio * 10) / 10.0,
+                valoracionRepository.countByProductoId(id));
     }
 
     @Transactional
@@ -191,6 +218,8 @@ public class ProductoService {
         List<String> urls = producto.getImagenes().stream().map(ProductoImagen::getUrl).toList();
         // Sin esto la baja falla por la clave foránea de favoritos.
         favoritoRepository.eliminarPorProducto(id);
+        reservaRepository.eliminarPorProducto(id);
+        valoracionRepository.eliminarPorProducto(id);
         repository.delete(producto);
         urls.forEach(almacenamiento::eliminar);
     }
@@ -254,10 +283,23 @@ public class ProductoService {
         // Segunda pasada: completa categoría y características sobre las mismas entidades.
         repository.buscarPorIdsConCaracteristicas(ids);
 
+        // Promedio y cantidad de estrellas de todos los productos en una sola consulta.
+        Map<Long, double[]> puntuaciones = new java.util.HashMap<>();
+        for (Object[] fila : valoracionRepository.resumenDe(ids)) {
+            puntuaciones.put((Long) fila[0],
+                    new double[] {((Number) fila[1]).doubleValue(), ((Number) fila[2]).doubleValue()});
+        }
+
         return ids.stream()
                 .map(porId::get)
                 .filter(java.util.Objects::nonNull)
-                .map(ProductoResponse::desde)
+                .map(producto -> {
+                    double[] resumen = puntuaciones.get(producto.getId());
+                    return resumen == null
+                            ? ProductoResponse.desde(producto)
+                            : ProductoResponse.desde(
+                                    producto, Math.round(resumen[0] * 10) / 10.0, (long) resumen[1]);
+                })
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 }

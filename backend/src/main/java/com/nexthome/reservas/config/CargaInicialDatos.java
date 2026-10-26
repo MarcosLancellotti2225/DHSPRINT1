@@ -3,14 +3,18 @@ package com.nexthome.reservas.config;
 import com.nexthome.reservas.model.Caracteristica;
 import com.nexthome.reservas.model.Categoria;
 import com.nexthome.reservas.model.Ciudad;
+import com.nexthome.reservas.model.Politica;
 import com.nexthome.reservas.model.Producto;
+import com.nexthome.reservas.model.Reserva;
 import com.nexthome.reservas.model.ProductoImagen;
 import com.nexthome.reservas.model.Rol;
 import com.nexthome.reservas.model.Usuario;
 import com.nexthome.reservas.repository.CaracteristicaRepository;
 import com.nexthome.reservas.repository.CategoriaRepository;
 import com.nexthome.reservas.repository.CiudadRepository;
+import com.nexthome.reservas.repository.PoliticaRepository;
 import com.nexthome.reservas.repository.ProductoRepository;
+import com.nexthome.reservas.repository.ReservaRepository;
 import com.nexthome.reservas.repository.UsuarioRepository;
 import com.nexthome.reservas.service.AlmacenamientoService;
 import org.slf4j.Logger;
@@ -35,6 +39,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,9 +88,28 @@ public class CargaInicialDatos {
     private record CiudadEjemplo(String nombre, String pais) {
     }
 
+    private record PoliticaEjemplo(String titulo, String descripcion) {
+    }
+
     private record Alojamiento(String nombre, String descripcion, Paleta paleta,
                                String ciudad, String categoria, List<String> caracteristicas) {
     }
+
+    /** Políticas de uso, iguales para todo el catálogo. */
+    private static final List<PoliticaEjemplo> POLITICAS = List.of(
+            new PoliticaEjemplo("Normas de la casa",
+                    "El check-in es de 14 a 22 y el check-out hasta las 11. No se permiten fiestas ni "
+                            + "eventos, y el descanso de los vecinos se respeta entre las 23 y las 8. "
+                            + "Si viajás con mascotas, avisanos al reservar."),
+            new PoliticaEjemplo("Salud y seguridad",
+                    "Cada alojamiento se limpia y ventila entre estadías. Hay matafuegos, detector de humo "
+                            + "y botiquín de primeros auxilios a la vista, y las salidas de emergencia están "
+                            + "señalizadas. Prohibido fumar en espacios cerrados."),
+            new PoliticaEjemplo("Política de cancelación",
+                    "Cancelás sin costo hasta 48 horas antes del check-in y te devolvemos el total. "
+                            + "Dentro de las 48 horas se retiene la primera noche. Si no te presentás, "
+                            + "se cobra la estadía completa.")
+    );
 
     /** Los cinco destinos que ofrece el buscador del home. */
     private static final List<CiudadEjemplo> CIUDADES = List.of(
@@ -210,17 +234,21 @@ public class CargaInicialDatos {
     @Bean
     CommandLineRunner cargarDatosDeEjemplo(UsuarioRepository usuarioRepository,
                                            CiudadRepository ciudadRepository,
+                                           PoliticaRepository politicaRepository,
                                            CategoriaRepository categoriaRepository,
                                            CaracteristicaRepository caracteristicaRepository,
                                            ProductoRepository productoRepository,
+                                           ReservaRepository reservaRepository,
                                            AlmacenamientoService almacenamiento,
                                            PasswordEncoder passwordEncoder) {
         return args -> {
             crearAdministrador(usuarioRepository, passwordEncoder);
+            cargarPoliticas(politicaRepository);
             Map<String, Ciudad> ciudades = cargarCiudades(ciudadRepository);
             Map<String, Categoria> categorias = cargarCategorias(categoriaRepository, almacenamiento);
             Map<String, Caracteristica> caracteristicas = cargarCaracteristicas(caracteristicaRepository);
             cargarAlojamientos(productoRepository, almacenamiento, ciudades, categorias, caracteristicas);
+            cargarReservas(reservaRepository, productoRepository, usuarioRepository);
         };
     }
 
@@ -237,6 +265,17 @@ public class CargaInicialDatos {
         repository.save(new Usuario("Marcos", "Lancellotti", email,
                 passwordEncoder.encode(passwordAdmin), Rol.ADMIN));
         log.info("Se creó el administrador inicial {}", email);
+    }
+
+    private void cargarPoliticas(PoliticaRepository repository) {
+        if (repository.count() > 0) {
+            return;
+        }
+        int orden = 1;
+        for (PoliticaEjemplo ejemplo : POLITICAS) {
+            repository.save(new Politica(ejemplo.titulo(), ejemplo.descripcion(), orden++));
+        }
+        log.info("Se cargaron {} políticas", POLITICAS.size());
     }
 
     private Map<String, Ciudad> cargarCiudades(CiudadRepository repository) {
@@ -371,6 +410,42 @@ public class CargaInicialDatos {
         return sinTildes.toLowerCase(Locale.ROOT).trim()
                 .replaceAll("[^a-z0-9]+", "-")
                 .replaceAll("(^-|-$)", "");
+    }
+
+    /**
+     * Unas pocas reservas de ejemplo para que el calendario del detalle arranque con
+     * fechas ocupadas y el filtro por fechas tenga algo que descartar. Van a nombre del
+     * administrador precargado: es el único usuario que existe al iniciar.
+     */
+    private void cargarReservas(ReservaRepository repository, ProductoRepository productoRepository,
+                                UsuarioRepository usuarioRepository) {
+        if (repository.count() > 0) {
+            return;
+        }
+
+        Usuario admin = usuarioRepository.findByEmailIgnoreCase(emailAdmin.trim().toLowerCase(Locale.ROOT))
+                .orElse(null);
+        List<Producto> productos = productoRepository.findAll();
+        if (admin == null || productos.isEmpty()) {
+            return;
+        }
+
+        LocalDate hoy = LocalDate.now();
+        int creadas = 0;
+
+        // Se reservan uno de cada tres alojamientos, en tramos escalonados hacia
+        // adelante, más una estadía ya terminada para poder probar las puntuaciones.
+        for (int i = 0; i < productos.size(); i += 3) {
+            Producto producto = productos.get(i);
+            int desde = 5 + i * 2;
+            repository.save(new Reserva(producto, admin, hoy.plusDays(desde), hoy.plusDays(desde + 4L), 2));
+            creadas++;
+        }
+
+        repository.save(new Reserva(productos.get(0), admin, hoy.minusDays(20), hoy.minusDays(15), 2));
+        creadas++;
+
+        log.info("Se cargaron {} reservas de ejemplo", creadas);
     }
 
     /**

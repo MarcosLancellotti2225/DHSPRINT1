@@ -8,9 +8,12 @@ import "../styles/Header.css";
  * Barra superior del sitio: marca a la izquierda (enlaza al home) y accesos de
  * cuenta a la derecha. Con sesión iniciada, en lugar de los botones se muestra el
  * avatar con las iniciales del usuario. Fija arriba, según el diseño.
+ *
+ * El acceso al panel sólo aparece para administradores: a un visitante no le sirve
+ * de nada y de paso no se anuncia dónde está.
  */
 export default function Header() {
-  const { autenticado, cargando } = useSesion();
+  const { autenticado, esAdministrador, cargando } = useSesion();
 
   return (
     <header className="nav header">
@@ -26,7 +29,14 @@ export default function Header() {
 
       <nav className="header__acciones" aria-label="Cuenta de usuario">
         {cargando ? null : autenticado ? (
-          <AvatarUsuario />
+          <>
+            {esAdministrador && (
+              <Link to="/administracion" className="btn btn-secondary header__admin">
+                Panel de administración
+              </Link>
+            )}
+            <AvatarUsuario />
+          </>
         ) : (
           <>
             <Link to="/crear-cuenta" className="btn btn-ghost">

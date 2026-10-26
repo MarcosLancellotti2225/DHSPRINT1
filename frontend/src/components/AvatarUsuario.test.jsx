@@ -63,6 +63,33 @@ describe("Avatar y cierre de sesión", () => {
     expect(screen.getByText("AG")).toBeInTheDocument();
   });
 
+  it("un usuario común no ve el acceso al panel", async () => {
+    localStorage.setItem("nexthome.token", "un-token");
+    obtenerPerfil.mockResolvedValue(ANA);
+
+    renderizarHeader();
+
+    await screen.findByText("Ana");
+    expect(screen.queryByRole("link", { name: /panel de administración/i })).not.toBeInTheDocument();
+  });
+
+  it("un administrador sí ve el acceso al panel", async () => {
+    localStorage.setItem("nexthome.token", "un-token");
+    obtenerPerfil.mockResolvedValue({ ...ANA, rol: "ADMIN" });
+
+    renderizarHeader();
+
+    const acceso = await screen.findByRole("link", { name: /panel de administración/i });
+    expect(acceso).toHaveAttribute("href", "/administracion");
+  });
+
+  it("sin sesión tampoco aparece el acceso al panel", async () => {
+    renderizarHeader();
+
+    await screen.findByRole("link", { name: /iniciar sesión/i });
+    expect(screen.queryByRole("link", { name: /panel de administración/i })).not.toBeInTheDocument();
+  });
+
   it("al desplegar el avatar aparece la opción de cerrar sesión", async () => {
     localStorage.setItem("nexthome.token", "un-token");
     obtenerPerfil.mockResolvedValue(ANA);

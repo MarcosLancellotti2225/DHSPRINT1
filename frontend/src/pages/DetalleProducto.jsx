@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import GaleriaImagenes from "../components/GaleriaImagenes";
+import Estrellas from "../components/Estrellas";
 import CaracteristicasProducto from "../components/CaracteristicasProducto";
+import PoliticasProducto from "../components/PoliticasProducto";
+import ReservaProducto from "../components/ReservaProducto";
+import ValoracionesProducto from "../components/ValoracionesProducto";
+import ModalCompartir from "../components/ModalCompartir";
 import { obtenerProducto } from "../api/productos";
 import { mensajeDeError } from "../api/client";
 import useTituloPagina from "../hooks/useTituloPagina";
@@ -12,6 +17,7 @@ export default function DetalleProducto() {
   const navegar = useNavigate();
 
   const [producto, setProducto] = useState(null);
+  const [compartiendo, setCompartiendo] = useState(false);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
 
@@ -66,10 +72,29 @@ export default function DetalleProducto() {
           {producto.categoria && (
             <span className="tag tag-outline detalle__categoria">{producto.categoria.titulo}</span>
           )}
+          {producto.valoraciones > 0 && (
+            <span className="detalle__puntuacion">
+              <Estrellas
+                valor={producto.puntuacion}
+                tamanio={15}
+                etiqueta={`${producto.puntuacion} de 5 estrellas`}
+              />
+              {producto.puntuacion} ({producto.valoraciones})
+            </span>
+          )}
         </div>
-        <button type="button" className="btn btn-secondary" onClick={volver}>
-          ← Volver
-        </button>
+        <div className="detalle__acciones">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setCompartiendo(true)}
+          >
+            Compartir
+          </button>
+          <button type="button" className="btn btn-secondary" onClick={volver}>
+            ← Volver
+          </button>
+        </div>
       </header>
 
       <div className="detalle__cuerpo">
@@ -83,7 +108,17 @@ export default function DetalleProducto() {
         </section>
 
         <CaracteristicasProducto caracteristicas={producto.caracteristicas ?? []} />
+
+        <ReservaProducto producto={producto} />
+
+        <ValoracionesProducto productoId={producto.id} />
+
+        <PoliticasProducto />
       </div>
+
+      {compartiendo && (
+        <ModalCompartir producto={producto} onCerrar={() => setCompartiendo(false)} />
+      )}
     </article>
   );
 }

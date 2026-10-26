@@ -76,10 +76,12 @@ public class SeguridadConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/registro", "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/api/productos/**", "/api/categorias/**", "/api/caracteristicas/**",
-                                "/api/ciudades/**").permitAll()
+                                "/api/ciudades/**", "/api/politicas/**",
+                                "/api/reservas/disponibilidad/**").permitAll()
 
                         // --- Requieren sesión iniciada, de cualquier rol ---------------
-                        .requestMatchers("/api/favoritos/**").authenticated()
+                        .requestMatchers("/api/favoritos/**", "/api/reservas/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/productos/*/valoraciones").authenticated()
 
                         // --- Sólo administradores --------------------------------------
                         .requestMatchers("/api/usuarios/**").hasRole("ADMIN")

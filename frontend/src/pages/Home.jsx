@@ -71,7 +71,7 @@ export default function Home() {
     let vigente = true;
     setCargandoPagina(true);
 
-    listarProductos(pagina, TAMANIO_PAGINA, seleccionadas, busqueda?.ciudad?.id ?? null)
+    listarProductos(pagina, TAMANIO_PAGINA, seleccionadas, busqueda?.ciudad?.id ?? null, busqueda)
       .then((datos) => vigente && setDatosPagina(datos))
       .catch((e) => vigente && setError(mensajeDeError(e, "No se pudo cargar el listado de alojamientos")))
       .finally(() => vigente && setCargandoPagina(false));
@@ -156,7 +156,12 @@ export default function Home() {
       <section className="home__bloque" aria-labelledby="listado-titulo" ref={listadoRef}>
         <div className="home__encabezado">
           <h2 id="listado-titulo" className="titulo-seccion home__titulo">
-            {busqueda ? `Alojamientos en ${busqueda.ciudad.nombre}` : "Todos los alojamientos"}
+            {busqueda
+              ? `Alojamientos en ${busqueda.ciudad.nombre}` +
+                (busqueda.entrada && busqueda.salida
+                  ? ` · ${busqueda.entrada} al ${busqueda.salida}`
+                  : "")
+              : "Todos los alojamientos"}
           </h2>
           {busqueda && (
             <button type="button" className="btn btn-ghost" onClick={limpiarBusqueda}>
@@ -170,9 +175,9 @@ export default function Home() {
         ) : !datosPagina || datosPagina.contenido.length === 0 ? (
           <p className="estado-vacio">
             {busqueda
-              ? `No encontramos alojamientos en ${busqueda.ciudad.nombre}${
-                  hayFiltro ? " para las categorías elegidas" : ""
-                }.`
+              ? `No encontramos alojamientos disponibles en ${busqueda.ciudad.nombre}${
+                  busqueda.entrada && busqueda.salida ? " para esas fechas" : ""
+                }${hayFiltro ? " y las categorías elegidas" : ""}.`
               : hayFiltro
                 ? "Ningún alojamiento coincide con las categorías elegidas."
                 : "Todavía no hay alojamientos cargados."}

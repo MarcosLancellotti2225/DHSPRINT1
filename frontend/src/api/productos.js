@@ -4,14 +4,16 @@ import { client } from "./client";
 export const TAMANIO_PAGINA = 10;
 
 /**
- * Listado paginado. Con `ciudadId` se acota a un destino y con `categorias` (array
- * de ids) a esas categorías; el filtrado se resuelve en el backend, no acá.
+ * Listado paginado. Con `ciudadId` se acota a un destino, con `categorias` (array de
+ * ids) a esas categorías y con `fechas` a lo que esté libre en ese rango; el filtrado
+ * se resuelve en el backend, no acá.
  */
 export async function listarProductos(
   pagina = 0,
   tamanio = TAMANIO_PAGINA,
   categorias = [],
-  ciudadId = null
+  ciudadId = null,
+  fechas = null
 ) {
   const params = { page: pagina, size: tamanio };
   if (categorias.length > 0) {
@@ -19,6 +21,11 @@ export async function listarProductos(
   }
   if (ciudadId) {
     params.ciudad = ciudadId;
+  }
+  // El backend sólo filtra por disponibilidad con el rango completo.
+  if (fechas?.entrada && fechas?.salida) {
+    params.entrada = fechas.entrada;
+    params.salida = fechas.salida;
   }
   const { data } = await client.get("/productos", {
     params,

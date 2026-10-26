@@ -41,7 +41,19 @@
 .header__acciones {
   margin-left: auto;
   display: flex;
+  align-items: center;
   gap: var(--space-3);
+}
+
+.header__admin {
+  white-space: nowrap;
+}
+
+/* En pantallas chicas el panel no está disponible, así que su acceso tampoco. */
+@media (max-width: 880px) {
+  .header__admin {
+    display: none;
+  }
 }
 
 @media (max-width: 560px) {

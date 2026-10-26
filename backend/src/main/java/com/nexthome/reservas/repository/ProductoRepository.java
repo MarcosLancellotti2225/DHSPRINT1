@@ -47,23 +47,26 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     Page<Long> buscarPaginaDeIds(Pageable pageable);
 
     /**
-     * Misma paginación, acotada por ciudad y por categorías. Los dos filtros son
-     * opcionales: con {@code ciudadId} en null o {@code sinFiltroDeCategorias} en true,
-     * esa condición no se aplica. Van como banderas y no como consultas separadas
-     * porque un {@code in} con lista vacía no existe en JPQL, y con dos filtros harían
-     * falta cuatro consultas casi iguales.
+     * Misma paginación, acotada por ciudad, por categorías y por disponibilidad en un
+     * rango de fechas. Los tres filtros son opcionales: con {@code ciudadId} en null o
+     * las banderas en true, esa condición no se aplica. Van como banderas y no como
+     * consultas separadas porque un {@code in} con lista vacía no existe en JPQL, y con
+     * tres filtros harían falta ocho consultas casi iguales.
      */
     @Query(value = """
             select p.id from Producto p
             where (:ciudadId is null or p.ciudad.id = :ciudadId)
               and (:sinFiltroDeCategorias = true or p.categoria.id in :categoriaIds)
+              and (:sinFiltroDeFechas = true or p.id not in :ocupadosIds)
             """,
             countQuery = """
             select count(p) from Producto p
             where (:ciudadId is null or p.ciudad.id = :ciudadId)
               and (:sinFiltroDeCategorias = true or p.categoria.id in :categoriaIds)
+              and (:sinFiltroDeFechas = true or p.id not in :ocupadosIds)
             """)
     Page<Long> buscarPagina(Long ciudadId, boolean sinFiltroDeCategorias, List<Long> categoriaIds,
+                            boolean sinFiltroDeFechas, List<Long> ocupadosIds,
                             Pageable pageable);
 
     long countByCiudadId(Long ciudadId);

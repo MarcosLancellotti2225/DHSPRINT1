@@ -1,0 +1,43 @@
+/* El bloque ocupa todo el ancho del contenedor, como pide el diseño. */
+.politicas {
+  width: 100%;
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-divider);
+}
+
+/* El título va subrayado para destacarlo del resto de los encabezados. */
+.politicas__titulo {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--color-accent);
+  margin-bottom: var(--space-6);
+}
+
+/* Tres columnas en desktop, dos en tablet y una en mobile. */
+.politicas__lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-6);
+}
+
+.politicas__nombre {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 16px;
+  margin: 0 0 var(--space-2);
+}
+
+.politicas__descripcion {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-neutral-300);
+}
+
+@media (max-width: 560px) {
+  .politicas__lista {
+    gap: var(--space-4);
+  }
+}

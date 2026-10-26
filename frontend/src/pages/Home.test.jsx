@@ -93,7 +93,7 @@ describe("Home", () => {
     renderizarHome();
 
     expect(await screen.findByRole("heading", { name: /todos los alojamientos/i })).toBeInTheDocument();
-    await waitFor(() => expect(listarProductos).toHaveBeenCalledWith(0, 10, [], null));
+    await waitFor(() => expect(listarProductos).toHaveBeenCalledWith(0, 10, [], null, null));
   });
 
   it("mantiene visibles las categorías y las recomendaciones", async () => {
@@ -112,7 +112,7 @@ describe("Home", () => {
     renderizarHome();
     await buscarBariloche(usuario);
 
-    await waitFor(() => expect(listarProductos).toHaveBeenLastCalledWith(0, 10, [], BARILOCHE.id));
+    await waitFor(() => expect(listarProductos).toHaveBeenLastCalledWith(0, 10, [], BARILOCHE.id, expect.objectContaining({ ciudad: BARILOCHE })));
     expect(await screen.findByRole("heading", { name: /alojamientos en bariloche/i })).toBeInTheDocument();
   });
 
@@ -137,7 +137,7 @@ describe("Home", () => {
     await usuario.click(await screen.findByRole("button", { name: /cabañas/i }));
 
     await waitFor(() =>
-      expect(listarProductos).toHaveBeenLastCalledWith(0, 10, [CABANIAS.id], BARILOCHE.id)
+      expect(listarProductos).toHaveBeenLastCalledWith(0, 10, [CABANIAS.id], BARILOCHE.id, expect.objectContaining({ ciudad: BARILOCHE }))
     );
   });
 
@@ -148,7 +148,7 @@ describe("Home", () => {
     renderizarHome();
     await buscarBariloche(usuario);
 
-    expect(await screen.findByText(/no encontramos alojamientos en bariloche/i)).toBeInTheDocument();
+    expect(await screen.findByText(/no encontramos alojamientos disponibles en bariloche/i)).toBeInTheDocument();
   });
 
   it("vuelve al catálogo completo al quitar la búsqueda", async () => {
@@ -161,7 +161,7 @@ describe("Home", () => {
     await usuario.click(await screen.findByRole("button", { name: /ver todos los destinos/i }));
 
     expect(await screen.findByRole("heading", { name: /todos los alojamientos/i })).toBeInTheDocument();
-    await waitFor(() => expect(listarProductos).toHaveBeenLastCalledWith(0, 10, [], null));
+    await waitFor(() => expect(listarProductos).toHaveBeenLastCalledWith(0, 10, [], null, null));
   });
 
   it("muestra el paginador cuando hay más de una página", async () => {

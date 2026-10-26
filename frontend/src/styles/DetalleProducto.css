@@ -7,6 +7,12 @@
   border-bottom: 1px solid var(--color-neutral-800);
 }
 
+.detalle__acciones {
+  display: flex;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
 .detalle__identidad {
   display: flex;
   align-items: center;
@@ -53,4 +59,12 @@
 .detalle__titulo {
     font-size: 22px;
   }
+}
+
+.detalle__puntuacion {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 13px;
+  color: var(--color-neutral-300);
 }
