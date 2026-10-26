@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import ImagenProducto from "./ImagenProducto";
+import BotonFavorito from "./BotonFavorito";
 import "../styles/ProductoCard.css";
 
 export default function ProductoCard({ producto }) {
@@ -7,6 +8,8 @@ export default function ProductoCard({ producto }) {
 
   return (
     <article className="card elev-sm tarjeta">
+      <BotonFavorito producto={producto} />
+
       <Link to={`/producto/${producto.id}`} className="tarjeta__enlace">
         <ImagenProducto
           url={portada?.url}

@@ -1,4 +1,6 @@
 .tarjeta {
+  /* Ancla del corazón de favorito, que se posiciona sobre la imagen. */
+  position: relative;
   padding: 0;
   overflow: hidden;
   height: 100%;

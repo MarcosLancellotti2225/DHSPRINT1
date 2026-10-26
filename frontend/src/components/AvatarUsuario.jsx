@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import useSesion from "../hooks/useSesion";
+import useFavoritos from "../hooks/useFavoritos";
 import "../styles/AvatarUsuario.css";
 
 /**
@@ -8,6 +10,7 @@ import "../styles/AvatarUsuario.css";
  */
 export default function AvatarUsuario() {
   const { usuario, salir } = useSesion();
+  const { cantidad } = useFavoritos();
   const [abierto, setAbierto] = useState(false);
   const contenedorRef = useRef(null);
 
@@ -62,6 +65,15 @@ export default function AvatarUsuario() {
             <span className="avatar__email">{usuario.email}</span>
             {usuario.rol === "ADMIN" && <span className="tag tag-outline avatar__rol">Administrador</span>}
           </div>
+
+          <Link
+            to="/favoritos"
+            className="btn btn-secondary avatar__salir"
+            role="menuitem"
+            onClick={() => setAbierto(false)}
+          >
+            Mis favoritos{cantidad > 0 ? ` (${cantidad})` : ""}
+          </Link>
 
           <button
             type="button"

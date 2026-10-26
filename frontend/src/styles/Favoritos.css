@@ -1,0 +1,45 @@
+.favoritos {
+  flex: 1;
+  padding: var(--space-6) var(--padding-lateral) var(--space-8);
+}
+
+.favoritos__encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.favoritos__seccion {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-400);
+  margin: 0 0 var(--space-1);
+}
+
+.favoritos__titulo {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 24px;
+  margin: 0;
+}
+
+.favoritos__contador {
+  margin: 0 0 var(--space-4);
+  font-size: 13px;
+  color: var(--color-neutral-400);
+}
+
+.favoritos__ayuda {
+  font-size: 14px;
+  color: var(--color-neutral-400);
+}
+
+@media (max-width: 560px) {
+  .favoritos__encabezado {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

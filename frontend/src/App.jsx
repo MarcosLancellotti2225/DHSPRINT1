@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ProveedorSesion } from "./context/SesionContext";
+import { ProveedorFavoritos } from "./context/FavoritosContext";
 import Layout from "./components/Layout";
 import RutaProtegida from "./components/RutaProtegida";
 import Home from "./pages/Home";
@@ -13,18 +14,25 @@ import AdminEditarProducto from "./pages/AdminEditarProducto";
 import AdminCategorias from "./pages/AdminCategorias";
 import AdminCaracteristicas from "./pages/AdminCaracteristicas";
 import AdminUsuarios from "./pages/AdminUsuarios";
+import Favoritos from "./pages/Favoritos";
 import NoEncontrada from "./pages/NoEncontrada";
 
 export default function App() {
   return (
     <ProveedorSesion>
-      <BrowserRouter>
+      <ProveedorFavoritos>
+        <BrowserRouter>
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/producto/:id" element={<DetalleProducto />} />
             <Route path="/crear-cuenta" element={<Registro />} />
             <Route path="/ingresar" element={<Login />} />
+
+            {/* Los favoritos son de la cuenta: hace falta sesión, de cualquier rol. */}
+            <Route element={<RutaProtegida />}>
+              <Route path="/favoritos" element={<Favoritos />} />
+            </Route>
 
             {/* El panel es sólo para administradores. El backend valida el rol en
                 cada endpoint: esto es comodidad de navegación, no la seguridad. */}
@@ -41,7 +49,8 @@ export default function App() {
             <Route path="*" element={<NoEncontrada />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+        </BrowserRouter>
+      </ProveedorFavoritos>
     </ProveedorSesion>
   );
 }
