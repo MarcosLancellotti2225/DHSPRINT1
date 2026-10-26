@@ -4,13 +4,21 @@ import { client } from "./client";
 export const TAMANIO_PAGINA = 10;
 
 /**
- * Listado paginado. Con `categorias` (array de ids) el backend acota el resultado;
- * el filtrado se resuelve allá, no en memoria acá.
+ * Listado paginado. Con `ciudadId` se acota a un destino y con `categorias` (array
+ * de ids) a esas categorías; el filtrado se resuelve en el backend, no acá.
  */
-export async function listarProductos(pagina = 0, tamanio = TAMANIO_PAGINA, categorias = []) {
+export async function listarProductos(
+  pagina = 0,
+  tamanio = TAMANIO_PAGINA,
+  categorias = [],
+  ciudadId = null
+) {
   const params = { page: pagina, size: tamanio };
   if (categorias.length > 0) {
     params.categorias = categorias;
+  }
+  if (ciudadId) {
+    params.ciudad = ciudadId;
   }
   const { data } = await client.get("/productos", {
     params,
@@ -30,10 +38,18 @@ export async function obtenerProducto(id) {
   return data;
 }
 
-export async function crearProducto({ nombre, descripcion, categoriaId, caracteristicaIds, imagenes }) {
+export async function crearProducto({
+  nombre,
+  descripcion,
+  ciudadId,
+  categoriaId,
+  caracteristicaIds,
+  imagenes,
+}) {
   const { data } = await client.post("/productos", formularioDeProducto({
     nombre,
     descripcion,
+    ciudadId,
     categoriaId,
     caracteristicaIds,
     imagenes,
@@ -45,10 +61,18 @@ export async function crearProducto({ nombre, descripcion, categoriaId, caracter
  * Edición. Las imágenes son opcionales: si no se manda ninguna se conservan las
  * que ya tenía el producto.
  */
-export async function editarProducto(id, { nombre, descripcion, categoriaId, caracteristicaIds, imagenes }) {
+export async function editarProducto(id, {
+  nombre,
+  descripcion,
+  ciudadId,
+  categoriaId,
+  caracteristicaIds,
+  imagenes,
+}) {
   const { data } = await client.put(`/productos/${id}`, formularioDeProducto({
     nombre,
     descripcion,
+    ciudadId,
     categoriaId,
     caracteristicaIds,
     imagenes,
@@ -60,10 +84,21 @@ export async function eliminarProducto(id) {
   await client.delete(`/productos/${id}`);
 }
 
-function formularioDeProducto({ nombre, descripcion, categoriaId, caracteristicaIds, imagenes }) {
+function formularioDeProducto({
+  nombre,
+  descripcion,
+  ciudadId,
+  categoriaId,
+  caracteristicaIds,
+  imagenes,
+}) {
   const formulario = new FormData();
   formulario.append("nombre", nombre);
   formulario.append("descripcion", descripcion);
+
+  if (ciudadId) {
+    formulario.append("ciudadId", ciudadId);
+  }
 
   // Sin categoría no se manda el campo: el backend lo interpreta como "ninguna".
   if (categoriaId) {

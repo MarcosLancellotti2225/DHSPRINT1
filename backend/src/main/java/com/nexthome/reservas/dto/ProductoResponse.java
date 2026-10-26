@@ -9,6 +9,7 @@ public record ProductoResponse(
         Long id,
         String nombre,
         String descripcion,
+        CiudadResponse ciudad,
         CategoriaResponse categoria,
         List<CaracteristicaResponse> caracteristicas,
         List<ImagenResponse> imagenes) {
@@ -27,6 +28,7 @@ public record ProductoResponse(
                 producto.getId(),
                 producto.getNombre(),
                 producto.getDescripcion(),
+                CiudadResponse.desde(producto.getCiudad()),
                 CategoriaResponse.desde(producto.getCategoria()),
                 caracteristicas,
                 imagenes);

@@ -12,7 +12,7 @@ export default function AdminNuevoProducto() {
   useTituloPagina("Agregar producto");
 
   const navegar = useNavigate();
-  const { categorias, caracteristicas } = useCatalogo();
+  const { ciudades, categorias, caracteristicas } = useCatalogo();
 
   const [error, setError] = useState("");
   const [erroresCampo, setErroresCampo] = useState({});
@@ -45,6 +45,7 @@ export default function AdminNuevoProducto() {
       {error && <p className="mensaje mensaje--error">{error}</p>}
 
       <FormularioProducto
+        ciudades={ciudades}
         categorias={categorias}
         caracteristicas={caracteristicas}
         guardando={guardando}

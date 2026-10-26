@@ -2,12 +2,14 @@ package com.nexthome.reservas.config;
 
 import com.nexthome.reservas.model.Caracteristica;
 import com.nexthome.reservas.model.Categoria;
+import com.nexthome.reservas.model.Ciudad;
 import com.nexthome.reservas.model.Producto;
 import com.nexthome.reservas.model.ProductoImagen;
 import com.nexthome.reservas.model.Rol;
 import com.nexthome.reservas.model.Usuario;
 import com.nexthome.reservas.repository.CaracteristicaRepository;
 import com.nexthome.reservas.repository.CategoriaRepository;
+import com.nexthome.reservas.repository.CiudadRepository;
 import com.nexthome.reservas.repository.ProductoRepository;
 import com.nexthome.reservas.repository.UsuarioRepository;
 import com.nexthome.reservas.service.AlmacenamientoService;
@@ -78,9 +80,21 @@ public class CargaInicialDatos {
     private record CaracteristicaEjemplo(String nombre, String icono) {
     }
 
-    private record Alojamiento(String nombre, String descripcion, Paleta paleta,
-                               String categoria, List<String> caracteristicas) {
+    private record CiudadEjemplo(String nombre, String pais) {
     }
+
+    private record Alojamiento(String nombre, String descripcion, Paleta paleta,
+                               String ciudad, String categoria, List<String> caracteristicas) {
+    }
+
+    /** Los cinco destinos que ofrece el buscador del home. */
+    private static final List<CiudadEjemplo> CIUDADES = List.of(
+            new CiudadEjemplo("Bariloche", "Argentina"),
+            new CiudadEjemplo("Buenos Aires", "Argentina"),
+            new CiudadEjemplo("Cartagena", "Colombia"),
+            new CiudadEjemplo("Mendoza", "Argentina"),
+            new CiudadEjemplo("Punta del Este", "Uruguay")
+    );
 
     private static final List<CategoriaEjemplo> CATEGORIAS = List.of(
             new CategoriaEjemplo("Hoteles",
@@ -125,62 +139,62 @@ public class CargaInicialDatos {
                     "Frente al mar y a diez minutos del centro, el Costa Serena combina habitaciones amplias con vista al océano, "
                             + "desayuno buffet incluido y una piscina climatizada abierta todo el año. Ideal para escapadas largas.",
                     new Paleta(new Color(0x1B4965), new Color(0x62B6CB)),
-                    "Hoteles", List.of("Wi-Fi", "Pileta", "Desayuno incluido", "Aire acondicionado", "Televisión")),
+                    "Punta del Este", "Hoteles", List.of("Wi-Fi", "Pileta", "Desayuno incluido", "Aire acondicionado", "Televisión")),
             new Alojamiento("Cabañas del Bosque",
                     "Seis cabañas de madera repartidas en dos hectáreas de bosque de coníferas, cada una con hogar a leña, "
                             + "parrilla propia y galería privada. Un lugar silencioso para desconectar sin resignar comodidad.",
                     new Paleta(new Color(0x2D5016), new Color(0x8FBC5A)),
-                    "Cabañas", List.of("Wi-Fi", "Cocina equipada", "Estacionamiento", "Apto mascotas")),
+                    "Bariloche", "Cabañas", List.of("Wi-Fi", "Cocina equipada", "Estacionamiento", "Apto mascotas")),
             new Alojamiento("Loft Centro Histórico",
                     "Loft de dos ambientes en un edificio reciclado de 1910, a una cuadra de la plaza principal. "
                             + "Techos de seis metros, cocina totalmente equipada y espacio de trabajo con fibra óptica.",
                     new Paleta(new Color(0x6B2737), new Color(0xE08D79)),
-                    "Departamentos", List.of("Wi-Fi", "Cocina equipada", "Aire acondicionado", "Televisión")),
+                    "Cartagena", "Departamentos", List.of("Wi-Fi", "Cocina equipada", "Aire acondicionado", "Televisión")),
             new Alojamiento("Posada Valle Andino",
                     "Posada de montaña a 1.800 metros de altura, con doce habitaciones, restaurante de cocina regional "
                             + "y salidas guiadas de trekking. Las mejores vistas del valle se ven desde el desayunador.",
                     new Paleta(new Color(0x3D348B), new Color(0x7678ED)),
-                    "Hoteles", List.of("Wi-Fi", "Desayuno incluido", "Estacionamiento", "Apto mascotas")),
+                    "Mendoza", "Hoteles", List.of("Wi-Fi", "Desayuno incluido", "Estacionamiento", "Apto mascotas")),
             new Alojamiento("Resort Bahía Azul",
                     "Complejo todo incluido sobre una bahía protegida: tres piscinas, spa, club infantil y deportes náuticos. "
                             + "Las habitaciones superiores tienen balcón privado con hamaca y vista directa al agua.",
                     new Paleta(new Color(0x006D77), new Color(0x83C5BE)),
-                    "Resorts", List.of("Wi-Fi", "Pileta", "Spa", "Gimnasio", "Desayuno incluido", "Aire acondicionado")),
+                    "Cartagena", "Resorts", List.of("Wi-Fi", "Pileta", "Spa", "Gimnasio", "Desayuno incluido", "Aire acondicionado")),
             new Alojamiento("Hostel Puerto Viejo",
                     "Hostel de ambiente relajado a doscientos metros del puerto, con habitaciones compartidas y privadas, "
                             + "cocina comunitaria, terraza con hamacas y bicicletas gratuitas para recorrer la costanera.",
                     new Paleta(new Color(0x9C6644), new Color(0xE6CCB2)),
-                    "Hostels", List.of("Wi-Fi", "Cocina equipada", "Apto mascotas")),
+                    "Cartagena", "Hostels", List.of("Wi-Fi", "Cocina equipada", "Apto mascotas")),
             new Alojamiento("Departamento Vista Río",
                     "Departamento de tres ambientes en un piso alto con balcón corrido y vista panorámica al río. "
                             + "Edificio con pileta, gimnasio y cochera cubierta incluida en la estadía.",
                     new Paleta(new Color(0x14213D), new Color(0x4A6FA5)),
-                    "Departamentos", List.of("Wi-Fi", "Pileta", "Gimnasio", "Estacionamiento", "Cocina equipada")),
+                    "Buenos Aires", "Departamentos", List.of("Wi-Fi", "Pileta", "Gimnasio", "Estacionamiento", "Cocina equipada")),
             new Alojamiento("Estancia Los Álamos",
                     "Casco de estancia restaurado sobre 400 hectáreas de campo, con cabalgatas, asados criollos y pensión completa. "
                             + "Siete habitaciones con baño en suite y una biblioteca con chimenea.",
                     new Paleta(new Color(0x774936), new Color(0xC9A227)),
-                    "Casas", List.of("Wi-Fi", "Desayuno incluido", "Estacionamiento", "Apto mascotas", "Pileta")),
+                    "Mendoza", "Casas", List.of("Wi-Fi", "Desayuno incluido", "Estacionamiento", "Apto mascotas", "Pileta")),
             new Alojamiento("Suites del Lago",
                     "Suites independientes al borde del lago, con muelle propio, kayaks a disposición y desayuno servido en la habitación. "
                             + "Cada suite tiene ventanal completo orientado al amanecer.",
                     new Paleta(new Color(0x1D3557), new Color(0xA8DADC)),
-                    "Hoteles", List.of("Wi-Fi", "Desayuno incluido", "Spa", "Televisión")),
+                    "Bariloche", "Hoteles", List.of("Wi-Fi", "Desayuno incluido", "Spa", "Televisión")),
             new Alojamiento("Casa Colonial Palermo",
                     "Casa colonial de dos plantas con patio andaluz, cuatro habitaciones y living con biblioteca. "
                             + "Está en pleno barrio de Palermo, rodeada de bares, restaurantes y galerías de arte.",
                     new Paleta(new Color(0x5F0F40), new Color(0xE36414)),
-                    "Casas", List.of("Wi-Fi", "Cocina equipada", "Aire acondicionado", "Televisión")),
+                    "Buenos Aires", "Casas", List.of("Wi-Fi", "Cocina equipada", "Aire acondicionado", "Televisión")),
             new Alojamiento("Refugio Nieve Grande",
                     "Refugio a pie de pista con guardaesquís, secadora de botas y after ski frente a la chimenea. "
                             + "Media pensión incluida y traslado gratuito a la base del cerro cada media hora.",
                     new Paleta(new Color(0x264653), new Color(0xB8D8D8)),
-                    "Cabañas", List.of("Wi-Fi", "Desayuno incluido", "Spa", "Estacionamiento")),
+                    "Bariloche", "Cabañas", List.of("Wi-Fi", "Desayuno incluido", "Spa", "Estacionamiento")),
             new Alojamiento("Villa Olivos del Sur",
                     "Villa mediterránea entre olivares, con piscina de borde infinito, quincho techado y capacidad para diez personas. "
                             + "Incluye degustación de aceites de la finca y servicio de limpieza diario.",
                     new Paleta(new Color(0x606C38), new Color(0xDDA15E)),
-                    "Casas", List.of("Wi-Fi", "Pileta", "Cocina equipada", "Estacionamiento", "Aire acondicionado"))
+                    "Mendoza", "Casas", List.of("Wi-Fi", "Pileta", "Cocina equipada", "Estacionamiento", "Aire acondicionado"))
     );
 
     private final ResourcePatternResolver recursos = new PathMatchingResourcePatternResolver();
@@ -195,6 +209,7 @@ public class CargaInicialDatos {
 
     @Bean
     CommandLineRunner cargarDatosDeEjemplo(UsuarioRepository usuarioRepository,
+                                           CiudadRepository ciudadRepository,
                                            CategoriaRepository categoriaRepository,
                                            CaracteristicaRepository caracteristicaRepository,
                                            ProductoRepository productoRepository,
@@ -202,9 +217,10 @@ public class CargaInicialDatos {
                                            PasswordEncoder passwordEncoder) {
         return args -> {
             crearAdministrador(usuarioRepository, passwordEncoder);
+            Map<String, Ciudad> ciudades = cargarCiudades(ciudadRepository);
             Map<String, Categoria> categorias = cargarCategorias(categoriaRepository, almacenamiento);
             Map<String, Caracteristica> caracteristicas = cargarCaracteristicas(caracteristicaRepository);
-            cargarAlojamientos(productoRepository, almacenamiento, categorias, caracteristicas);
+            cargarAlojamientos(productoRepository, almacenamiento, ciudades, categorias, caracteristicas);
         };
     }
 
@@ -221,6 +237,22 @@ public class CargaInicialDatos {
         repository.save(new Usuario("Marcos", "Lancellotti", email,
                 passwordEncoder.encode(passwordAdmin), Rol.ADMIN));
         log.info("Se creó el administrador inicial {}", email);
+    }
+
+    private Map<String, Ciudad> cargarCiudades(CiudadRepository repository) {
+        Map<String, Ciudad> porNombre = new LinkedHashMap<>();
+
+        if (repository.count() > 0) {
+            repository.findAll().forEach(ciudad -> porNombre.put(ciudad.getNombre(), ciudad));
+            return porNombre;
+        }
+
+        for (CiudadEjemplo ejemplo : CIUDADES) {
+            Ciudad ciudad = repository.save(new Ciudad(ejemplo.nombre(), ejemplo.pais()));
+            porNombre.put(ciudad.getNombre(), ciudad);
+        }
+        log.info("Se cargaron {} ciudades", porNombre.size());
+        return porNombre;
     }
 
     private Map<String, Categoria> cargarCategorias(CategoriaRepository repository,
@@ -261,6 +293,7 @@ public class CargaInicialDatos {
 
     private void cargarAlojamientos(ProductoRepository repository,
                                     AlmacenamientoService almacenamiento,
+                                    Map<String, Ciudad> ciudades,
                                     Map<String, Categoria> categorias,
                                     Map<String, Caracteristica> caracteristicas) throws IOException {
         if (repository.count() > 0) {
@@ -270,6 +303,7 @@ public class CargaInicialDatos {
 
         for (Alojamiento ejemplo : EJEMPLOS) {
             Producto producto = new Producto(ejemplo.nombre(), ejemplo.descripcion());
+            producto.setCiudad(ciudades.get(ejemplo.ciudad()));
             producto.setCategoria(categorias.get(ejemplo.categoria()));
 
             Set<Caracteristica> asociadas = new LinkedHashSet<>();

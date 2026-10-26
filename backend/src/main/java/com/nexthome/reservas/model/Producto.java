@@ -38,6 +38,11 @@ public class Producto {
     @OrderBy("id ASC")
     private List<ProductoImagen> imagenes = new ArrayList<>();
 
+    /** Dónde está el alojamiento. Es por lo que se busca desde el home. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ciudad_id")
+    private Ciudad ciudad;
+
     /** Un producto pertenece a una categoría, o a ninguna. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id")
@@ -93,6 +98,14 @@ public class Producto {
     public void reemplazarImagenes(List<ProductoImagen> nuevas) {
         this.imagenes.clear();
         nuevas.forEach(this::agregarImagen);
+    }
+
+    public Ciudad getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(Ciudad ciudad) {
+        this.ciudad = ciudad;
     }
 
     public Categoria getCategoria() {

@@ -8,10 +8,13 @@ import com.nexthome.reservas.exception.NombreDuplicadoException;
 import com.nexthome.reservas.exception.RecursoNoEncontradoException;
 import com.nexthome.reservas.model.Caracteristica;
 import com.nexthome.reservas.model.Categoria;
+import com.nexthome.reservas.model.Ciudad;
 import com.nexthome.reservas.model.Producto;
 import com.nexthome.reservas.model.ProductoImagen;
 import com.nexthome.reservas.repository.CaracteristicaRepository;
 import com.nexthome.reservas.repository.CategoriaRepository;
+import com.nexthome.reservas.repository.CiudadRepository;
+import com.nexthome.reservas.repository.FavoritoRepository;
 import com.nexthome.reservas.repository.ProductoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,16 +41,22 @@ public class ProductoService {
 
     private final ProductoRepository repository;
     private final CategoriaRepository categoriaRepository;
+    private final CiudadRepository ciudadRepository;
+    private final FavoritoRepository favoritoRepository;
     private final CaracteristicaRepository caracteristicaRepository;
     private final AlmacenamientoService almacenamiento;
     private final SecureRandom random = new SecureRandom();
 
     public ProductoService(ProductoRepository repository,
                            CategoriaRepository categoriaRepository,
+                           CiudadRepository ciudadRepository,
+                           FavoritoRepository favoritoRepository,
                            CaracteristicaRepository caracteristicaRepository,
                            AlmacenamientoService almacenamiento) {
         this.repository = repository;
         this.categoriaRepository = categoriaRepository;
+        this.ciudadRepository = ciudadRepository;
+        this.favoritoRepository = favoritoRepository;
         this.caracteristicaRepository = caracteristicaRepository;
         this.almacenamiento = almacenamiento;
     }
@@ -60,6 +69,7 @@ public class ProductoService {
         }
 
         Producto producto = new Producto(nombre, request.getDescripcion().trim());
+        producto.setCiudad(resolverCiudad(request.getCiudadId()));
         producto.setCategoria(resolverCategoria(request.getCategoriaId()));
         producto.setCaracteristicas(resolverCaracteristicas(request.getCaracteristicaIds()));
 
@@ -97,6 +107,7 @@ public class ProductoService {
 
         producto.setNombre(nombre);
         producto.setDescripcion(request.getDescripcion().trim());
+        producto.setCiudad(resolverCiudad(request.getCiudadId()));
         producto.setCategoria(resolverCategoria(request.getCategoriaId()));
         producto.setCaracteristicas(resolverCaracteristicas(request.getCaracteristicaIds()));
 
@@ -125,17 +136,23 @@ public class ProductoService {
      * El filtro se resuelve en la base junto con la paginación, no en memoria.
      */
     @Transactional(readOnly = true)
-    public PaginaResponse<ProductoResponse> listarPaginado(int pagina, int tamanio, List<Long> categoriaIds) {
+    public PaginaResponse<ProductoResponse> listarPaginado(
+            int pagina, int tamanio, Long ciudadId, List<Long> categoriaIds) {
         int paginaSegura = Math.max(pagina, 0);
         int tamanioSeguro = Math.clamp(tamanio, 1, TAMANIO_MAXIMO_PAGINA);
         var orden = PageRequest.of(paginaSegura, tamanioSeguro, Sort.by(Sort.Direction.DESC, "id"));
 
-        boolean hayFiltro = categoriaIds != null && !categoriaIds.isEmpty();
-        Page<Long> paginaDeIds = hayFiltro
-                ? repository.buscarPaginaDeIdsPorCategorias(categoriaIds, orden)
-                : repository.buscarPaginaDeIds(orden);
+        boolean sinFiltroDeCategorias = categoriaIds == null || categoriaIds.isEmpty();
+        // El in necesita una lista no vacía aunque la bandera lo desactive.
+        List<Long> categorias = sinFiltroDeCategorias ? List.of(-1L) : categoriaIds;
 
-        long totalSinFiltro = hayFiltro ? repository.count() : paginaDeIds.getTotalElements();
+        Page<Long> paginaDeIds = repository.buscarPagina(ciudadId, sinFiltroDeCategorias, categorias, orden);
+
+        // El total de referencia es el del destino elegido: dentro de una búsqueda,
+        // comparar contra el catálogo entero no le diría nada al usuario.
+        long totalSinFiltro = sinFiltroDeCategorias
+                ? paginaDeIds.getTotalElements()
+                : (ciudadId == null ? repository.count() : repository.countByCiudadId(ciudadId));
 
         List<ProductoResponse> contenido = hidratarEnOrden(paginaDeIds.getContent());
         return PaginaResponse.de(
@@ -172,6 +189,8 @@ public class ProductoService {
                 .orElseThrow(() -> new RecursoNoEncontradoException("No existe un producto con id " + id));
 
         List<String> urls = producto.getImagenes().stream().map(ProductoImagen::getUrl).toList();
+        // Sin esto la baja falla por la clave foránea de favoritos.
+        favoritoRepository.eliminarPorProducto(id);
         repository.delete(producto);
         urls.forEach(almacenamiento::eliminar);
     }
@@ -191,6 +210,14 @@ public class ProductoService {
             imagenes.add(new ProductoImagen(url));
         }
         return imagenes;
+    }
+
+    private Ciudad resolverCiudad(Long ciudadId) {
+        if (ciudadId == null) {
+            return null;
+        }
+        return ciudadRepository.findById(ciudadId)
+                .orElseThrow(() -> new RecursoNoEncontradoException("No existe una ciudad con id " + ciudadId));
     }
 
     private Categoria resolverCategoria(Long categoriaId) {
@@ -217,7 +244,8 @@ public class ProductoService {
     }
 
     /** Carga los productos de una lista de ids respetando el orden recibido. */
-    private List<ProductoResponse> hidratarEnOrden(List<Long> ids) {
+    @Transactional(readOnly = true)
+    public List<ProductoResponse> hidratarEnOrden(List<Long> ids) {
         if (ids.isEmpty()) {
             return List.of();
         }

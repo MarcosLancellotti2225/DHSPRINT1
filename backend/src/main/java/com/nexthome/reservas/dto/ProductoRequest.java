@@ -19,6 +19,9 @@ public class ProductoRequest {
     private String descripcion;
 
     /** Opcional: un producto puede quedar sin categoría. */
+    /** Opcional: un producto puede no tener ciudad asignada. */
+    private Long ciudadId;
+
     private Long categoriaId;
 
     /** Opcional: ids de las características asociadas al producto. */
@@ -41,6 +44,14 @@ public class ProductoRequest {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public Long getCiudadId() {
+        return ciudadId;
+    }
+
+    public void setCiudadId(Long ciudadId) {
+        this.ciudadId = ciudadId;
     }
 
     public Long getCategoriaId() {

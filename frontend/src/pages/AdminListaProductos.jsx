@@ -81,6 +81,7 @@ export default function AdminListaProductos() {
                 <tr>
                   <th scope="col">Id</th>
                   <th scope="col">Nombre</th>
+                  <th scope="col">Ciudad</th>
                   <th scope="col">Categoría</th>
                   <th scope="col">Acciones</th>
                 </tr>
@@ -90,6 +91,7 @@ export default function AdminListaProductos() {
                   <tr key={producto.id}>
                     <td>{producto.id}</td>
                     <td>{producto.nombre}</td>
+                    <td>{producto.ciudad?.nombre ?? "Sin ciudad"}</td>
                     <td>{producto.categoria?.titulo ?? "Sin categoría"}</td>
                     <td className="admin__acciones-fila">
                       <Link

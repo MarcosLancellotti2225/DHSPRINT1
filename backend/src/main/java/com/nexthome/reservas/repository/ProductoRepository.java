@@ -32,7 +32,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
      * la misma query genera un producto cartesiano. Como corre dentro de la misma
      * transacción, Hibernate completa las entidades que ya tiene en el contexto.
      */
-    @Query("select distinct p from Producto p left join fetch p.caracteristicas left join fetch p.categoria where p.id in :ids")
+    @Query("select distinct p from Producto p left join fetch p.caracteristicas left join fetch p.categoria left join fetch p.ciudad where p.id in :ids")
     List<Producto> buscarPorIdsConCaracteristicas(List<Long> ids);
 
     @Query("select p from Producto p left join fetch p.imagenes where p.id = :id")
@@ -47,12 +47,26 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     Page<Long> buscarPaginaDeIds(Pageable pageable);
 
     /**
-     * Misma paginación pero acotada a un conjunto de categorías. Es una consulta aparte
-     * porque un {@code in} con lista vacía no se puede expresar en JPQL.
+     * Misma paginación, acotada por ciudad y por categorías. Los dos filtros son
+     * opcionales: con {@code ciudadId} en null o {@code sinFiltroDeCategorias} en true,
+     * esa condición no se aplica. Van como banderas y no como consultas separadas
+     * porque un {@code in} con lista vacía no existe en JPQL, y con dos filtros harían
+     * falta cuatro consultas casi iguales.
      */
-    @Query(value = "select p.id from Producto p where p.categoria.id in :categoriaIds",
-            countQuery = "select count(p) from Producto p where p.categoria.id in :categoriaIds")
-    Page<Long> buscarPaginaDeIdsPorCategorias(List<Long> categoriaIds, Pageable pageable);
+    @Query(value = """
+            select p.id from Producto p
+            where (:ciudadId is null or p.ciudad.id = :ciudadId)
+              and (:sinFiltroDeCategorias = true or p.categoria.id in :categoriaIds)
+            """,
+            countQuery = """
+            select count(p) from Producto p
+            where (:ciudadId is null or p.ciudad.id = :ciudadId)
+              and (:sinFiltroDeCategorias = true or p.categoria.id in :categoriaIds)
+            """)
+    Page<Long> buscarPagina(Long ciudadId, boolean sinFiltroDeCategorias, List<Long> categoriaIds,
+                            Pageable pageable);
+
+    long countByCiudadId(Long ciudadId);
 
     /** Deja sin categoría a los productos que apuntaban a la que se está eliminando. */
     @Modifying

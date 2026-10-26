@@ -75,7 +75,11 @@ public class SeguridadConfig {
                         .requestMatchers(HttpMethod.GET, patronImagenes).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/registro", "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET,
-                                "/api/productos/**", "/api/categorias/**", "/api/caracteristicas/**").permitAll()
+                                "/api/productos/**", "/api/categorias/**", "/api/caracteristicas/**",
+                                "/api/ciudades/**").permitAll()
+
+                        // --- Requieren sesión iniciada, de cualquier rol ---------------
+                        .requestMatchers("/api/favoritos/**").authenticated()
 
                         // --- Sólo administradores --------------------------------------
                         .requestMatchers("/api/usuarios/**").hasRole("ADMIN")

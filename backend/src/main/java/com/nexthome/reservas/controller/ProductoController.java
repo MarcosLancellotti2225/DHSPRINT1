@@ -46,15 +46,16 @@ public class ProductoController {
     }
 
     /**
-     * Catálogo paginado. Con {@code categorias} se acota el listado a esas categorías;
-     * el filtro y la paginación se resuelven juntos en la base.
+     * Catálogo paginado. Con {@code ciudad} se acota a un destino y con {@code categorias}
+     * a esas categorías; los filtros y la paginación se resuelven juntos en la base.
      */
     @GetMapping
     public PaginaResponse<ProductoResponse> listar(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Long ciudad,
             @RequestParam(required = false) List<Long> categorias) {
-        return service.listarPaginado(page, size, categorias);
+        return service.listarPaginado(page, size, ciudad, categorias);
     }
 
     @GetMapping("/random")

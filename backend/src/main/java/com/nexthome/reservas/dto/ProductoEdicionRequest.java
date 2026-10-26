@@ -22,6 +22,9 @@ public class ProductoEdicionRequest {
     @Size(max = 4000, message = "La descripción no puede superar los 4000 caracteres")
     private String descripcion;
 
+    /** Opcional: un producto puede no tener ciudad asignada. */
+    private Long ciudadId;
+
     private Long categoriaId;
 
     private List<Long> caracteristicaIds;
@@ -42,6 +45,14 @@ public class ProductoEdicionRequest {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public Long getCiudadId() {
+        return ciudadId;
+    }
+
+    public void setCiudadId(Long ciudadId) {
+        this.ciudadId = ciudadId;
     }
 
     public Long getCategoriaId() {

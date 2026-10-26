@@ -13,7 +13,7 @@ export default function AdminEditarProducto() {
 
   const { id } = useParams();
   const navegar = useNavigate();
-  const { categorias, caracteristicas } = useCatalogo();
+  const { ciudades, categorias, caracteristicas } = useCatalogo();
 
   const [producto, setProducto] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -71,10 +71,12 @@ export default function AdminEditarProducto() {
           valoresIniciales={{
             nombre: producto.nombre,
             descripcion: producto.descripcion,
+            ciudadId: producto.ciudad?.id ?? "",
             categoriaId: producto.categoria?.id ?? "",
             caracteristicaIds: producto.caracteristicas.map((caracteristica) => caracteristica.id),
           }}
-          categorias={categorias}
+          ciudades={ciudades}
+        categorias={categorias}
           caracteristicas={caracteristicas}
           imagenesObligatorias={false}
           ayudaImagenes="Si no elegís ninguna, se conservan las imágenes actuales. Si elegís nuevas, reemplazan a las anteriores."

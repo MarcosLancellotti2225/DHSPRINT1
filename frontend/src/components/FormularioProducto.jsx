@@ -8,7 +8,14 @@ import "../styles/Admin.css";
  * elegir ninguna significa conservar las que ya tenía.
  */
 export default function FormularioProducto({
-  valoresIniciales = { nombre: "", descripcion: "", categoriaId: "", caracteristicaIds: [] },
+  valoresIniciales = {
+    nombre: "",
+    descripcion: "",
+    ciudadId: "",
+    categoriaId: "",
+    caracteristicaIds: [],
+  },
+  ciudades = [],
   categorias = [],
   caracteristicas = [],
   imagenesObligatorias = true,
@@ -22,6 +29,7 @@ export default function FormularioProducto({
   const [formulario, setFormulario] = useState({
     nombre: valoresIniciales.nombre,
     descripcion: valoresIniciales.descripcion,
+    ciudadId: valoresIniciales.ciudadId ?? "",
     categoriaId: valoresIniciales.categoriaId ?? "",
   });
   const [seleccionadas, setSeleccionadas] = useState(valoresIniciales.caracteristicaIds ?? []);
@@ -55,6 +63,7 @@ export default function FormularioProducto({
     onEnviar({
       nombre: formulario.nombre,
       descripcion: formulario.descripcion,
+      ciudadId: formulario.ciudadId || null,
       categoriaId: formulario.categoriaId || null,
       caracteristicaIds: seleccionadas,
       imagenes,
@@ -97,6 +106,30 @@ export default function FormularioProducto({
           />
           {erroresCampo.descripcion && (
             <span className="admin__error-campo">{erroresCampo.descripcion}</span>
+          )}
+        </div>
+
+        <div className="field admin__campo">
+          <label htmlFor="ciudadId">Ciudad</label>
+          <select
+            id="ciudadId"
+            name="ciudadId"
+            className="input"
+            value={formulario.ciudadId}
+            onChange={alCambiar}
+          >
+            <option value="">Sin ciudad</option>
+            {ciudades.map((ciudad) => (
+              <option key={ciudad.id} value={ciudad.id}>
+                {ciudad.nombre}, {ciudad.pais}
+              </option>
+            ))}
+          </select>
+          <span className="admin__ayuda">
+            Sin ciudad, el alojamiento no aparece en las búsquedas por destino.
+          </span>
+          {erroresCampo.ciudadId && (
+            <span className="admin__error-campo">{erroresCampo.ciudadId}</span>
           )}
         </div>
 
