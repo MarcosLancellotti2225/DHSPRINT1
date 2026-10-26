@@ -52,10 +52,16 @@ describe("Filtro por categorías", () => {
     expect(screen.getByText("Mostrando 4 de 12 alojamientos")).toBeInTheDocument();
   });
 
-  it("sin filtro muestra el total del catálogo", () => {
-    renderizarFiltro();
+  it("sin filtro muestra el total del destino buscado", () => {
+    renderizarFiltro({ nombreDelConjunto: "Bariloche" });
 
-    expect(screen.getByText("12 alojamientos en el catálogo")).toBeInTheDocument();
+    expect(screen.getByText("12 alojamientos en Bariloche")).toBeInTheDocument();
+  });
+
+  it("concuerda el singular cuando hay un solo alojamiento", () => {
+    renderizarFiltro({ nombreDelConjunto: "Bariloche", cantidadFiltrada: 1, totalProductos: 1 });
+
+    expect(screen.getByText("1 alojamiento en Bariloche")).toBeInTheDocument();
   });
 
   it("ofrece limpiar los filtros sólo cuando hay alguno aplicado", async () => {

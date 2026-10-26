@@ -4,8 +4,14 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import Header from "./Header";
 import { ProveedorSesion } from "../context/SesionContext";
+import { ProveedorFavoritos } from "../context/FavoritosContext";
 import { obtenerPerfil } from "../api/auth";
 
+vi.mock("../api/favoritos", () => ({
+  listarFavoritos: vi.fn().mockResolvedValue([]),
+  marcarFavorito: vi.fn(),
+  desmarcarFavorito: vi.fn(),
+}));
 vi.mock("../api/auth", () => ({
   registrarUsuario: vi.fn(),
   iniciarSesion: vi.fn(),
@@ -25,7 +31,9 @@ function renderizarHeader() {
   return render(
     <MemoryRouter>
       <ProveedorSesion>
-        <Header />
+        <ProveedorFavoritos>
+          <Header />
+        </ProveedorFavoritos>
       </ProveedorSesion>
     </MemoryRouter>
   );
@@ -65,6 +73,7 @@ describe("Avatar y cierre de sesión", () => {
     await usuario.click(await screen.findByRole("button", { name: /menú de la cuenta/i }));
 
     expect(screen.getByRole("menuitem", { name: /cerrar sesión/i })).toBeInTheDocument();
+    expect(screen.getByRole("menuitem", { name: /mis favoritos/i })).toBeInTheDocument();
     expect(screen.getByText("ana@nexthome.com")).toBeInTheDocument();
   });
 

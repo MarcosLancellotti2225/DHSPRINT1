@@ -16,14 +16,23 @@ Boot** (`backend/`) y un sitio en **React con Vite** (`frontend/`).
 
 **Como visitante**
 
-Al entrar al home vas a ver un buscador, las categorías de alojamiento y un bloque de
-recomendaciones con hasta 10 alojamientos elegidos al azar, distintos en cada visita y sin
-repetirse entre sí. Más abajo está el catálogo completo, paginado de a 10.
+Al entrar al home te encontrás con el buscador y, debajo, una selección de los mejores
+alojamientos, distinta en cada visita.
 
-Las categorías funcionan como filtro: podés marcar varias a la vez y el listado te muestra
-cuántos alojamientos cumplen el filtro sobre el total del catálogo. El filtrado lo resuelve
-el backend, no el navegador, así que se combina bien con la paginación. Un botón limpia
-todo y te devuelve al listado completo.
+El buscador es el centro del home: tiene su título, una bajada que explica para qué sirve,
+el destino con **autocompletado** (escribís "bari" y te sugiere Bariloche, ignorando tildes
+y mayúsculas, y también encontrás por país), el rango de fechas con check-in y check-out, y
+los huéspedes. Al buscar, el listado pasa a mostrar los alojamientos de ese destino. Las
+categorías y las recomendaciones **siguen visibles siempre**, antes y después de buscar.
+
+El filtro por categorías se combina con el destino: podés marcar varias a la vez y el
+contador te dice cuántos cumplen el filtro sobre el total. El filtrado y la búsqueda los
+resuelve el backend, no el navegador, así que se combinan bien con la paginación. Con "Ver
+todos los destinos" volvés al catálogo completo.
+
+Las fechas y los huéspedes todavía no acotan el resultado, y el buscador lo aclara: la
+disponibilidad por fecha necesita un modelo de reservas que no existe todavía. Lo que sí
+validan es que el check-out sea posterior al check-in.
 
 Si entrás a cualquier alojamiento, arriba te espera una galería: una foto grande a la
 izquierda y cuatro más en una grilla a la derecha. Con el "Ver más" de la esquina se abren
@@ -33,6 +42,13 @@ todas las fotos que tenga cargadas. Abajo de la descripción está el bloque de
 El buscador todavía no busca de verdad, es sólo la interfaz. Eso llega en el próximo sprint.
 
 **Como usuario registrado**
+
+Cada alojamiento del listado tiene un **corazón** para marcarlo como favorito de un solo
+clic. El corazón sólo aparece con sesión iniciada, porque los favoritos se guardan en tu
+cuenta y no en el navegador. Desde el avatar del header entrás a **Mis favoritos**, que
+muestra lo que marcaste, del más reciente al más viejo, y te deja quitarlos desde ahí
+mismo. Todo se sincroniza en el momento: si sacás un favorito en el home, desaparece de la
+lista sin recargar.
 
 Podés crear una cuenta con tu nombre, apellido, email y contraseña. El formulario valida
 todo en el momento y te avisa campo por campo qué falta, sin borrarte lo que ya escribiste.
@@ -48,7 +64,8 @@ sin que nada te bloquee.
 Entrás por `/administracion` y tenés seis funciones:
 
 - **Lista de productos**: ver el catálogo, editar cualquier alojamiento o eliminarlo.
-- **Agregar producto**: nombre, descripción, categoría, características y fotos.
+- **Agregar producto**: nombre, descripción, ciudad, categoría, características y fotos.
+  Sin ciudad, el alojamiento no aparece en las búsquedas por destino.
 - **Editar producto**: lo mismo, sobre uno ya publicado. Si no elegís fotos nuevas se
   conservan las que tenía; si elegís, reemplazan a las anteriores.
 - **Agregar categoría**: título, descripción e imagen representativa. También se editan y
@@ -84,8 +101,8 @@ Queda en `http://localhost:8080`.
 
 Como la base de desarrollo es H2 en memoria, arranca vacía cada vez que la levantás. Para
 que no te encuentres con un home pelado, al iniciar se cargan solos el usuario
-administrador, 6 categorías, 10 características y 12 alojamientos de ejemplo con sus fotos,
-ya categorizados y con características asignadas. Ojo con esto: **lo que cargues por el
+administrador, 5 ciudades, 6 categorías, 10 características y 12 alojamientos de ejemplo
+con sus fotos, repartidos entre los destinos y con categoría y características asignadas. Ojo con esto: **lo que cargues por el
 panel se pierde al reiniciar el backend**. Es lo esperable en desarrollo, y más abajo está
 cómo pasar a una base de verdad.
 
@@ -176,13 +193,24 @@ frontend es una SPA aparte.
 **Catálogo** (lectura pública, escritura sólo administradores)
 
 - `GET /productos?page=0&size=10` trae el catálogo paginado, nunca más de 10 por página.
-  Con `&categorias=1&categorias=3` lo filtra por categoría. La respuesta trae
-  `totalElementos` (lo que entra en el filtro) y `totalSinFiltro` (el catálogo completo).
+  Con `&ciudad=1` lo acota a un destino y con `&categorias=1&categorias=3` a esas
+  categorías; los dos se combinan. La respuesta trae `totalElementos` (lo que entra en los
+  filtros) y `totalSinFiltro` (el total de referencia: el destino buscado, o el catálogo
+  entero si no se buscó ninguno).
+- `GET /ciudades` trae los destinos disponibles para el buscador. Es público.
+
+**Favoritos** (hace falta sesión iniciada, de cualquier rol)
+
+- `GET /favoritos` trae los favoritos del usuario, del más reciente al más viejo.
+- `PUT /favoritos/{productoId}` lo marca. Es `PUT` y no `POST` porque marcar dos veces
+  deja el mismo estado: no duplica ni falla.
+- `DELETE /favoritos/{productoId}` lo desmarca. Desmarcar algo que no estaba marcado
+  tampoco es un error: se llega al mismo resultado.
 - `GET /productos/random?limit=10` es el que alimenta las recomendaciones del home.
 - `GET /productos/{id}` trae un alojamiento con sus fotos, su categoría y sus características.
 - `POST /productos` da de alta uno nuevo. Va como `multipart/form-data` con `nombre`,
-  `descripcion`, uno o más archivos en `imagenes` y, opcionalmente, `categoriaId` y uno o
-  más `caracteristicaIds`.
+  `descripcion`, uno o más archivos en `imagenes` y, opcionalmente, `ciudadId`,
+  `categoriaId` y uno o más `caracteristicaIds`.
 - `PUT /productos/{id}` lo edita, con el mismo formato. Acá `imagenes` es opcional: si no
   mandás ninguna se conservan las actuales.
 - `DELETE /productos/{id}` lo elimina, y de paso borra sus fotos del disco.
@@ -218,18 +246,21 @@ esa persona siga teniendo su token vigente.
 ## Las pruebas
 
 ```bash
-cd backend && mvn test        # 62 pruebas de la API
-cd frontend && npm test       # 70 pruebas de componentes y páginas
+cd backend && mvn test        # 78 pruebas de la API
+cd frontend && npm test       # 102 pruebas de componentes y páginas
 ```
 
 Del lado del backend se prueban el registro, el login con credenciales válidas e inválidas,
 el acceso denegado a los endpoints protegidos sin token y con rol insuficiente, el CRUD de
-categorías y características, la edición y categorización de productos, y el filtrado por
-categoría combinado con la paginación.
+categorías y características, la edición y categorización de productos, la búsqueda por
+destino y el filtrado por categoría combinados entre sí y con la paginación, y los
+favoritos: marcarlos, desmarcarlos, que no se dupliquen y que cada usuario vea sólo los
+suyos.
 
 Del lado del frontend, los formularios de registro y login con sus validaciones, el avatar
-con las iniciales, el cierre de sesión, el bloque de características del detalle, el filtro
-por categorías y el listado de usuarios del panel.
+con las iniciales, el cierre de sesión, el bloque de características del detalle, la validación del buscador y
+su autocompletado, la búsqueda por destino en el home, el filtro por categorías, el corazón
+de favoritos, la lista de favoritos y el listado de usuarios del panel.
 
 ## Fotos de ejemplo
 

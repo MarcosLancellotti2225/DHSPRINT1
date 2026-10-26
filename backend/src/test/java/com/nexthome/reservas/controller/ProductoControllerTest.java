@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.nexthome.reservas.PruebaDeApi;
 import com.nexthome.reservas.model.Caracteristica;
 import com.nexthome.reservas.model.Categoria;
+import com.nexthome.reservas.model.Ciudad;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -376,6 +377,100 @@ class ProductoControllerTest extends PruebaDeApi {
                 .andExpect(jsonPath("$.ultima").value(true));
     }
 
+    // --- Búsqueda por destino ------------------------------------------------
+
+    @Test
+    @DisplayName("busca por ciudad y devuelve sólo los alojamientos de ese destino")
+    void buscaPorCiudad() throws Exception {
+        Ciudad bariloche = ciudadRepository.save(new Ciudad("Bariloche", "Argentina"));
+        Ciudad mendoza = ciudadRepository.save(new Ciudad("Mendoza", "Argentina"));
+
+        crearProductoEn("Cabaña del Cerro", bariloche.getId(), null);
+        crearProductoEn("Refugio del Lago", bariloche.getId(), null);
+        crearProductoEn("Finca del Valle", mendoza.getId(), null);
+
+        mockMvc.perform(get("/api/productos").param("ciudad", String.valueOf(bariloche.getId())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.contenido.length()").value(2))
+                .andExpect(jsonPath("$.totalElementos").value(2))
+                .andExpect(jsonPath("$.contenido[0].ciudad.nombre").value("Bariloche"));
+    }
+
+    @Test
+    @DisplayName("combina el destino con el filtro de categorías")
+    void combinaCiudadYCategoria() throws Exception {
+        Ciudad bariloche = ciudadRepository.save(new Ciudad("Bariloche", "Argentina"));
+        Ciudad mendoza = ciudadRepository.save(new Ciudad("Mendoza", "Argentina"));
+        Categoria cabanias = categoriaRepository.save(
+                new Categoria("Cabañas", "En el bosque.", "/uploads/c.png"));
+        Categoria hoteles = categoriaRepository.save(
+                new Categoria("Hoteles", "Con recepción.", "/uploads/h.png"));
+
+        crearProductoEn("Cabaña del Cerro", bariloche.getId(), cabanias.getId());
+        crearProductoEn("Hotel del Cerro", bariloche.getId(), hoteles.getId());
+        crearProductoEn("Cabaña de Mendoza", mendoza.getId(), cabanias.getId());
+
+        mockMvc.perform(get("/api/productos")
+                        .param("ciudad", String.valueOf(bariloche.getId()))
+                        .param("categorias", String.valueOf(cabanias.getId())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElementos").value(1))
+                .andExpect(jsonPath("$.contenido[0].nombre").value("Cabaña del Cerro"))
+                // El total de referencia es el del destino, no el del catálogo entero.
+                .andExpect(jsonPath("$.totalSinFiltro").value(2));
+    }
+
+    @Test
+    @DisplayName("sin destino sigue devolviendo el catálogo completo")
+    void sinCiudadDevuelveTodo() throws Exception {
+        Ciudad bariloche = ciudadRepository.save(new Ciudad("Bariloche", "Argentina"));
+        crearProductoEn("Cabaña del Cerro", bariloche.getId(), null);
+        crearProducto("Alojamiento sin ciudad");
+
+        mockMvc.perform(get("/api/productos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElementos").value(2));
+    }
+
+    @Test
+    @DisplayName("un destino sin alojamientos devuelve una página vacía")
+    void ciudadSinAlojamientos() throws Exception {
+        Ciudad bariloche = ciudadRepository.save(new Ciudad("Bariloche", "Argentina"));
+        crearProducto("Alojamiento sin ciudad");
+
+        mockMvc.perform(get("/api/productos").param("ciudad", String.valueOf(bariloche.getId())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.contenido.length()").value(0))
+                .andExpect(jsonPath("$.totalElementos").value(0));
+    }
+
+    @Test
+    @DisplayName("el listado de destinos es público")
+    void listaLosDestinos() throws Exception {
+        ciudadRepository.save(new Ciudad("Mendoza", "Argentina"));
+        ciudadRepository.save(new Ciudad("Bariloche", "Argentina"));
+
+        mockMvc.perform(get("/api/ciudades"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].nombre").value("Bariloche"))
+                .andExpect(jsonPath("$[0].pais").value("Argentina"));
+    }
+
+    @Test
+    @DisplayName("rechaza con 404 el alta con una ciudad inexistente")
+    void rechazaCiudadInexistente() throws Exception {
+        mockMvc.perform(multipart("/api/productos")
+                        .file(imagen("foto.png"))
+                        .param("nombre", "Hotel Fantasma")
+                        .param("descripcion", "Con una ciudad que no existe.")
+                        .param("ciudadId", "9999")
+                        .header(HttpHeaders.AUTHORIZATION, bearer(tokenAdmin)))
+                .andExpect(status().isNotFound());
+
+        assertThat(productoRepository.count()).isZero();
+    }
+
     // --- Utilidades ---------------------------------------------------------
 
     private MockMultipartFile imagen(String nombreArchivo) {
@@ -389,11 +484,18 @@ class ProductoControllerTest extends PruebaDeApi {
     }
 
     private long crearProductoEnCategoria(String nombre, Long categoriaId) throws Exception {
+        return crearProductoEn(nombre, null, categoriaId);
+    }
+
+    private long crearProductoEn(String nombre, Long ciudadId, Long categoriaId) throws Exception {
         var peticion = multipart("/api/productos")
                 .file(imagen("foto.png"))
                 .param("nombre", nombre)
                 .param("descripcion", "Descripción de " + nombre)
                 .header(HttpHeaders.AUTHORIZATION, bearer(tokenAdmin));
+        if (ciudadId != null) {
+            peticion = peticion.param("ciudadId", String.valueOf(ciudadId));
+        }
         if (categoriaId != null) {
             peticion = peticion.param("categoriaId", String.valueOf(categoriaId));
         }

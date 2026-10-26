@@ -5,6 +5,8 @@ import com.nexthome.reservas.model.Rol;
 import com.nexthome.reservas.model.Usuario;
 import com.nexthome.reservas.repository.CaracteristicaRepository;
 import com.nexthome.reservas.repository.CategoriaRepository;
+import com.nexthome.reservas.repository.CiudadRepository;
+import com.nexthome.reservas.repository.FavoritoRepository;
 import com.nexthome.reservas.repository.ProductoRepository;
 import com.nexthome.reservas.repository.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,6 +49,12 @@ public abstract class PruebaDeApi {
     protected CaracteristicaRepository caracteristicaRepository;
 
     @Autowired
+    protected CiudadRepository ciudadRepository;
+
+    @Autowired
+    protected FavoritoRepository favoritoRepository;
+
+    @Autowired
     protected UsuarioRepository usuarioRepository;
 
     @Autowired
@@ -55,9 +63,11 @@ public abstract class PruebaDeApi {
     /** El orden importa: los productos apuntan a categorías y características. */
     @BeforeEach
     void limpiarBase() {
+        favoritoRepository.deleteAll();
         productoRepository.deleteAll();
         caracteristicaRepository.deleteAll();
         categoriaRepository.deleteAll();
+        ciudadRepository.deleteAll();
         usuarioRepository.deleteAll();
     }
 

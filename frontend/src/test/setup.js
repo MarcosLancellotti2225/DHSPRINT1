@@ -17,3 +17,12 @@ if (!window.matchMedia) {
     dispatchEvent: () => false,
   });
 }
+
+/*
+ * jsdom tampoco implementa scrollIntoView, que el home usa para llevar la vista al
+ * listado. Sin este stub cada test que busca o cambia de página ensucia la salida
+ * con un TypeError que no dice nada.
+ */
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = () => {};
+}
