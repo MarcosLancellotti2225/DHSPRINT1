@@ -2,6 +2,31 @@
   width: 100%;
 }
 
+/* --- Campos de fecha, arriba del calendario ------------------------------ */
+
+.calendario__campos {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.calendario__campo {
+  width: 170px;
+}
+
+.calendario__flecha {
+  padding-bottom: 9px;
+  color: var(--color-neutral-500);
+}
+
+.calendario__limpiar {
+  margin-left: auto;
+}
+
 .calendario__barra {
   display: flex;
   justify-content: flex-end;
@@ -13,7 +38,13 @@
 .calendario__meses {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-6);
+  gap: var(--space-8);
+}
+
+/* Línea divisoria entre los dos meses, para que se lean como bloques separados. */
+.calendario__mes + .calendario__mes {
+  padding-left: var(--space-8);
+  border-left: 1px solid var(--color-divider);
 }
 
 .calendario__nombre-mes {
@@ -134,5 +165,23 @@
   .calendario__meses {
     grid-template-columns: 1fr;
     gap: var(--space-4);
+  }
+
+  /* Apilados, la división pasa a ser horizontal. */
+  .calendario__mes + .calendario__mes {
+    padding-left: 0;
+    padding-top: var(--space-4);
+    border-left: none;
+    border-top: 1px solid var(--color-divider);
+  }
+
+  .calendario__campo {
+    flex: 1;
+    width: auto;
+  }
+
+  .calendario__limpiar {
+    margin-left: 0;
+    width: 100%;
   }
 }

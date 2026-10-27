@@ -12,6 +12,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -107,6 +108,39 @@ class CategoriaControllerTest extends PruebaDeApi {
                 .andExpect(status().isForbidden());
 
         assertThat(categoriaRepository.count()).isZero();
+    }
+
+    @Test
+    @DisplayName("el listado informa cuántos alojamientos usa cada categoría")
+    void informaCuantosAlojamientosUsaCadaCategoria() throws Exception {
+        String token = tokenDeAdmin();
+        var categoria = categoriaRepository.save(
+                new com.nexthome.reservas.model.Categoria("Hoteles", "Con recepción.", "/uploads/h.png"));
+
+        mockMvc.perform(multipart("/api/productos")
+                        .file(new org.springframework.mock.web.MockMultipartFile(
+                                "imagenes", "foto.png", MediaType.IMAGE_PNG_VALUE,
+                                new byte[] {(byte) 0x89, 'P', 'N', 'G'}))
+                        .param("nombre", "Hotel del Valle")
+                        .param("descripcion", "Un hotel con vista.")
+                        .param("categoriaId", String.valueOf(categoria.getId()))
+                        .header(HttpHeaders.AUTHORIZATION, bearer(token)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/categorias"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].alojamientos").value(1));
+    }
+
+    @Test
+    @DisplayName("una categoría sin alojamientos informa cero")
+    void categoriaSinAlojamientosInformaCero() throws Exception {
+        categoriaRepository.save(
+                new com.nexthome.reservas.model.Categoria("Hoteles", "Con recepción.", "/uploads/h.png"));
+
+        mockMvc.perform(get("/api/categorias"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].alojamientos").value(0));
     }
 
     // --- Edición y baja -----------------------------------------------------

@@ -263,7 +263,15 @@ export default function AdminCategorias() {
       {aEliminar && (
         <ModalConfirmacion
           titulo="Eliminar categoría"
-          mensaje={`¿Confirmás que querés eliminar «${aEliminar.titulo}»? Los alojamientos que la tengan quedan sin categoría.`}
+          mensaje={
+            aEliminar.alojamientos > 0
+              ? `¿Confirmás que querés eliminar «${aEliminar.titulo}»? ${
+                  aEliminar.alojamientos === 1
+                    ? "1 alojamiento la tiene asignada y quedará"
+                    : `${aEliminar.alojamientos} alojamientos la tienen asignada y quedarán`
+                } sin categoría. Los alojamientos no se eliminan. Esta acción no se puede deshacer.`
+              : `¿Confirmás que querés eliminar «${aEliminar.titulo}»? No hay alojamientos asignados a esta categoría. Esta acción no se puede deshacer.`
+          }
           textoConfirmar="Eliminar"
           procesando={eliminando}
           onConfirmar={confirmarEliminacion}

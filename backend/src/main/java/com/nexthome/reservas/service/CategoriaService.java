@@ -26,7 +26,8 @@ public class CategoriaService {
     @Transactional(readOnly = true)
     public List<CategoriaResponse> listar() {
         return repository.findAllByOrderByTituloAsc().stream()
-                .map(CategoriaResponse::desde)
+                .map(categoria -> CategoriaResponse.desde(
+                        categoria, productoRepository.countByCategoriaId(categoria.getId())))
                 .toList();
     }
 

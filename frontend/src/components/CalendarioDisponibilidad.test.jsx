@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CalendarioDisponibilidad from "./CalendarioDisponibilidad";
 import { obtenerDisponibilidad } from "../api/reservas";
@@ -139,6 +139,44 @@ describe("Calendario de disponibilidad", () => {
 
     await waitFor(() => expect(obtenerDisponibilidad).toHaveBeenCalledTimes(2));
     expect(screen.queryByText(/no pudimos consultar/i)).not.toBeInTheDocument();
+  });
+
+  it("ofrece los campos de ingreso y egreso", async () => {
+    renderizar();
+
+    expect(await screen.findByLabelText(/ingreso/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/egreso/i)).toBeInTheDocument();
+  });
+
+  it("el egreso está deshabilitado hasta que haya ingreso", async () => {
+    renderizar();
+
+    expect(await screen.findByLabelText(/egreso/i)).toBeDisabled();
+  });
+
+  it("escribir el ingreso también propone el mes", async () => {
+    const onSeleccionar = renderizar();
+    const dia = diaDelMesVisible();
+
+    await waitFor(() => expect(obtenerDisponibilidad).toHaveBeenCalled());
+    fireEvent.change(screen.getByLabelText(/ingreso/i), { target: { value: dia.texto } });
+
+    expect(onSeleccionar).toHaveBeenCalledWith({
+      entrada: dia.texto,
+      salida: unMesDespues(dia.texto),
+    });
+  });
+
+  it("con un rango elegido se pueden limpiar las fechas", async () => {
+    const entrada = diaDelMesVisible();
+    const usuario = userEvent.setup();
+    const onSeleccionar = renderizar({
+      seleccion: { entrada: entrada.texto, salida: unMesDespues(entrada.texto) },
+    });
+
+    await usuario.click(await screen.findByRole("button", { name: /limpiar fechas/i }));
+
+    expect(onSeleccionar).toHaveBeenCalledWith({ entrada: "", salida: "" });
   });
 
   it("explica qué significa cada color", async () => {

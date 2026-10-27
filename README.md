@@ -33,8 +33,10 @@ todos los destinos" volvés al catálogo completo.
 Si cargás las dos fechas, la búsqueda deja afuera lo que ya está reservado en ese rango.
 Con una sola fecha no alcanza para saber qué está ocupado, así que en ese caso no filtra.
 
-En el detalle, el bloque **Disponibilidad** muestra un calendario doble, dos meses a la
-vista, con las fechas ocupadas tachadas y en gris. Al elegir la entrada se propone sola
+En el detalle, el bloque **Disponibilidad** tiene arriba los campos de ingreso y egreso, y
+debajo un calendario doble, dos meses separados por una división, con las fechas ocupadas
+tachadas y en gris. Las dos formas de elegir están sincronizadas: escribís la fecha o la
+tocás en el calendario, y da igual. Al elegir la entrada se propone sola
 una estadía de un mes exacto, que es lo más habitual; si querés otra cosa, el siguiente
 clic cambia la salida. Si el rango elegido pisa noches ya reservadas, esas noches se
 marcan aparte dentro de la selección y el botón de reservar queda bloqueado hasta que
@@ -89,7 +91,8 @@ Entrás por `/administracion` y tenés seis funciones:
 - **Editar producto**: lo mismo, sobre uno ya publicado. Si no elegís fotos nuevas se
   conservan las que tenía; si elegís, reemplazan a las anteriores.
 - **Agregar categoría**: título, descripción e imagen representativa. También se editan y
-  se eliminan (los alojamientos que la tenían quedan sin categoría, no se borran).
+  se eliminan. Antes de borrar, el aviso dice cuántos alojamientos quedarán sin categoría
+  y aclara que esos alojamientos no se eliminan.
 - **Administrar características**: alta, edición y baja, cada una con su ícono asociado.
 - **Usuarios registrados**: el listado completo, con la posibilidad de dar y quitar
   permisos de administrador.
@@ -284,8 +287,8 @@ esa persona siga teniendo su token vigente.
 ## Las pruebas
 
 ```bash
-cd backend && mvn test        # 110 pruebas de la API
-cd frontend && npm test       # 146 pruebas de componentes y páginas
+cd backend && mvn test        # 112 pruebas de la API
+cd frontend && npm test       # 161 pruebas de componentes y páginas
 ```
 
 Del lado del backend se prueban el registro, el login con credenciales válidas e inválidas,
@@ -318,6 +321,16 @@ misma carpeta.
 Para cambiar las fotos de un alojamiento alcanza con reemplazar los archivos de su
 carpeta y reiniciar el backend. Si a alguno le faltan, se genera un paisaje en su lugar,
 así que la carga nunca queda sin imágenes.
+
+## Documentación
+
+En `docs/` están los dos documentos de gestión del desafío:
+
+- **[Bitácora](docs/bitacora.md)**: la definición del proyecto, el alcance, las decisiones
+  de arquitectura con su porqué, el avance sprint a sprint y la deuda técnica conocida.
+- **[Plan de pruebas](docs/plan-de-pruebas.md)**: los casos derivados de cada historia de
+  usuario, dónde está automatizado cada uno, y los defectos que se encontraron y
+  corrigieron.
 
 ## Cómo está organizado
 

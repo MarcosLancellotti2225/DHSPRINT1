@@ -91,6 +91,24 @@ export default function CalendarioDisponibilidad({ productoId, seleccion, onSele
   const hoy = new Date();
   const puedeRetroceder =
     mes > new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+  const hoyTexto = aTexto(hoy);
+
+  /**
+   * Los campos de fecha son la otra forma de elegir el rango, además del
+   * calendario. Escribir la entrada vuelve a proponer el mes, igual que el clic.
+   */
+  function alEscribirEntrada(evento) {
+    const dia = evento.target.value;
+    if (!dia) {
+      onSeleccionar({ entrada: "", salida: "" });
+      return;
+    }
+    onSeleccionar({ entrada: dia, salida: unMesDespues(dia) });
+  }
+
+  function alEscribirSalida(evento) {
+    onSeleccionar({ entrada: seleccion.entrada, salida: evento.target.value });
+  }
 
   if (cargando) {
     return <p className="estado-vacio">Consultando disponibilidad…</p>;
@@ -113,6 +131,47 @@ export default function CalendarioDisponibilidad({ productoId, seleccion, onSele
 
   return (
     <div className="calendario">
+      <div className="calendario__campos">
+        <div className="field calendario__campo">
+          <label htmlFor="calendario-entrada">Ingreso</label>
+          <input
+            id="calendario-entrada"
+            className="input"
+            type="date"
+            min={hoyTexto}
+            value={seleccion.entrada}
+            onChange={alEscribirEntrada}
+          />
+        </div>
+
+        <span className="calendario__flecha" aria-hidden="true">
+          →
+        </span>
+
+        <div className="field calendario__campo">
+          <label htmlFor="calendario-salida">Egreso</label>
+          <input
+            id="calendario-salida"
+            className="input"
+            type="date"
+            min={seleccion.entrada || hoyTexto}
+            value={seleccion.salida}
+            disabled={!seleccion.entrada}
+            onChange={alEscribirSalida}
+          />
+        </div>
+
+        {seleccion.entrada && (
+          <button
+            type="button"
+            className="btn btn-ghost calendario__limpiar"
+            onClick={() => onSeleccionar({ entrada: "", salida: "" })}
+          >
+            Limpiar fechas
+          </button>
+        )}
+      </div>
+
       <div className="calendario__barra">
         <button
           type="button"

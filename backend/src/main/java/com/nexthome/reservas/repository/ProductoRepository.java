@@ -71,6 +71,8 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     long countByCiudadId(Long ciudadId);
 
+    long countByCategoriaId(Long categoriaId);
+
     /** Deja sin categoría a los productos que apuntaban a la que se está eliminando. */
     @Modifying
     @Query("update Producto p set p.categoria = null where p.categoria.id = :categoriaId")
