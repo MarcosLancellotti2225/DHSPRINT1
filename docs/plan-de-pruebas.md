@@ -2,13 +2,13 @@
 
 Casos de prueba derivados de las historias de usuario, y su estado de ejecución.
 
-- **Automatizadas:** 112 del backend (JUnit + MockMvc) y 161 del frontend (Vitest +
-  Testing Library), **273 en total**.
+- **Automatizadas:** 112 del backend (JUnit + MockMvc) y 163 del frontend (Vitest +
+  Testing Library), **275 en total**.
 - **Última ejecución:** todas en verde.
 
 ```bash
 cd backend && mvn test      # 112
-cd frontend && npm test     # 161
+cd frontend && npm test     # 163
 ```
 
 ---
@@ -71,8 +71,8 @@ Cada caso indica dónde está automatizado. **M** = verificación manual.
 | --- | --- | --- | --- |
 | 23.1 | Abrir el detalle | Muestra dos meses a la vez | `CalendarioDisponibilidad.test.jsx` |
 | 23.2 | Alojamiento con reservas | Fechas ocupadas tachadas y deshabilitadas | `CalendarioDisponibilidad.test.jsx` |
-| 23.3 | Elegir fecha de entrada | Propone la salida a un mes exacto | `CalendarioDisponibilidad.test.jsx` |
-| 23.4 | Segundo clic en otro día | Cambia la salida propuesta | `CalendarioDisponibilidad.test.jsx` |
+| 23.3 | Primer clic | Fija la entrada y deja la salida abierta | `CalendarioDisponibilidad.test.jsx` |
+| 23.4 | Segundo clic | Fija la salida del rango | `CalendarioDisponibilidad.test.jsx` |
 | 23.5 | Rango que pisa una reserva | Marca esas noches y bloquea reservar | `CalendarioDisponibilidad.test.jsx` |
 | 23.6 | Escribir la fecha en el campo | Sincroniza con el calendario | `CalendarioDisponibilidad.test.jsx` |
 | 23.7 | Falla la consulta de disponibilidad | Mensaje claro + botón Reintentar | `CalendarioDisponibilidad.test.jsx` |
@@ -131,6 +131,8 @@ Cada caso indica dónde está automatizado. **M** = verificación manual.
 | 27.5 | Elegir una red | Abre su URL con enlace y mensaje | `ModalCompartir.test.jsx` |
 | 27.6 | Mensaje editado | Se comparte el editado, no el propuesto | `ModalCompartir.test.jsx` |
 | 27.7 | Copiar enlace | Va al portapapeles y confirma | `ModalCompartir.test.jsx` |
+| 27.9 | Enlace a la vista | Se puede copiar para cualquier otro medio | `ModalCompartir.test.jsx` |
+| 27.10 | Cada red con su logo | Se muestra el ícono de la red | `ModalCompartir.test.jsx` |
 | 27.8 | Publicación efectiva en la red | Se abre el diálogo de la red | **M** |
 
 ### #28 Puntuar producto
@@ -189,18 +191,18 @@ frontend el registro, el login, el avatar, la galería y el panel.
 | `CaracteristicaControllerTest` | 9 |
 | `UsuarioControllerTest` | 7 |
 
-### Frontend · 161 pruebas
+### Frontend · 163 pruebas
 
 | Archivo | Casos |
 | --- | --- |
 | `Buscador.test.jsx` | 16 |
 | `calendario.test.js` | 14 |
-| `CalendarioDisponibilidad.test.jsx` | 12 |
+| `CalendarioDisponibilidad.test.jsx` | 13 |
 | `Home.test.jsx` | 11 |
 | `ValoracionesProducto.test.jsx` | 10 |
 | `AvatarUsuario.test.jsx` | 8 |
 | `Categorias.test.jsx` | 8 |
-| `ModalCompartir.test.jsx` | 7 |
+| `ModalCompartir.test.jsx` | 9 |
 | `useModal.test.jsx`, `Registro.test.jsx` | 6 cada uno |
 | `BotonFavorito`, `Paginacion`, `AdminCategorias`, `AdminListaProductos`, `AdminUsuarios` | 5 cada uno |
 | `Estrellas`, `GaleriaImagenes`, `ImagenProducto`, `PanelAdmin`, `PoliticasProducto`, `Favoritos`, `AdminNuevoProducto`, `useTituloPagina` | 4 cada uno |

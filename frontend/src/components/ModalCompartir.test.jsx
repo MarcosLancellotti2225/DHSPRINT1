@@ -26,12 +26,21 @@ describe("Compartir en redes", () => {
     expect(screen.getByText(window.location.href)).toBeInTheDocument();
   });
 
-  it("ofrece elegir entre varias redes", () => {
+  it("ofrece elegir entre varias redes, con su logo", () => {
+    const { container } = render(<ModalCompartir producto={HOTEL} onCerrar={vi.fn()} />);
+
+    expect(screen.getByRole("button", { name: /compartir en facebook/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /compartir en x/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /compartir en whatsapp/i })).toBeInTheDocument();
+    expect(container.querySelectorAll(".compartir__red svg")).toHaveLength(3);
+  });
+
+  it("muestra el enlace a la vista para mandarlo por cualquier medio", () => {
     render(<ModalCompartir producto={HOTEL} onCerrar={vi.fn()} />);
 
-    expect(screen.getByRole("button", { name: "Facebook" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /twitter/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "WhatsApp" })).toBeInTheDocument();
+    const campo = screen.getByLabelText(/copiá el enlace/i);
+    expect(campo).toHaveValue(window.location.href);
+    expect(campo).toHaveAttribute("readonly");
   });
 
   it("propone un mensaje y deja editarlo", async () => {
@@ -50,7 +59,7 @@ describe("Compartir en redes", () => {
     const usuario = userEvent.setup();
     render(<ModalCompartir producto={HOTEL} onCerrar={vi.fn()} />);
 
-    await usuario.click(screen.getByRole("button", { name: "Facebook" }));
+    await usuario.click(screen.getByRole("button", { name: /compartir en facebook/i }));
 
     expect(window.open).toHaveBeenCalledTimes(1);
     const [destino, , opciones] = window.open.mock.calls[0];
@@ -66,7 +75,7 @@ describe("Compartir en redes", () => {
 
     await usuario.clear(screen.getByLabelText(/tu mensaje/i));
     await usuario.type(screen.getByLabelText(/tu mensaje/i), "Mensaje propio");
-    await usuario.click(screen.getByRole("button", { name: /twitter/i }));
+    await usuario.click(screen.getByRole("button", { name: /compartir en x/i }));
 
     expect(window.open.mock.calls[0][0]).toContain(encodeURIComponent("Mensaje propio"));
   });
@@ -82,10 +91,10 @@ describe("Compartir en redes", () => {
 
     render(<ModalCompartir producto={HOTEL} onCerrar={vi.fn()} />);
 
-    await usuario.click(screen.getByRole("button", { name: /copiar enlace/i }));
+    await usuario.click(screen.getByRole("button", { name: /^copiar$/i }));
 
     expect(escribir).toHaveBeenCalledWith(expect.stringContaining(window.location.href));
-    expect(await screen.findByRole("button", { name: /enlace copiado/i })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: /copiado/i })).toBeInTheDocument();
   });
 
   it("se cierra con el botón", async () => {

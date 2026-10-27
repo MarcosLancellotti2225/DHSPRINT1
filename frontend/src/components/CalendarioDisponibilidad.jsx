@@ -7,7 +7,6 @@ import {
   esPasada,
   estaOcupada,
   nombreDelMes,
-  unMesDespues,
 } from "../utils/calendario";
 import "../styles/CalendarioDisponibilidad.css";
 
@@ -58,16 +57,15 @@ export default function CalendarioDisponibilidad({ productoId, seleccion, onSele
   }
 
   /**
-   * Primer clic fija la entrada y propone la salida a un mes exacto, que es la
-   * estadía más habitual; el segundo clic la cambia por la que el usuario quiera.
-   * Si ese segundo clic cae antes de la entrada, se toma como nueva entrada.
+   * Primer clic fija la entrada; el segundo, la salida. Si el segundo cae antes de
+   * la entrada, se toma como nueva entrada en lugar de rechazarlo.
    */
   function elegirDia(fecha) {
     const dia = aTexto(fecha);
     const { entrada, salida } = seleccion;
 
     if (!entrada || salida || dia <= entrada) {
-      onSeleccionar({ entrada: dia, salida: unMesDespues(dia) });
+      onSeleccionar({ entrada: dia, salida: "" });
       return;
     }
     onSeleccionar({ entrada, salida: dia });
@@ -94,16 +92,12 @@ export default function CalendarioDisponibilidad({ productoId, seleccion, onSele
   const hoyTexto = aTexto(hoy);
 
   /**
-   * Los campos de fecha son la otra forma de elegir el rango, además del
-   * calendario. Escribir la entrada vuelve a proponer el mes, igual que el clic.
+   * Los campos de fecha son la otra forma de elegir el rango, además del calendario.
+   * Cambiar la entrada limpia la salida: un rango a medio editar confunde más de lo
+   * que ayuda.
    */
   function alEscribirEntrada(evento) {
-    const dia = evento.target.value;
-    if (!dia) {
-      onSeleccionar({ entrada: "", salida: "" });
-      return;
-    }
-    onSeleccionar({ entrada: dia, salida: unMesDespues(dia) });
+    onSeleccionar({ entrada: evento.target.value, salida: "" });
   }
 
   function alEscribirSalida(evento) {

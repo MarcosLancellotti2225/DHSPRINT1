@@ -36,9 +36,8 @@ Con una sola fecha no alcanza para saber qué está ocupado, así que en ese cas
 En el detalle, el bloque **Disponibilidad** tiene arriba los campos de ingreso y egreso, y
 debajo un calendario doble, dos meses separados por una división, con las fechas ocupadas
 tachadas y en gris. Las dos formas de elegir están sincronizadas: escribís la fecha o la
-tocás en el calendario, y da igual. Al elegir la entrada se propone sola
-una estadía de un mes exacto, que es lo más habitual; si querés otra cosa, el siguiente
-clic cambia la salida. Si el rango elegido pisa noches ya reservadas, esas noches se
+tocás en el calendario, y da igual. Un clic fija la entrada y el
+siguiente la salida. Si el rango elegido pisa noches ya reservadas, esas noches se
 marcan aparte dentro de la selección y el botón de reservar queda bloqueado hasta que
 elijas otras fechas. La noche del check-out queda libre para el
 siguiente huésped, así que dos estadías pueden encadenarse. Si la consulta de fechas falla,
@@ -53,8 +52,9 @@ del listado.
 Abajo del todo, en cada alojamiento, está el bloque **"Qué tenés que saber"**, con las
 políticas de uso repartidas en columnas: normas de la casa, salud y seguridad, y
 cancelación. Y desde el botón **Compartir** del encabezado abrís una ventana con la foto,
-la descripción y el enlace del alojamiento, un mensaje que podés editar y los botones para
-mandarlo por Facebook, X, WhatsApp o copiar el enlace.
+la descripción y el enlace del alojamiento, un mensaje que podés editar y los logos de
+Facebook, X y WhatsApp. Debajo está el enlace a la vista con un botón para copiarlo y
+mandarlo por donde quieras: Instagram, un mail o un mensaje.
 
 Si entrás a cualquier alojamiento, arriba te espera una galería: una foto grande a la
 izquierda y cuatro más en una grilla a la derecha. Con el "Ver más" de la esquina se abren
@@ -288,7 +288,7 @@ esa persona siga teniendo su token vigente.
 
 ```bash
 cd backend && mvn test        # 112 pruebas de la API
-cd frontend && npm test       # 161 pruebas de componentes y páginas
+cd frontend && npm test       # 163 pruebas de componentes y páginas
 ```
 
 Del lado del backend se prueban el registro, el login con credenciales válidas e inválidas,

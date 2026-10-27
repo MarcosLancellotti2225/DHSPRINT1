@@ -152,7 +152,8 @@ Los cuatro los encontraron las pruebas antes de llegar al navegador.
 Cosas que quedaron pendientes y conviene no ocultar:
 
 - **Instagram no está entre las redes para compartir.** Su API no permite publicar desde
-  la web; un botón suyo no haría nada. Se ofrece copiar el enlace en su lugar.
+  la web; un botón suyo no haría nada. En su lugar, el enlace queda a la vista con un
+  botón para copiarlo y pegarlo donde haga falta.
 - **No se pueden cancelar reservas** desde el sitio. No hay historia que lo pida.
 - **El email de confirmación de registro** (historia #19, opcional) no se implementó.
 - **Las credenciales por defecto** (`JWT_SECRET`, `ADMIN_PASSWORD`) sirven para desarrollo.

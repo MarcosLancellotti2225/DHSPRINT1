@@ -56,18 +56,45 @@
 }
 
 .compartir__redes {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: var(--space-2);
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
   margin-top: var(--space-4);
 }
 
+/* Cada red es su logo con el nombre debajo. */
 .compartir__red {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 84px;
+  padding: var(--space-3) var(--space-2);
+  cursor: pointer;
+  font: inherit;
+  color: var(--color-neutral-200);
+  background: transparent;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
 }
 
-.compartir__aclaracion {
-  margin: var(--space-3) 0 0;
+.compartir__red:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+.compartir__red-nombre {
   font-size: 12px;
-  color: var(--color-neutral-400);
+}
+
+.compartir__enlace {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.compartir__enlace .input {
+  font-size: 13px;
+  color: var(--color-neutral-300);
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ImagenProducto from "./ImagenProducto";
+import IconoRed from "./IconoRed";
 import useModal from "../hooks/useModal";
 import "../styles/ModalCompartir.css";
 
@@ -103,22 +104,35 @@ export default function ModalCompartir({ producto, onCerrar }) {
             <button
               key={red.id}
               type="button"
-              className="btn btn-secondary compartir__red"
+              className="compartir__red"
+              title={`Compartir en ${red.nombre}`}
+              aria-label={`Compartir en ${red.nombre}`}
               onClick={() => compartirEn(red)}
             >
-              {red.nombre}
+              <IconoRed red={red.id} />
+              <span className="compartir__red-nombre">{red.nombre}</span>
             </button>
           ))}
-
-          <button type="button" className="btn btn-secondary compartir__red" onClick={copiarEnlace}>
-            {copiado ? "¡Enlace copiado!" : "Copiar enlace"}
-          </button>
         </div>
 
-        <p className="compartir__aclaracion">
-          Instagram no permite publicar desde la web. Copiá el enlace y pegalo en tu
-          historia o en un mensaje.
-        </p>
+        {/* El enlace a la vista sirve para mandarlo por cualquier otro medio:
+            Instagram, un mail, un mensaje. */}
+        <div className="field compartir__campo">
+          <label htmlFor="enlace-compartir">O copiá el enlace y mandalo por donde quieras</label>
+          <div className="compartir__enlace">
+            <input
+              id="enlace-compartir"
+              className="input"
+              type="text"
+              readOnly
+              value={url}
+              onFocus={(evento) => evento.target.select()}
+            />
+            <button type="button" className="btn btn-primary" onClick={copiarEnlace}>
+              {copiado ? "¡Copiado!" : "Copiar"}
+            </button>
+          </div>
+        </div>
 
         <div className="dialog-actions">
           <button type="button" className="btn btn-secondary" onClick={onCerrar}>

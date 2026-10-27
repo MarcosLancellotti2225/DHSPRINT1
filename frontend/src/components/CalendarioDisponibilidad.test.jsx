@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CalendarioDisponibilidad from "./CalendarioDisponibilidad";
 import { obtenerDisponibilidad } from "../api/reservas";
-import { aTexto, unMesDespues } from "../utils/calendario";
+import { aTexto } from "../utils/calendario";
 
 vi.mock("../api/reservas", () => ({
   obtenerDisponibilidad: vi.fn(),
@@ -64,7 +64,7 @@ describe("Calendario de disponibilidad", () => {
     ocupadas.forEach((celda) => expect(celda).toBeDisabled());
   });
 
-  it("al elegir la entrada propone la salida a un mes exacto", async () => {
+  it("el primer clic fija la entrada y deja la salida abierta", async () => {
     const usuario = userEvent.setup();
     const onSeleccionar = renderizar();
 
@@ -74,30 +74,42 @@ describe("Calendario de disponibilidad", () => {
     const celdas = screen.getAllByRole("button", { name: new RegExp(`^${dia.numero} de `) });
     await usuario.click(celdas[celdas.length - 1]);
 
-    expect(onSeleccionar).toHaveBeenCalledWith({
-      entrada: dia.texto,
-      salida: unMesDespues(dia.texto),
-    });
+    expect(onSeleccionar).toHaveBeenCalledWith({ entrada: dia.texto, salida: "" });
   });
 
-  it("un segundo clic cambia la salida propuesta", async () => {
+  it("el segundo clic fija la salida", async () => {
     const entrada = diaDelMesVisible();
     const usuario = userEvent.setup();
     const onSeleccionar = renderizar({
-      seleccion: { entrada: entrada.texto, salida: unMesDespues(entrada.texto) },
+      seleccion: { entrada: entrada.texto, salida: "" },
     });
 
     await waitFor(() => expect(obtenerDisponibilidad).toHaveBeenCalled());
 
-    // Con un rango ya elegido, el siguiente clic arranca uno nuevo.
-    const otro = diaDelMesVisible(3);
-    const celdas = screen.getAllByRole("button", { name: new RegExp(`^${otro.numero} de `) });
+    const salida = diaDelMesVisible(3);
+    const celdas = screen.getAllByRole("button", { name: new RegExp(`^${salida.numero} de `) });
     await usuario.click(celdas[celdas.length - 1]);
 
     expect(onSeleccionar).toHaveBeenCalledWith({
-      entrada: otro.texto,
-      salida: unMesDespues(otro.texto),
+      entrada: entrada.texto,
+      salida: salida.texto,
     });
+  });
+
+  it("clickear antes de la entrada arranca un rango nuevo", async () => {
+    const entrada = diaDelMesVisible(5);
+    const usuario = userEvent.setup();
+    const onSeleccionar = renderizar({
+      seleccion: { entrada: entrada.texto, salida: "" },
+    });
+
+    await waitFor(() => expect(obtenerDisponibilidad).toHaveBeenCalled());
+
+    const anterior = diaDelMesVisible(1);
+    const celdas = screen.getAllByRole("button", { name: new RegExp(`^${anterior.numero} de `) });
+    await usuario.click(celdas[celdas.length - 1]);
+
+    expect(onSeleccionar).toHaveBeenCalledWith({ entrada: anterior.texto, salida: "" });
   });
 
   it("marca aparte las noches ocupadas que caen dentro del rango", async () => {
@@ -111,7 +123,7 @@ describe("Calendario de disponibilidad", () => {
     const { container } = render(
       <CalendarioDisponibilidad
         productoId={7}
-        seleccion={{ entrada: entrada.texto, salida: unMesDespues(entrada.texto) }}
+        seleccion={{ entrada: entrada.texto, salida: diaDelMesVisible(4).texto }}
         onSeleccionar={vi.fn()}
       />
     );
@@ -154,24 +166,21 @@ describe("Calendario de disponibilidad", () => {
     expect(await screen.findByLabelText(/egreso/i)).toBeDisabled();
   });
 
-  it("escribir el ingreso también propone el mes", async () => {
+  it("escribir el ingreso deja la salida abierta", async () => {
     const onSeleccionar = renderizar();
     const dia = diaDelMesVisible();
 
     await waitFor(() => expect(obtenerDisponibilidad).toHaveBeenCalled());
     fireEvent.change(screen.getByLabelText(/ingreso/i), { target: { value: dia.texto } });
 
-    expect(onSeleccionar).toHaveBeenCalledWith({
-      entrada: dia.texto,
-      salida: unMesDespues(dia.texto),
-    });
+    expect(onSeleccionar).toHaveBeenCalledWith({ entrada: dia.texto, salida: "" });
   });
 
   it("con un rango elegido se pueden limpiar las fechas", async () => {
     const entrada = diaDelMesVisible();
     const usuario = userEvent.setup();
     const onSeleccionar = renderizar({
-      seleccion: { entrada: entrada.texto, salida: unMesDespues(entrada.texto) },
+      seleccion: { entrada: entrada.texto, salida: diaDelMesVisible(4).texto },
     });
 
     await usuario.click(await screen.findByRole("button", { name: /limpiar fechas/i }));
