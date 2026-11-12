@@ -2,10 +2,12 @@ import { Link } from "react-router-dom";
 import ImagenProducto from "./ImagenProducto";
 import BotonFavorito from "./BotonFavorito";
 import Estrellas from "./Estrellas";
+import { formatearPrecio } from "../utils/precio";
 import "../styles/ProductoCard.css";
 
 export default function ProductoCard({ producto }) {
   const portada = producto.imagenes?.[0];
+  const precio = formatearPrecio(producto.precioPorNoche);
 
   return (
     <article className="card elev-sm tarjeta">
@@ -33,7 +35,15 @@ export default function ProductoCard({ producto }) {
             </span>
           )}
           <p className="card-body tarjeta__descripcion">{producto.descripcion}</p>
-          <span className="tarjeta__ver">Ver detalle</span>
+
+          <div className="tarjeta__pie">
+            {precio && (
+              <span className="tarjeta__precio">
+                {precio} <small>por noche</small>
+              </span>
+            )}
+            <span className="tarjeta__ver">Ver detalle</span>
+          </div>
         </div>
       </Link>
     </article>

@@ -1,5 +1,6 @@
 package com.nexthome.reservas.service;
 
+import com.nexthome.reservas.dto.CriteriosDeBusqueda;
 import com.nexthome.reservas.dto.PaginaResponse;
 import com.nexthome.reservas.dto.ProductoEdicionRequest;
 import com.nexthome.reservas.dto.ProductoRequest;
@@ -18,7 +19,6 @@ import com.nexthome.reservas.repository.FavoritoRepository;
 import com.nexthome.reservas.repository.ReservaRepository;
 import com.nexthome.reservas.repository.ValoracionRepository;
 
-import java.time.LocalDate;
 import com.nexthome.reservas.repository.ProductoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -79,6 +79,8 @@ public class ProductoService {
         }
 
         Producto producto = new Producto(nombre, request.getDescripcion().trim());
+        producto.setCapacidad(request.getCapacidad());
+        producto.setPrecioPorNoche(request.getPrecioPorNoche());
         producto.setCiudad(resolverCiudad(request.getCiudadId()));
         producto.setCategoria(resolverCategoria(request.getCategoriaId()));
         producto.setCaracteristicas(resolverCaracteristicas(request.getCaracteristicaIds()));
@@ -117,6 +119,8 @@ public class ProductoService {
 
         producto.setNombre(nombre);
         producto.setDescripcion(request.getDescripcion().trim());
+        producto.setCapacidad(request.getCapacidad());
+        producto.setPrecioPorNoche(request.getPrecioPorNoche());
         producto.setCiudad(resolverCiudad(request.getCiudadId()));
         producto.setCategoria(resolverCategoria(request.getCategoriaId()));
         producto.setCaracteristicas(resolverCaracteristicas(request.getCaracteristicaIds()));
@@ -146,35 +150,44 @@ public class ProductoService {
      * El filtro se resuelve en la base junto con la paginación, no en memoria.
      */
     @Transactional(readOnly = true)
-    public PaginaResponse<ProductoResponse> listarPaginado(
-            int pagina, int tamanio, Long ciudadId, List<Long> categoriaIds,
-            LocalDate entrada, LocalDate salida) {
+    public PaginaResponse<ProductoResponse> listarPaginado(int pagina, int tamanio,
+                                                           CriteriosDeBusqueda criterios) {
         int paginaSegura = Math.max(pagina, 0);
         int tamanioSeguro = Math.clamp(tamanio, 1, TAMANIO_MAXIMO_PAGINA);
         var orden = PageRequest.of(paginaSegura, tamanioSeguro, Sort.by(Sort.Direction.DESC, "id"));
 
-        boolean sinFiltroDeCategorias = categoriaIds == null || categoriaIds.isEmpty();
-        // El in necesita una lista no vacía aunque la bandera lo desactive.
-        List<Long> categorias = sinFiltroDeCategorias ? List.of(-1L) : categoriaIds;
+        CriteriosDeBusqueda filtros = criterios == null
+                ? CriteriosDeBusqueda.vacios()
+                : criterios.normalizado();
 
-        // Sólo se filtra por fechas con el rango completo y coherente; media fecha no
-        // alcanza para saber qué está ocupado.
-        boolean sinFiltroDeFechas = entrada == null || salida == null || !salida.isAfter(entrada);
+        // El in necesita una lista no vacía aunque la bandera lo desactive.
+        List<Long> categorias = filtros.sinFiltroDeCategorias() ? List.of(-1L) : filtros.categoriaIds();
+        List<Long> caracteristicas = filtros.sinFiltroDeCaracteristicas()
+                ? List.of(-1L)
+                : filtros.caracteristicaIds();
+
+        boolean sinFiltroDeFechas = filtros.sinFiltroDeFechas();
         List<Long> ocupados = sinFiltroDeFechas
                 ? List.of(-1L)
-                : reservaRepository.buscarIdsOcupados(entrada, salida);
+                : reservaRepository.buscarIdsOcupados(filtros.entrada(), filtros.salida());
         if (!sinFiltroDeFechas && ocupados.isEmpty()) {
             ocupados = List.of(-1L);
         }
 
         Page<Long> paginaDeIds = repository.buscarPagina(
-                ciudadId, sinFiltroDeCategorias, categorias, sinFiltroDeFechas, ocupados, orden);
+                filtros.ciudadId(), filtros.sinFiltroDeCategorias(), categorias,
+                sinFiltroDeFechas, ocupados, filtros.capacidadMinima(),
+                filtros.precioMinimo(), filtros.precioMaximo(),
+                filtros.sinFiltroDeCaracteristicas(), caracteristicas,
+                caracteristicas.size(), orden);
 
         // El total de referencia es el del destino elegido: dentro de una búsqueda,
         // comparar contra el catálogo entero no le diría nada al usuario.
-        long totalSinFiltro = sinFiltroDeCategorias && sinFiltroDeFechas
+        long totalSinFiltro = filtros.soloDestino()
                 ? paginaDeIds.getTotalElements()
-                : (ciudadId == null ? repository.count() : repository.countByCiudadId(ciudadId));
+                : (filtros.ciudadId() == null
+                        ? repository.count()
+                        : repository.countByCiudadId(filtros.ciudadId()));
 
         List<ProductoResponse> contenido = hidratarEnOrden(paginaDeIds.getContent());
         return PaginaResponse.de(

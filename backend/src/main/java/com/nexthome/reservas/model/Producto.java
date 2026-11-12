@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -33,6 +34,17 @@ public class Producto {
 
     @Column(nullable = false, length = 4000)
     private String descripcion;
+
+    /** Cuántos huéspedes entran. Es por lo que filtra el buscador. */
+    @Column(nullable = false)
+    private int capacidad = 2;
+
+    /**
+     * Precio por noche. BigDecimal y no double: con plata, los redondeos del punto
+     * flotante se acumulan al multiplicar por la cantidad de noches.
+     */
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal precioPorNoche = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")
@@ -98,6 +110,22 @@ public class Producto {
     public void reemplazarImagenes(List<ProductoImagen> nuevas) {
         this.imagenes.clear();
         nuevas.forEach(this::agregarImagen);
+    }
+
+    public int getCapacidad() {
+        return capacidad;
+    }
+
+    public void setCapacidad(int capacidad) {
+        this.capacidad = capacidad;
+    }
+
+    public BigDecimal getPrecioPorNoche() {
+        return precioPorNoche;
+    }
+
+    public void setPrecioPorNoche(BigDecimal precioPorNoche) {
+        this.precioPorNoche = precioPorNoche;
     }
 
     public Ciudad getCiudad() {

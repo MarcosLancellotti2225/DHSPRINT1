@@ -2,6 +2,7 @@ package com.nexthome.reservas.dto;
 
 import com.nexthome.reservas.model.Producto;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 
@@ -9,6 +10,8 @@ public record ProductoResponse(
         Long id,
         String nombre,
         String descripcion,
+        int capacidad,
+        BigDecimal precioPorNoche,
         CiudadResponse ciudad,
         CategoriaResponse categoria,
         List<CaracteristicaResponse> caracteristicas,
@@ -34,6 +37,8 @@ public record ProductoResponse(
                 producto.getId(),
                 producto.getNombre(),
                 producto.getDescripcion(),
+                producto.getCapacidad(),
+                producto.getPrecioPorNoche(),
                 CiudadResponse.desde(producto.getCiudad()),
                 CategoriaResponse.desde(producto.getCategoria()),
                 caracteristicas,

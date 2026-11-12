@@ -1,7 +1,14 @@
 package com.nexthome.reservas.dto;
 
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.math.BigDecimal;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -15,16 +22,31 @@ import java.util.List;
 public class ProductoEdicionRequest {
 
     @NotBlank(message = "El nombre es obligatorio")
-    @Size(max = 150, message = "El nombre no puede superar los 150 caracteres")
+    @Size(min = 5, max = 150, message = "El nombre tiene que tener entre 5 y 150 caracteres")
     private String nombre;
 
     @NotBlank(message = "La descripción es obligatoria")
-    @Size(max = 4000, message = "La descripción no puede superar los 4000 caracteres")
+    @Size(min = 20, max = 4000, message = "La descripción tiene que tener entre 20 y 4000 caracteres")
     private String descripcion;
 
-    /** Opcional: un producto puede no tener ciudad asignada. */
+    /** Cuántos huéspedes entran. El buscador filtra por esto. */
+    @NotNull(message = "La capacidad es obligatoria")
+    @Min(value = 1, message = "Tiene que entrar al menos un huésped")
+    @Max(value = 20, message = "La capacidad no puede superar los 20 huéspedes")
+    private Integer capacidad;
+
+    /** Precio por noche. Es por lo que ordena y filtra el buscador. */
+    @NotNull(message = "El precio por noche es obligatorio")
+    @DecimalMin(value = "1.00", message = "El precio por noche tiene que ser mayor a cero")
+    @DecimalMax(value = "99999999.99", message = "El precio por noche es demasiado alto")
+    private BigDecimal precioPorNoche;
+
+    /** Sin ciudad el alojamiento no aparece en ninguna búsqueda por destino. */
+    @NotNull(message = "La ciudad es obligatoria")
     private Long ciudadId;
 
+    /** Sin categoría el alojamiento queda fuera del filtro del home. */
+    @NotNull(message = "La categoría es obligatoria")
     private Long categoriaId;
 
     private List<Long> caracteristicaIds;
@@ -45,6 +67,22 @@ public class ProductoEdicionRequest {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public Integer getCapacidad() {
+        return capacidad;
+    }
+
+    public void setCapacidad(Integer capacidad) {
+        this.capacidad = capacidad;
+    }
+
+    public BigDecimal getPrecioPorNoche() {
+        return precioPorNoche;
+    }
+
+    public void setPrecioPorNoche(BigDecimal precioPorNoche) {
+        this.precioPorNoche = precioPorNoche;
     }
 
     public Long getCiudadId() {

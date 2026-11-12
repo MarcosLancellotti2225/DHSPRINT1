@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import GaleriaImagenes from "../components/GaleriaImagenes";
 import Estrellas from "../components/Estrellas";
+import { formatearPrecio } from "../utils/precio";
 import CaracteristicasProducto from "../components/CaracteristicasProducto";
 import PoliticasProducto from "../components/PoliticasProducto";
 import ReservaProducto from "../components/ReservaProducto";
@@ -82,6 +83,19 @@ export default function DetalleProducto() {
               {producto.puntuacion} ({producto.valoraciones})
             </span>
           )}
+
+          <p className="detalle__datos">
+            {formatearPrecio(producto.precioPorNoche) && (
+              <strong className="detalle__precio">
+                {formatearPrecio(producto.precioPorNoche)} <small>por noche</small>
+              </strong>
+            )}
+            {producto.capacidad > 0 && (
+              <span className="detalle__capacidad">
+                Hasta {producto.capacidad} {producto.capacidad === 1 ? "huésped" : "huéspedes"}
+              </span>
+            )}
+          </p>
         </div>
         <div className="detalle__acciones">
           <button
