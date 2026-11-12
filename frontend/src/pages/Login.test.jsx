@@ -18,9 +18,9 @@ vi.mock("react-router-dom", async () => {
   return { ...real, useNavigate: () => navegar };
 });
 
-function renderizarLogin() {
+function renderizarLogin({ estado } = {}) {
   return render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[{ pathname: "/ingresar", state: estado }]}>
       <ProveedorSesion>
         <Login />
       </ProveedorSesion>
@@ -78,5 +78,19 @@ describe("Inicio de sesión", () => {
     expect(await screen.findByText("El email o la contraseña no son correctos")).toBeInTheDocument();
     expect(localStorage.getItem("nexthome.token")).toBeNull();
     expect(navegar).not.toHaveBeenCalled();
+  });
+
+  // Quien llega acá desde el botón de reservar tiene que entender por qué se le
+  // pide la sesión, para que no parezca que el sitio lo expulsó.
+  it("explica por que se pide la sesion al venir de reservar", () => {
+    renderizarLogin({ estado: { motivo: "reservar", desde: "/reservar/2" } });
+
+    expect(screen.getByText(/para reservar hace falta/i)).toBeInTheDocument();
+  });
+
+  it("no muestra ese aviso al entrar por el menu", () => {
+    renderizarLogin();
+
+    expect(screen.queryByText(/para reservar hace falta/i)).not.toBeInTheDocument();
   });
 });

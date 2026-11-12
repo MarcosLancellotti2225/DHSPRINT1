@@ -2,13 +2,13 @@
 
 Casos de prueba derivados de las historias de usuario, y su estado de ejecución.
 
-- **Automatizadas:** 130 del backend (JUnit + MockMvc) y 256 del frontend (Vitest +
-  Testing Library), **386 en total**.
+- **Automatizadas:** 130 del backend (JUnit + MockMvc) y 258 del frontend (Vitest +
+  Testing Library), **388 en total**.
 - **Última ejecución:** todas en verde.
 
 ```bash
 cd backend && mvn test      # 119
-cd frontend && npm test     # 256
+cd frontend && npm test     # 258
 ```
 
 ---
@@ -62,7 +62,7 @@ Cada caso indica dónde está automatizado. **M** = verificación manual.
 | 22.8 | Buscar con rango de fechas | Descarta los ocupados en ese rango | `ReservaControllerTest` |
 | 22.9 | Buscar con media fecha | No filtra por disponibilidad | `ReservaControllerTest` |
 | 22.10 | Combinar destino + categoría | Aplica los dos filtros | `ProductoControllerTest`, `Home.test.jsx` |
-| 22.11 | Al buscar, el home conserva su diseño | Categorías y recomendaciones siguen visibles | `Home.test.jsx` |
+| 22.11 | Buscar desde el home | Navega a `/busqueda` con los criterios en la URL | `Home.test.jsx` |
 | 22.12 | Filtro combinado con paginación | Máximo 10 por página | `ProductoControllerTest` |
 | 22.13 | Buscar para N huéspedes | Descarta los de capacidad menor | `ProductoControllerTest` |
 | 22.14 | Capacidad justa | El alojamiento entra en el resultado | `ProductoControllerTest` |
@@ -183,6 +183,72 @@ Cada caso indica dónde está automatizado. **M** = verificación manual.
 | 29.7 | Tras eliminar | Los alojamientos quedan sin categoría, no se borran | `CategoriaControllerTest` |
 | 29.8 | Eliminar sin ser administrador | Responde 403 | `CategoriaControllerTest` |
 
+### #30 Página de búsqueda con filtros
+
+| # | Caso | Resultado esperado | Dónde |
+| --- | --- | --- | --- |
+| 30.1 | Entrar con filtros en la URL | Busca con esos criterios, sin tocar nada | `Busqueda.test.jsx` |
+| 30.2 | Entrar con un destino en la URL | El buscador aparece precargado con ese destino | `Busqueda.test.jsx` |
+| 30.3 | Tildar una categoría | Sube a la URL y filtra | `Busqueda.test.jsx` |
+| 30.4 | Tildar una característica | Sube a la URL y filtra | `Busqueda.test.jsx` |
+| 30.5 | Varias características | Se piden todas, no cualquiera | `ProductoControllerTest`, `Busqueda.test.jsx` |
+| 30.6 | Aplicar un rango de precio | Filtra entre mínimo y máximo | `ProductoControllerTest`, `Busqueda.test.jsx` |
+| 30.7 | Rango de precio invertido | El panel avisa y no busca | `Busqueda.test.jsx` |
+| 30.8 | Rango invertido desde la API | El backend lo ordena solo | `ProductoControllerTest` |
+| 30.9 | Cambiar un filtro estando en la página 2 | Vuelve a la primera página | `Busqueda.test.jsx` |
+| 30.10 | "Limpiar todo" | Borra los filtros pero conserva el destino | `Busqueda.test.jsx` |
+| 30.11 | Buscar otro destino | Conserva los filtros de la columna | `Busqueda.test.jsx` |
+| 30.12 | URL escrita a mano con datos inválidos | Los descarta en vez de romper | `filtrosDeBusqueda.test.js`, `Busqueda.test.jsx` |
+| 30.13 | Escribir filtros y volver a leerlos | Devuelve exactamente lo mismo | `filtrosDeBusqueda.test.js` |
+| 30.14 | Tildar tres filtros seguidos | Una sola búsqueda, no tres | `Busqueda.test.jsx`, `useValorDemorado.test.js` |
+| 30.15 | Mientras se busca | Los resultados anteriores siguen visibles | `Busqueda.test.jsx` |
+| 30.16 | Búsqueda sin resultados | Dice qué filtro la vació y ofrece aflojarlo | `Busqueda.test.jsx` |
+| 30.17 | Botón "atrás" del navegador | Deshace el último filtro | **M** (verificado en navegador) |
+
+### #31 Reservar una estadía
+
+| # | Caso | Resultado esperado | Dónde |
+| --- | --- | --- | --- |
+| 31.1 | Elegir fechas y continuar | Lleva a `/reservar/:id` con las fechas en la URL | `Reservar.test.jsx` |
+| 31.2 | Continuar sin sesión | Avisa antes de intentarlo y guarda a dónde volver | `Login.test.jsx` |
+| 31.3 | Volver después de iniciar sesión | Las fechas elegidas no se perdieron | **M** |
+| 31.4 | Más huéspedes que la capacidad | Rechaza antes de enviar | `Reservar.test.jsx` |
+| 31.5 | Rango inválido en la URL | No habilita confirmar | `Reservar.test.jsx` |
+| 31.6 | Total de la estadía | Precio por noche × noches, bien calculado | `precio.test.js`, `Reservar.test.jsx` |
+| 31.7 | Reservar sobre fechas ocupadas | El backend responde 409 | `ReservaControllerTest` |
+| 31.8 | El precio queda congelado | Cambiar la tarifa no mueve el total ya reservado | `ReservaControllerTest` |
+
+### #32 Confirmación de la reserva
+
+| # | Caso | Resultado esperado | Dónde |
+| --- | --- | --- | --- |
+| 32.1 | Confirmar una reserva | Muestra el número de reserva | `ReservaConfirmada.test.jsx` |
+| 32.2 | Entrar sin haber reservado | Redirige al historial | `ReservaConfirmada.test.jsx` |
+| 32.3 | Recargar la confirmación | No crea otra reserva | **M** |
+
+### #33 Mis reservas
+
+| # | Caso | Resultado esperado | Dónde |
+| --- | --- | --- | --- |
+| 33.1 | Ver el historial | Separa próximas de anteriores | `MisReservas.test.jsx` |
+| 33.2 | Sin reservas | Muestra el estado vacío | `MisReservas.test.jsx` |
+| 33.3 | Cada usuario ve lo suyo | No aparecen reservas de otros | `ReservaControllerTest` |
+
+### #34 Contacto por WhatsApp
+
+| # | Caso | Resultado esperado | Dónde |
+| --- | --- | --- | --- |
+| 34.1 | El botón está en toda página | Visible sin necesidad de sesión | `BotonWhatsApp.test.jsx` |
+| 34.2 | El enlace | Abre `wa.me` en otra pestaña, con mensaje | `BotonWhatsApp.test.jsx` |
+
+### #35 Correo de confirmación
+
+| # | Caso | Resultado esperado | Dónde |
+| --- | --- | --- | --- |
+| 35.1 | Sin SMTP configurado | No envía nada; queda en el log | `CorreoServiceTest` |
+| 35.2 | Con el correo habilitado | Arma el detalle de la reserva | `CorreoServiceTest` |
+| 35.3 | El envío falla | La reserva sigue siendo válida | `CorreoServiceTest` |
+
 ### Regresión de sprints anteriores
 
 Se siguen ejecutando en cada corrida: autenticación y roles (`AutenticacionControllerTest`,
@@ -207,7 +273,7 @@ frontend el registro, el login, el avatar, la galería y el panel.
 | `CaracteristicaControllerTest` | 9 |
 | `UsuarioControllerTest` | 7 |
 
-### Frontend · 256 pruebas
+### Frontend · 258 pruebas
 
 | Archivo | Casos |
 | --- | --- |
@@ -225,7 +291,8 @@ frontend el registro, el login, el avatar, la galería y el panel.
 | `useModal.test.jsx`, `Registro.test.jsx` | 6 cada uno |
 | `BotonFavorito`, `Paginacion`, `AdminCategorias`, `AdminListaProductos`, `AdminUsuarios` | 5 cada uno |
 | `Estrellas`, `GaleriaImagenes`, `ImagenProducto`, `PanelAdmin`, `PoliticasProducto`, `Favoritos`, `AdminNuevoProducto`, `useTituloPagina` | 4 cada uno |
-| `CaracteristicasProducto`, `Login` | 3 cada uno |
+| `CaracteristicasProducto` | 3 |
+| `Login.test.jsx` | 5 |
 
 ---
 

@@ -20,8 +20,9 @@ publicaciones suele requerir herramientas separadas del sitio público.
 hostels, resorts y casas— con dos caras bien separadas:
 
 **Para quien busca**, un sitio público donde encontrar alojamientos por destino y fechas,
-filtrar por categoría, ver el detalle con sus fotos, características y políticas, guardar
-los que interesan como favoritos, reservar una estadía y opinar sobre dónde se alojó.
+afinar el resultado por huéspedes, categoría, precio y características, ver el detalle con
+sus fotos, características y políticas, guardar los que interesan como favoritos, reservar
+una estadía con su confirmación por correo, y opinar sobre dónde se alojó.
 
 **Para quien administra**, un panel con el alta, la edición y la baja de alojamientos, la
 gestión de categorías y características, y la administración de permisos de otros
@@ -32,11 +33,12 @@ usuarios.
 | Dentro del alcance | Fuera del alcance |
 | --- | --- |
 | Catálogo de alojamientos con fotos | Pagos y cobros |
-| Búsqueda por destino, fechas y categoría | Mensajería entre huésped y anfitrión |
+| Búsqueda por destino, fechas, huéspedes, categoría, precio y características | Mensajería entre huésped y anfitrión |
 | Cuentas de usuario con roles | Cancelación de reservas desde el sitio |
-| Reservas con control de disponibilidad | Notificaciones por email |
-| Favoritos y valoraciones | Aplicación móvil nativa |
-| Panel de administración | Multi-idioma y multi-moneda |
+| Reservas con control de disponibilidad | Aplicación móvil nativa |
+| Correo de confirmación de la reserva | Multi-idioma y multi-moneda |
+| Favoritos y valoraciones | Recomendaciones personalizadas |
+| Panel de administración | Pasarela de pago y facturación |
 
 Reservar, en este alcance, significa **bloquear fechas**. No hay transacción de dinero: no
 aparece en ninguna historia de usuario y agregarla habría implicado integrar un medio de
@@ -134,7 +136,8 @@ dentro de `index.css`, lo que rompía la compilación del frontend. Se detectó 
 ### Sprint 3 · Búsqueda, reservas y opiniones
 
 Buscador por destino con autocompletado, calendario de disponibilidad, reservas,
-favoritos, políticas, compartir en redes y valoraciones con estrellas.
+favoritos, políticas, compartir en redes y valoraciones con estrellas. Los resultados se
+mostraban en el mismo home; en el Sprint 4 pasaron a su propia página.
 
 **Problemas encontrados y resueltos:**
 
@@ -146,6 +149,14 @@ favoritos, políticas, compartir en redes y valoraciones con estrellas.
 | Eliminar un producto fallaba por clave foránea | Prueba de integración | Se sueltan favoritos, reservas y valoraciones antes de borrarlo |
 
 Los cuatro los encontraron las pruebas antes de llegar al navegador.
+
+### Sprint 4 · Reservas
+
+Precio por noche en todo el circuito, página de búsqueda con filtros propios, reserva en
+su propia página con revisión y confirmación, historial de reservas, botón de contacto por
+WhatsApp y correo de confirmación.
+
+Las decisiones de diseño de este sprint, con su porqué, están en la sección 5.
 
 ---
 
@@ -279,6 +290,10 @@ Cosas que quedaron pendientes y conviene no ocultar:
   la web; un botón suyo no haría nada. En su lugar, el enlace queda a la vista con un
   botón para copiarlo y pegarlo donde haga falta.
 - **No se pueden cancelar reservas** desde el sitio. No hay historia que lo pida.
+- **El correo de confirmación de reserva sale apagado.** El servicio está implementado y
+  probado, pero sin credenciales SMTP (`CORREO_HABILITADO=false`, el valor por defecto) el
+  mensaje se escribe en el log en vez de enviarse. Para que salga de verdad hay que cargar
+  las variables `SMTP_*` y poner esa en `true`.
 - **El email de confirmación de registro** (historia #19, opcional) no se implementó.
 - **Las credenciales por defecto** (`JWT_SECRET`, `ADMIN_PASSWORD`) sirven para desarrollo.
   En producción hay que pisarlas por variables de entorno, como indica el README.

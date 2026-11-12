@@ -353,10 +353,10 @@ esa persona siga teniendo su token vigente.
 
 ```bash
 cd backend && mvn test        # 130 pruebas de la API
-cd frontend && npm test       # 256 pruebas de componentes y páginas
+cd frontend && npm test       # 258 pruebas de componentes y páginas
 ```
 
-**386 pruebas en total**, todas en verde. El detalle por archivo está en el
+**388 pruebas en total**, todas en verde. El detalle por archivo está en el
 [plan de pruebas](docs/plan-de-pruebas.md).
 
 Del lado del backend se prueban el registro, el login con credenciales válidas e inválidas,
