@@ -1,7 +1,7 @@
 import "../styles/BotonWhatsApp.css";
 
 /** Número de contacto del sitio, en formato internacional y sin signos. */
-const NUMERO = import.meta.env.VITE_WHATSAPP_NUMERO ?? "5491150000000";
+const NUMERO = import.meta.env.VITE_WHATSAPP_NUMERO ?? "5491111111111";
 
 const MENSAJE = "Hola, tengo una consulta sobre un alojamiento de NextHome.";
 
