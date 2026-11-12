@@ -158,17 +158,6 @@ class FavoritoControllerTest extends PruebaDeApi {
     }
 
     private long crearProducto(String nombre) throws Exception {
-        MockMultipartFile imagen = new MockMultipartFile(
-                "imagenes", "foto.png", MediaType.IMAGE_PNG_VALUE, new byte[] {(byte) 0x89, 'P', 'N', 'G'});
-
-        MvcResult resultado = mockMvc.perform(multipart("/api/productos")
-                        .file(imagen)
-                        .param("nombre", nombre)
-                        .param("descripcion", "Descripción de " + nombre)
-                        .header(HttpHeaders.AUTHORIZATION, bearer(tokenAdmin)))
-                .andExpect(status().isCreated())
-                .andReturn();
-
-        return objectMapper.readTree(resultado.getResponse().getContentAsString()).get("id").asLong();
+        return crearProductoDePrueba(nombre, tokenAdmin);
     }
 }

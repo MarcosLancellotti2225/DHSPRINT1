@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="868" viewBox="0 0 1120 868" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+<rect width="1120" height="868" fill="#0f1117"/>
+<text x="40" y="26" fill="#e6e8ef" font-size="15" font-weight="bold">NextHome · Modelo de datos</text>
+<path d="M 340 299.0 C 370.0 299.0, 370.0 339.0, 400 339.0" stroke="#5a6388" stroke-width="1.5" fill="none"/>
+<circle cx="340" cy="299.0" r="3" fill="#5a6388"/>
+<circle cx="400" cy="339.0" r="3" fill="#5a6388"/>
+<text x="370.0" y="315.0" fill="#9aa3bd" font-size="10" text-anchor="middle">1 : N</text>
+<path d="M 340 459.0 C 370.0 459.0, 370.0 339.0, 400 339.0" stroke="#5a6388" stroke-width="1.5" fill="none"/>
+<circle cx="340" cy="459.0" r="3" fill="#5a6388"/>
+<circle cx="400" cy="339.0" r="3" fill="#5a6388"/>
+<text x="370.0" y="395.0" fill="#9aa3bd" font-size="10" text-anchor="middle">1 : N</text>
+<path d="M 700 339.0 C 550.0 339.0, 550.0 579.0, 400 579.0" stroke="#5a6388" stroke-width="1.5" fill="none"/>
+<circle cx="700" cy="339.0" r="3" fill="#5a6388"/>
+<circle cx="400" cy="579.0" r="3" fill="#5a6388"/>
+<text x="550.0" y="455.0" fill="#9aa3bd" font-size="10" text-anchor="middle">1 : N</text>
+<path d="M 700 339.0 C 550.0 339.0, 550.0 709.0, 400 709.0" stroke="#5a6388" stroke-width="1.5" fill="none"/>
+<circle cx="700" cy="339.0" r="3" fill="#5a6388"/>
+<circle cx="400" cy="709.0" r="3" fill="#5a6388"/>
+<text x="550.0" y="520.0" fill="#9aa3bd" font-size="10" text-anchor="middle">1 : N</text>
+<path d="M 340 629.0 C 370.0 629.0, 370.0 709.0, 400 709.0" stroke="#5a6388" stroke-width="1.5" fill="none"/>
+<circle cx="340" cy="629.0" r="3" fill="#5a6388"/>
+<circle cx="400" cy="709.0" r="3" fill="#5a6388"/>
+<text x="370.0" y="665.0" fill="#9aa3bd" font-size="10" text-anchor="middle">1 : N</text>
+<path d="M 700 339.0 C 730.0 339.0, 730.0 139.0, 760 139.0" stroke="#5a6388" stroke-width="1.5" fill="none"/>
+<circle cx="700" cy="339.0" r="3" fill="#5a6388"/>
+<circle cx="760" cy="139.0" r="3" fill="#5a6388"/>
+<text x="730.0" y="235.0" fill="#9aa3bd" font-size="10" text-anchor="middle">1 : N</text>
+<path d="M 340 119.0 C 550.0 119.0, 550.0 139.0, 760 139.0" stroke="#5a6388" stroke-width="1.5" fill="none"/>
+<circle cx="340" cy="119.0" r="3" fill="#5a6388"/>
+<circle cx="760" cy="139.0" r="3" fill="#5a6388"/>
+<text x="550.0" y="125.0" fill="#9aa3bd" font-size="10" text-anchor="middle">1 : N</text>
+<path d="M 340 119.0 C 550.0 119.0, 550.0 369.0, 760 369.0" stroke="#5a6388" stroke-width="1.5" fill="none"/>
+<circle cx="340" cy="119.0" r="3" fill="#5a6388"/>
+<circle cx="760" cy="369.0" r="3" fill="#5a6388"/>
+<text x="550.0" y="240.0" fill="#9aa3bd" font-size="10" text-anchor="middle">1 : N</text>
+<path d="M 700 339.0 C 730.0 339.0, 730.0 369.0, 760 369.0" stroke="#5a6388" stroke-width="1.5" fill="none"/>
+<circle cx="700" cy="339.0" r="3" fill="#5a6388"/>
+<circle cx="760" cy="369.0" r="3" fill="#5a6388"/>
+<text x="730.0" y="350.0" fill="#9aa3bd" font-size="10" text-anchor="middle">1 : N</text>
+<path d="M 700 339.0 C 730.0 339.0, 730.0 549.0, 760 549.0" stroke="#5a6388" stroke-width="1.5" fill="none"/>
+<circle cx="700" cy="339.0" r="3" fill="#5a6388"/>
+<circle cx="760" cy="549.0" r="3" fill="#5a6388"/>
+<text x="730.0" y="440.0" fill="#9aa3bd" font-size="10" text-anchor="middle">1 : N</text>
+<path d="M 340 119.0 C 550.0 119.0, 550.0 549.0, 760 549.0" stroke="#5a6388" stroke-width="1.5" fill="none"/>
+<circle cx="340" cy="119.0" r="3" fill="#5a6388"/>
+<circle cx="760" cy="549.0" r="3" fill="#5a6388"/>
+<text x="550.0" y="330.0" fill="#9aa3bd" font-size="10" text-anchor="middle">1 : N</text>
+<rect x="40" y="40" width="300" height="158" rx="6" fill="#171a23" stroke="#3a4160" stroke-width="1"/>
+<path d="M 40 70 h 300" stroke="#3a4160" stroke-width="1"/>
+<rect x="40" y="40" width="300" height="30" rx="6" fill="#2d3350"/>
+<rect x="40" y="64" width="300" height="6" fill="#2d3350"/>
+<text x="52" y="60" fill="#e6e8ef" font-size="12" font-weight="bold">usuarios</text>
+<text x="52" y="85" fill="#e6e8ef" font-size="11" font-weight="bold">id : bigint PK</text>
+<text x="52" y="105" fill="#9aa3bd" font-size="11" font-weight="normal">nombre : varchar(80)</text>
+<text x="52" y="125" fill="#9aa3bd" font-size="11" font-weight="normal">apellido : varchar(80)</text>
+<text x="52" y="145" fill="#9aa3bd" font-size="11" font-weight="normal">email : varchar(150) UQ</text>
+<text x="52" y="165" fill="#9aa3bd" font-size="11" font-weight="normal">password : varchar(255)</text>
+<text x="52" y="185" fill="#9aa3bd" font-size="11" font-weight="normal">rol : enum</text>
+<rect x="40" y="250" width="300" height="98" rx="6" fill="#171a23" stroke="#3a4160" stroke-width="1"/>
+<path d="M 40 280 h 300" stroke="#3a4160" stroke-width="1"/>
+<rect x="40" y="250" width="300" height="30" rx="6" fill="#2d3350"/>
+<rect x="40" y="274" width="300" height="6" fill="#2d3350"/>
+<text x="52" y="270" fill="#e6e8ef" font-size="12" font-weight="bold">ciudades</text>
+<text x="52" y="295" fill="#e6e8ef" font-size="11" font-weight="bold">id : bigint PK</text>
+<text x="52" y="315" fill="#9aa3bd" font-size="11" font-weight="normal">nombre : varchar(120)</text>
+<text x="52" y="335" fill="#9aa3bd" font-size="11" font-weight="normal">pais : varchar(120)</text>
+<rect x="40" y="400" width="300" height="118" rx="6" fill="#171a23" stroke="#3a4160" stroke-width="1"/>
+<path d="M 40 430 h 300" stroke="#3a4160" stroke-width="1"/>
+<rect x="40" y="400" width="300" height="30" rx="6" fill="#2d3350"/>
+<rect x="40" y="424" width="300" height="6" fill="#2d3350"/>
+<text x="52" y="420" fill="#e6e8ef" font-size="12" font-weight="bold">categorias</text>
+<text x="52" y="445" fill="#e6e8ef" font-size="11" font-weight="bold">id : bigint PK</text>
+<text x="52" y="465" fill="#9aa3bd" font-size="11" font-weight="normal">titulo : varchar(80) UQ</text>
+<text x="52" y="485" fill="#9aa3bd" font-size="11" font-weight="normal">descripcion : varchar(500)</text>
+<text x="52" y="505" fill="#9aa3bd" font-size="11" font-weight="normal">imagen : varchar(255)</text>
+<rect x="40" y="580" width="300" height="98" rx="6" fill="#171a23" stroke="#3a4160" stroke-width="1"/>
+<path d="M 40 610 h 300" stroke="#3a4160" stroke-width="1"/>
+<rect x="40" y="580" width="300" height="30" rx="6" fill="#2d3350"/>
+<rect x="40" y="604" width="300" height="6" fill="#2d3350"/>
+<text x="52" y="600" fill="#e6e8ef" font-size="12" font-weight="bold">caracteristicas</text>
+<text x="52" y="625" fill="#e6e8ef" font-size="11" font-weight="bold">id : bigint PK</text>
+<text x="52" y="645" fill="#9aa3bd" font-size="11" font-weight="normal">nombre : varchar(60) UQ</text>
+<text x="52" y="665" fill="#9aa3bd" font-size="11" font-weight="normal">icono : varchar(60)</text>
+<rect x="400" y="250" width="300" height="178" rx="6" fill="#171a23" stroke="#3a4160" stroke-width="1"/>
+<path d="M 400 280 h 300" stroke="#3a4160" stroke-width="1"/>
+<rect x="400" y="250" width="300" height="30" rx="6" fill="#2d3350"/>
+<rect x="400" y="274" width="300" height="6" fill="#2d3350"/>
+<text x="412" y="270" fill="#e6e8ef" font-size="12" font-weight="bold">productos</text>
+<text x="412" y="295" fill="#e6e8ef" font-size="11" font-weight="bold">id : bigint PK</text>
+<text x="412" y="315" fill="#9aa3bd" font-size="11" font-weight="normal">nombre : varchar(150) UQ</text>
+<text x="412" y="335" fill="#9aa3bd" font-size="11" font-weight="normal">descripcion : varchar(4000)</text>
+<text x="412" y="355" fill="#9aa3bd" font-size="11" font-weight="normal">capacidad : int</text>
+<text x="412" y="375" fill="#9aa3bd" font-size="11" font-weight="normal">precio_por_noche : decimal(10,2)</text>
+<text x="412" y="395" fill="#e6e8ef" font-size="11" font-weight="normal">ciudad_id : bigint FK</text>
+<text x="412" y="415" fill="#e6e8ef" font-size="11" font-weight="normal">categoria_id : bigint FK</text>
+<rect x="400" y="530" width="300" height="98" rx="6" fill="#171a23" stroke="#3a4160" stroke-width="1"/>
+<path d="M 400 560 h 300" stroke="#3a4160" stroke-width="1"/>
+<rect x="400" y="530" width="300" height="30" rx="6" fill="#2d3350"/>
+<rect x="400" y="554" width="300" height="6" fill="#2d3350"/>
+<text x="412" y="550" fill="#e6e8ef" font-size="12" font-weight="bold">producto_imagenes</text>
+<text x="412" y="575" fill="#e6e8ef" font-size="11" font-weight="bold">id : bigint PK</text>
+<text x="412" y="595" fill="#9aa3bd" font-size="11" font-weight="normal">url : varchar(255)</text>
+<text x="412" y="615" fill="#e6e8ef" font-size="11" font-weight="normal">producto_id : bigint FK</text>
+<rect x="400" y="670" width="300" height="78" rx="6" fill="#171a23" stroke="#3a4160" stroke-width="1"/>
+<path d="M 400 700 h 300" stroke="#3a4160" stroke-width="1"/>
+<rect x="400" y="670" width="300" height="30" rx="6" fill="#2d3350"/>
+<rect x="400" y="694" width="300" height="6" fill="#2d3350"/>
+<text x="412" y="690" fill="#e6e8ef" font-size="12" font-weight="bold">producto_caracteristicas</text>
+<text x="412" y="715" fill="#e6e8ef" font-size="11" font-weight="bold">producto_id : bigint PK FK</text>
+<text x="412" y="735" fill="#e6e8ef" font-size="11" font-weight="bold">caracteristica_id : bigint PK FK</text>
+<rect x="760" y="40" width="300" height="198" rx="6" fill="#171a23" stroke="#3a4160" stroke-width="1"/>
+<path d="M 760 70 h 300" stroke="#3a4160" stroke-width="1"/>
+<rect x="760" y="40" width="300" height="30" rx="6" fill="#2d3350"/>
+<rect x="760" y="64" width="300" height="6" fill="#2d3350"/>
+<text x="772" y="60" fill="#e6e8ef" font-size="12" font-weight="bold">reservas</text>
+<text x="772" y="85" fill="#e6e8ef" font-size="11" font-weight="bold">id : bigint PK</text>
+<text x="772" y="105" fill="#e6e8ef" font-size="11" font-weight="normal">producto_id : bigint FK</text>
+<text x="772" y="125" fill="#e6e8ef" font-size="11" font-weight="normal">usuario_id : bigint FK</text>
+<text x="772" y="145" fill="#9aa3bd" font-size="11" font-weight="normal">entrada : date</text>
+<text x="772" y="165" fill="#9aa3bd" font-size="11" font-weight="normal">salida : date</text>
+<text x="772" y="185" fill="#9aa3bd" font-size="11" font-weight="normal">huespedes : int</text>
+<text x="772" y="205" fill="#9aa3bd" font-size="11" font-weight="normal">precio_por_noche : decimal(10,2)</text>
+<text x="772" y="225" fill="#9aa3bd" font-size="11" font-weight="normal">creada_en : timestamp</text>
+<rect x="760" y="310" width="300" height="118" rx="6" fill="#171a23" stroke="#3a4160" stroke-width="1"/>
+<path d="M 760 340 h 300" stroke="#3a4160" stroke-width="1"/>
+<rect x="760" y="310" width="300" height="30" rx="6" fill="#2d3350"/>
+<rect x="760" y="334" width="300" height="6" fill="#2d3350"/>
+<text x="772" y="330" fill="#e6e8ef" font-size="12" font-weight="bold">favoritos</text>
+<text x="772" y="355" fill="#e6e8ef" font-size="11" font-weight="bold">id : bigint PK</text>
+<text x="772" y="375" fill="#e6e8ef" font-size="11" font-weight="normal">usuario_id : bigint FK UQ</text>
+<text x="772" y="395" fill="#e6e8ef" font-size="11" font-weight="normal">producto_id : bigint FK UQ</text>
+<text x="772" y="415" fill="#9aa3bd" font-size="11" font-weight="normal">marcado_en : timestamp</text>
+<rect x="760" y="470" width="300" height="158" rx="6" fill="#171a23" stroke="#3a4160" stroke-width="1"/>
+<path d="M 760 500 h 300" stroke="#3a4160" stroke-width="1"/>
+<rect x="760" y="470" width="300" height="30" rx="6" fill="#2d3350"/>
+<rect x="760" y="494" width="300" height="6" fill="#2d3350"/>
+<text x="772" y="490" fill="#e6e8ef" font-size="12" font-weight="bold">valoraciones</text>
+<text x="772" y="515" fill="#e6e8ef" font-size="11" font-weight="bold">id : bigint PK</text>
+<text x="772" y="535" fill="#e6e8ef" font-size="11" font-weight="normal">producto_id : bigint FK UQ</text>
+<text x="772" y="555" fill="#e6e8ef" font-size="11" font-weight="normal">usuario_id : bigint FK UQ</text>
+<text x="772" y="575" fill="#9aa3bd" font-size="11" font-weight="normal">estrellas : int</text>
+<text x="772" y="595" fill="#9aa3bd" font-size="11" font-weight="normal">comentario : varchar(1000)</text>
+<text x="772" y="615" fill="#9aa3bd" font-size="11" font-weight="normal">publicada_en : timestamp</text>
+<rect x="760" y="690" width="300" height="118" rx="6" fill="#171a23" stroke="#3a4160" stroke-width="1"/>
+<path d="M 760 720 h 300" stroke="#3a4160" stroke-width="1"/>
+<rect x="760" y="690" width="300" height="30" rx="6" fill="#2d3350"/>
+<rect x="760" y="714" width="300" height="6" fill="#2d3350"/>
+<text x="772" y="710" fill="#e6e8ef" font-size="12" font-weight="bold">politicas</text>
+<text x="772" y="735" fill="#e6e8ef" font-size="11" font-weight="bold">id : bigint PK</text>
+<text x="772" y="755" fill="#9aa3bd" font-size="11" font-weight="normal">titulo : varchar(120)</text>
+<text x="772" y="775" fill="#9aa3bd" font-size="11" font-weight="normal">descripcion : varchar(1000)</text>
+<text x="772" y="795" fill="#9aa3bd" font-size="11" font-weight="normal">orden : int</text>
+<text x="40" y="852" fill="#9aa3bd" font-size="10">PK clave primaria · FK clave foránea · UQ único (solo o combinado)</text>
+</svg>

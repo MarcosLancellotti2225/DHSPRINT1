@@ -26,9 +26,13 @@ public class ReservaService {
     private final ReservaRepository repository;
     private final ProductoRepository productoRepository;
 
-    public ReservaService(ReservaRepository repository, ProductoRepository productoRepository) {
+    private final CorreoService correoService;
+
+    public ReservaService(ReservaRepository repository, ProductoRepository productoRepository,
+                          CorreoService correoService) {
         this.repository = repository;
         this.productoRepository = productoRepository;
+        this.correoService = correoService;
     }
 
     /** Tramos ocupados de un alojamiento, de hoy en adelante. */
@@ -60,7 +64,13 @@ public class ReservaService {
 
         Reserva reserva = new Reserva(
                 producto, usuario, request.entrada(), request.salida(), request.huespedes());
-        return ReservaResponse.desde(repository.save(reserva));
+        Reserva guardada = repository.save(reserva);
+
+        // El aviso va después de guardar y no puede deshacer la reserva: si el correo
+        // falla, la reserva sigue siendo válida y queda registrado en el log.
+        correoService.enviarConfirmacionDeReserva(guardada);
+
+        return ReservaResponse.desde(guardada);
     }
 
     @Transactional(readOnly = true)

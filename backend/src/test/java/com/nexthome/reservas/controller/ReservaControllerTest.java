@@ -253,6 +253,10 @@ class ReservaControllerTest extends PruebaDeApi {
 
     // --- Utilidades ----------------------------------------------------------
 
+    private long crearProducto(String nombre) throws Exception {
+        return crearProductoDePrueba(nombre, tokenAdmin);
+    }
+
     private String cuerpo(long productoId, LocalDate entrada, LocalDate salida) throws Exception {
         Map<String, Object> datos = new LinkedHashMap<>();
         datos.put("productoId", productoId);
@@ -270,18 +274,4 @@ class ReservaControllerTest extends PruebaDeApi {
                 .header(HttpHeaders.AUTHORIZATION, bearer(token));
     }
 
-    private long crearProducto(String nombre) throws Exception {
-        MockMultipartFile imagen = new MockMultipartFile(
-                "imagenes", "foto.png", MediaType.IMAGE_PNG_VALUE, new byte[] {(byte) 0x89, 'P', 'N', 'G'});
-
-        MvcResult resultado = mockMvc.perform(multipart("/api/productos")
-                        .file(imagen)
-                        .param("nombre", nombre)
-                        .param("descripcion", "Descripción de " + nombre)
-                        .header(HttpHeaders.AUTHORIZATION, bearer(tokenAdmin)))
-                .andExpect(status().isCreated())
-                .andReturn();
-
-        return objectMapper.readTree(resultado.getResponse().getContentAsString()).get("id").asLong();
-    }
 }

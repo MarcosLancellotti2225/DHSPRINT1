@@ -45,7 +45,11 @@ class ProductoControllerTest extends PruebaDeApi {
                         .file(imagen("frente.png"))
                         .file(imagen("pileta.png"))
                         .param("nombre", "Hotel del Valle")
-                        .param("descripcion", "Un hotel de montaña con vista al valle.")
+                        .param("descripcion", "Un hotel de montaña con vista despejada al valle.")
+                        .param("capacidad", "4")
+                        .param("precioPorNoche", "50000.00")
+                        .param("ciudadId", String.valueOf(ciudadPorDefecto().getId()))
+                        .param("categoriaId", String.valueOf(categoriaPorDefecto().getId()))
                         .header(HttpHeaders.AUTHORIZATION, bearer(tokenAdmin)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
@@ -63,7 +67,11 @@ class ProductoControllerTest extends PruebaDeApi {
         mockMvc.perform(multipart("/api/productos")
                         .file(imagen("foto.png"))
                         .param("nombre", "cabaña DEL lago")
-                        .param("descripcion", "Otra descripción distinta.")
+                        .param("descripcion", "Otra descripción distinta, con largo suficiente.")
+                        .param("capacidad", "4")
+                        .param("precioPorNoche", "50000.00")
+                        .param("ciudadId", String.valueOf(ciudadPorDefecto().getId()))
+                        .param("categoriaId", String.valueOf(categoriaPorDefecto().getId()))
                         .header(HttpHeaders.AUTHORIZATION, bearer(tokenAdmin)))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.estado").value(409))
@@ -97,7 +105,11 @@ class ProductoControllerTest extends PruebaDeApi {
         mockMvc.perform(multipart("/api/productos")
                         .file(pdf)
                         .param("nombre", "Hotel con PDF")
-                        .param("descripcion", "No debería crearse.")
+                        .param("descripcion", "No debería crearse por el tipo de archivo.")
+                        .param("capacidad", "4")
+                        .param("precioPorNoche", "50000.00")
+                        .param("ciudadId", String.valueOf(ciudadPorDefecto().getId()))
+                        .param("categoriaId", String.valueOf(categoriaPorDefecto().getId()))
                         .header(HttpHeaders.AUTHORIZATION, bearer(tokenAdmin)))
                 .andExpect(status().isBadRequest());
 
@@ -112,7 +124,7 @@ class ProductoControllerTest extends PruebaDeApi {
         mockMvc.perform(multipart("/api/productos")
                         .file(imagen("foto.png"))
                         .param("nombre", "Hotel Anónimo")
-                        .param("descripcion", "No debería crearse."))
+                        .param("descripcion", "No debería crearse sin estar identificado."))
                 .andExpect(status().isUnauthorized());
 
         assertThat(productoRepository.count()).isZero();
@@ -126,7 +138,7 @@ class ProductoControllerTest extends PruebaDeApi {
         mockMvc.perform(multipart("/api/productos")
                         .file(imagen("foto.png"))
                         .param("nombre", "Hotel del Visitante")
-                        .param("descripcion", "No debería crearse.")
+                        .param("descripcion", "No debería crearse sin permisos de administrador.")
                         .header(HttpHeaders.AUTHORIZATION, bearer(token)))
                 .andExpect(status().isForbidden());
 
@@ -284,7 +296,10 @@ class ProductoControllerTest extends PruebaDeApi {
 
         mockMvc.perform(multipart(HttpMethod.PUT, "/api/productos/{id}", id)
                         .param("nombre", "Hotel Clasificado")
-                        .param("descripcion", "Ahora tiene categoría y características.")
+                        .param("descripcion", "Ahora tiene ciudad, categoría y características.")
+                        .param("capacidad", "4")
+                        .param("precioPorNoche", "50000.00")
+                        .param("ciudadId", String.valueOf(ciudadPorDefecto().getId()))
                         .param("categoriaId", String.valueOf(categoria.getId()))
                         .param("caracteristicaIds", String.valueOf(wifi.getId()))
                         .param("caracteristicaIds", String.valueOf(pileta.getId()))
@@ -308,7 +323,9 @@ class ProductoControllerTest extends PruebaDeApi {
 
         mockMvc.perform(multipart(HttpMethod.PUT, "/api/productos/{id}", id)
                         .param("nombre", "Otro nombre")
-                        .param("descripcion", "Otra descripción.")
+                        .param("descripcion", "Otra descripción con largo suficiente.")
+                        .param("capacidad", "4")
+                        .param("precioPorNoche", "50000.00")
                         .header(HttpHeaders.AUTHORIZATION, bearer(token)))
                 .andExpect(status().isForbidden());
     }
@@ -343,9 +360,13 @@ class ProductoControllerTest extends PruebaDeApi {
         Categoria cabanias = categoriaRepository.save(
                 new Categoria("Cabañas", "En el bosque.", "/uploads/cabanias.png"));
 
+        Categoria casas = categoriaRepository.save(
+                new Categoria("Casas", "Para grupos.", "/uploads/casas.png"));
+
         crearProductoEnCategoria("Hotel Uno", hoteles.getId());
         crearProductoEnCategoria("Cabaña Uno", cabanias.getId());
-        crearProducto("Sin categoría");
+        // El tercero queda fuera del filtro por estar en otra categoría.
+        crearProductoEnCategoria("Casa Una", casas.getId());
 
         mockMvc.perform(get("/api/productos")
                         .param("categorias", String.valueOf(hoteles.getId()))
@@ -385,9 +406,9 @@ class ProductoControllerTest extends PruebaDeApi {
         Ciudad bariloche = ciudadRepository.save(new Ciudad("Bariloche", "Argentina"));
         Ciudad mendoza = ciudadRepository.save(new Ciudad("Mendoza", "Argentina"));
 
-        crearProductoEn("Cabaña del Cerro", bariloche.getId(), null);
-        crearProductoEn("Refugio del Lago", bariloche.getId(), null);
-        crearProductoEn("Finca del Valle", mendoza.getId(), null);
+        crearProductoEnCiudad("Cabaña del Cerro", bariloche.getId(), null);
+        crearProductoEnCiudad("Refugio del Lago", bariloche.getId(), null);
+        crearProductoEnCiudad("Finca del Valle", mendoza.getId(), null);
 
         mockMvc.perform(get("/api/productos").param("ciudad", String.valueOf(bariloche.getId())))
                 .andExpect(status().isOk())
@@ -406,9 +427,9 @@ class ProductoControllerTest extends PruebaDeApi {
         Categoria hoteles = categoriaRepository.save(
                 new Categoria("Hoteles", "Con recepción.", "/uploads/h.png"));
 
-        crearProductoEn("Cabaña del Cerro", bariloche.getId(), cabanias.getId());
-        crearProductoEn("Hotel del Cerro", bariloche.getId(), hoteles.getId());
-        crearProductoEn("Cabaña de Mendoza", mendoza.getId(), cabanias.getId());
+        crearProductoEnCiudad("Cabaña del Cerro", bariloche.getId(), cabanias.getId());
+        crearProductoEnCiudad("Hotel del Cerro", bariloche.getId(), hoteles.getId());
+        crearProductoEnCiudad("Cabaña de Mendoza", mendoza.getId(), cabanias.getId());
 
         mockMvc.perform(get("/api/productos")
                         .param("ciudad", String.valueOf(bariloche.getId()))
@@ -424,7 +445,7 @@ class ProductoControllerTest extends PruebaDeApi {
     @DisplayName("sin destino sigue devolviendo el catálogo completo")
     void sinCiudadDevuelveTodo() throws Exception {
         Ciudad bariloche = ciudadRepository.save(new Ciudad("Bariloche", "Argentina"));
-        crearProductoEn("Cabaña del Cerro", bariloche.getId(), null);
+        crearProductoEnCiudad("Cabaña del Cerro", bariloche.getId(), null);
         crearProducto("Alojamiento sin ciudad");
 
         mockMvc.perform(get("/api/productos"))
@@ -436,7 +457,9 @@ class ProductoControllerTest extends PruebaDeApi {
     @DisplayName("un destino sin alojamientos devuelve una página vacía")
     void ciudadSinAlojamientos() throws Exception {
         Ciudad bariloche = ciudadRepository.save(new Ciudad("Bariloche", "Argentina"));
-        crearProducto("Alojamiento sin ciudad");
+        Ciudad mendoza = ciudadRepository.save(new Ciudad("Mendoza", "Argentina"));
+        // El único alojamiento está en otra ciudad: Bariloche queda sin resultados.
+        crearProductoEnCiudad("Finca de Mendoza", mendoza.getId(), null);
 
         mockMvc.perform(get("/api/productos").param("ciudad", String.valueOf(bariloche.getId())))
                 .andExpect(status().isOk())
@@ -463,12 +486,222 @@ class ProductoControllerTest extends PruebaDeApi {
         mockMvc.perform(multipart("/api/productos")
                         .file(imagen("foto.png"))
                         .param("nombre", "Hotel Fantasma")
-                        .param("descripcion", "Con una ciudad que no existe.")
+                        .param("descripcion", "Con una ciudad que no existe en la base.")
+                        .param("capacidad", "4")
+                        .param("precioPorNoche", "50000.00")
+                        .param("categoriaId", String.valueOf(categoriaPorDefecto().getId()))
                         .param("ciudadId", "9999")
                         .header(HttpHeaders.AUTHORIZATION, bearer(tokenAdmin)))
                 .andExpect(status().isNotFound());
 
         assertThat(productoRepository.count()).isZero();
+    }
+
+    // --- Filtro por huéspedes (historia #22) --------------------------------
+
+    @Test
+    @DisplayName("descarta los alojamientos donde no entra la cantidad de huéspedes")
+    void filtraPorCapacidad() throws Exception {
+        crearProductoDePrueba("Loft para dos", tokenAdmin, null, null, 2);
+        crearProductoDePrueba("Casa para ocho", tokenAdmin, null, null, 8);
+
+        mockMvc.perform(get("/api/productos").param("huespedes", "5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElementos").value(1))
+                .andExpect(jsonPath("$.contenido[0].nombre").value("Casa para ocho"));
+    }
+
+    @Test
+    void filtraPorPrecioMinimo() throws Exception {
+        crearProductoDePrueba("Hostel barato", tokenAdmin, null, null, 4, "20000.00", List.of());
+        crearProductoDePrueba("Villa cara", tokenAdmin, null, null, 4, "180000.00", List.of());
+
+        mockMvc.perform(get("/api/productos").param("precioMinimo", "100000"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElementos").value(1))
+                .andExpect(jsonPath("$.contenido[0].nombre").value("Villa cara"));
+    }
+
+    @Test
+    void filtraPorRangoDePrecio() throws Exception {
+        crearProductoDePrueba("Hostel barato", tokenAdmin, null, null, 4, "20000.00", List.of());
+        crearProductoDePrueba("Cabaña media", tokenAdmin, null, null, 4, "90000.00", List.of());
+        crearProductoDePrueba("Villa cara", tokenAdmin, null, null, 4, "180000.00", List.of());
+
+        mockMvc.perform(get("/api/productos")
+                        .param("precioMinimo", "50000")
+                        .param("precioMaximo", "120000"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElementos").value(1))
+                .andExpect(jsonPath("$.contenido[0].nombre").value("Cabaña media"));
+    }
+
+    @Test
+    void ordenaElRangoDePrecioInvertido() throws Exception {
+        // Mínimo mayor que máximo devolvería siempre vacío; se entiende como rango.
+        crearProductoDePrueba("Cabaña media", tokenAdmin, null, null, 4, "90000.00", List.of());
+
+        mockMvc.perform(get("/api/productos")
+                        .param("precioMinimo", "120000")
+                        .param("precioMaximo", "50000"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElementos").value(1));
+    }
+
+    @Test
+    void devuelveElPrecioEnElListado() throws Exception {
+        crearProductoDePrueba("Con precio", tokenAdmin, null, null, 4, "73500.50", List.of());
+
+        mockMvc.perform(get("/api/productos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.contenido[0].precioPorNoche").value(73500.50));
+    }
+
+    @Test
+    void rechazaPrecioEnCero() throws Exception {
+        mockMvc.perform(multipart("/api/productos")
+                        .file(imagenDePrueba())
+                        .param("nombre", "Alojamiento sin precio válido")
+                        .param("descripcion", "Descripción suficientemente larga para pasar la validación.")
+                        .param("capacidad", "4")
+                        .param("precioPorNoche", "0")
+                        .param("ciudadId", String.valueOf(ciudadPorDefecto().getId()))
+                        .param("categoriaId", String.valueOf(categoriaPorDefecto().getId()))
+                        .header(HttpHeaders.AUTHORIZATION, bearer(tokenAdmin)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errores.precioPorNoche").exists());
+    }
+
+    @Test
+    void filtraPorCaracteristica() throws Exception {
+        Long wifi = caracteristicaPorDefecto().getId();
+        crearProductoDePrueba("Con wifi", tokenAdmin, null, null, 4, PRECIO_DE_PRUEBA, List.of(wifi));
+        crearProductoDePrueba("Sin wifi", tokenAdmin, null, null, 4, PRECIO_DE_PRUEBA, List.of());
+
+        mockMvc.perform(get("/api/productos").param("caracteristicas", String.valueOf(wifi)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElementos").value(1))
+                .andExpect(jsonPath("$.contenido[0].nombre").value("Con wifi"));
+    }
+
+    @Test
+    void conVariasCaracteristicasLasPideTodas() throws Exception {
+        // Dos características piden alojamientos que tengan ambas, no cualquiera.
+        Long primera = caracteristicaPorDefecto().getId();
+        Long segunda = caracteristicaRepository.save(new Caracteristica("Pileta", "pileta")).getId();
+
+        crearProductoDePrueba("Tiene las dos", tokenAdmin, null, null, 4, PRECIO_DE_PRUEBA,
+                List.of(primera, segunda));
+        crearProductoDePrueba("Tiene una sola", tokenAdmin, null, null, 4, PRECIO_DE_PRUEBA,
+                List.of(primera));
+
+        mockMvc.perform(get("/api/productos")
+                        .param("caracteristicas", String.valueOf(primera))
+                        .param("caracteristicas", String.valueOf(segunda)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElementos").value(1))
+                .andExpect(jsonPath("$.contenido[0].nombre").value("Tiene las dos"));
+    }
+
+    @Test
+    void combinaPrecioCapacidadYCaracteristicas() throws Exception {
+        Long wifi = caracteristicaPorDefecto().getId();
+        crearProductoDePrueba("El que buscamos", tokenAdmin, null, null, 8, "80000.00", List.of(wifi));
+        crearProductoDePrueba("Muy chico", tokenAdmin, null, null, 2, "80000.00", List.of(wifi));
+        crearProductoDePrueba("Muy caro", tokenAdmin, null, null, 8, "300000.00", List.of(wifi));
+        crearProductoDePrueba("Sin wifi", tokenAdmin, null, null, 8, "80000.00", List.of());
+
+        mockMvc.perform(get("/api/productos")
+                        .param("huespedes", "6")
+                        .param("precioMaximo", "100000")
+                        .param("caracteristicas", String.valueOf(wifi)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElementos").value(1))
+                .andExpect(jsonPath("$.contenido[0].nombre").value("El que buscamos"));
+    }
+
+    @Test
+    @DisplayName("un alojamiento con capacidad justa entra en el resultado")
+    void laCapacidadJustaEntra() throws Exception {
+        crearProductoDePrueba("Loft para dos", tokenAdmin, null, null, 2);
+
+        mockMvc.perform(get("/api/productos").param("huespedes", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElementos").value(1));
+    }
+
+    @Test
+    @DisplayName("sin huéspedes no se filtra por capacidad")
+    void sinHuespedesNoFiltra() throws Exception {
+        crearProductoDePrueba("Loft para dos", tokenAdmin, null, null, 2);
+        crearProductoDePrueba("Casa para ocho", tokenAdmin, null, null, 8);
+
+        mockMvc.perform(get("/api/productos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElementos").value(2));
+    }
+
+    @Test
+    @DisplayName("el detalle informa la capacidad del alojamiento")
+    void elDetalleTraeLaCapacidad() throws Exception {
+        long id = crearProductoDePrueba("Casa para ocho", tokenAdmin, null, null, 8);
+
+        mockMvc.perform(get("/api/productos/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.capacidad").value(8));
+    }
+
+    // --- Campos obligatorios (corrección del Sprint 2) ----------------------
+
+    @Test
+    @DisplayName("rechaza el alta sin ciudad ni categoría")
+    void rechazaAltaSinCiudadNiCategoria() throws Exception {
+        mockMvc.perform(multipart("/api/productos")
+                        .file(imagenDePrueba())
+                        .param("nombre", "Hotel Incompleto")
+                        .param("descripcion", "Le faltan la ciudad y la categoría.")
+                        .param("capacidad", "4")
+                        .param("precioPorNoche", "50000.00")
+                        .header(HttpHeaders.AUTHORIZATION, bearer(tokenAdmin)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errores.ciudadId").exists())
+                .andExpect(jsonPath("$.errores.categoriaId").exists());
+
+        assertThat(productoRepository.count()).isZero();
+    }
+
+    @Test
+    @DisplayName("rechaza un nombre o una descripción demasiado cortos")
+    void rechazaTextosDemasiadoCortos() throws Exception {
+        mockMvc.perform(multipart("/api/productos")
+                        .file(imagenDePrueba())
+                        .param("nombre", "Hol")
+                        .param("descripcion", "Corta")
+                        .param("capacidad", "4")
+                        .param("precioPorNoche", "50000.00")
+                        .param("ciudadId", String.valueOf(ciudadPorDefecto().getId()))
+                        .param("categoriaId", String.valueOf(categoriaPorDefecto().getId()))
+                        .header(HttpHeaders.AUTHORIZATION, bearer(tokenAdmin)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errores.nombre").exists())
+                .andExpect(jsonPath("$.errores.descripcion").exists());
+    }
+
+    @Test
+    @DisplayName("rechaza una capacidad fuera de rango")
+    void rechazaCapacidadFueraDeRango() throws Exception {
+        for (String capacidad : new String[] {"0", "25"}) {
+            mockMvc.perform(multipart("/api/productos")
+                            .file(imagenDePrueba())
+                            .param("nombre", "Hotel del Valle")
+                            .param("descripcion", "Un hotel con vista despejada al valle.")
+                            .param("capacidad", capacidad)
+                            .param("ciudadId", String.valueOf(ciudadPorDefecto().getId()))
+                            .param("categoriaId", String.valueOf(categoriaPorDefecto().getId()))
+                            .header(HttpHeaders.AUTHORIZATION, bearer(tokenAdmin)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.errores.capacidad").exists());
+        }
     }
 
     // --- Utilidades ---------------------------------------------------------
@@ -484,7 +717,11 @@ class ProductoControllerTest extends PruebaDeApi {
     }
 
     private long crearProductoEnCategoria(String nombre, Long categoriaId) throws Exception {
-        return crearProductoEn(nombre, null, categoriaId);
+        return crearProductoDePrueba(nombre, tokenAdmin, null, categoriaId, 4);
+    }
+
+    private long crearProductoEnCiudad(String nombre, Long ciudadId, Long categoriaId) throws Exception {
+        return crearProductoDePrueba(nombre, tokenAdmin, ciudadId, categoriaId, 4);
     }
 
     private long crearProductoEn(String nombre, Long ciudadId, Long categoriaId) throws Exception {

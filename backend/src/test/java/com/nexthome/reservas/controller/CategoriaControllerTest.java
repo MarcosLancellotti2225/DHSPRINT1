@@ -122,7 +122,10 @@ class CategoriaControllerTest extends PruebaDeApi {
                                 "imagenes", "foto.png", MediaType.IMAGE_PNG_VALUE,
                                 new byte[] {(byte) 0x89, 'P', 'N', 'G'}))
                         .param("nombre", "Hotel del Valle")
-                        .param("descripcion", "Un hotel con vista.")
+                        .param("descripcion", "Un hotel con vista despejada al valle.")
+                        .param("capacidad", "4")
+                        .param("precioPorNoche", "50000.00")
+                        .param("ciudadId", String.valueOf(ciudadPorDefecto().getId()))
                         .param("categoriaId", String.valueOf(categoria.getId()))
                         .header(HttpHeaders.AUTHORIZATION, bearer(token)))
                 .andExpect(status().isCreated());

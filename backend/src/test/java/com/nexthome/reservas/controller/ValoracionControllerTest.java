@@ -242,6 +242,10 @@ class ValoracionControllerTest extends PruebaDeApi {
 
     // --- Utilidades ----------------------------------------------------------
 
+    private long crearProducto(String nombre) throws Exception {
+        return crearProductoDePrueba(nombre, tokenAdmin);
+    }
+
     /** Deja una estadía ya terminada, que es lo que habilita a puntuar. */
     private void hospedar(Usuario usuario, long productoId) {
         Producto producto = productoRepository.findById(productoId).orElseThrow();
@@ -263,18 +267,4 @@ class ValoracionControllerTest extends PruebaDeApi {
                 .header(HttpHeaders.AUTHORIZATION, bearer(token));
     }
 
-    private long crearProducto(String nombre) throws Exception {
-        MockMultipartFile imagen = new MockMultipartFile(
-                "imagenes", "foto.png", MediaType.IMAGE_PNG_VALUE, new byte[] {(byte) 0x89, 'P', 'N', 'G'});
-
-        MvcResult resultado = mockMvc.perform(multipart("/api/productos")
-                        .file(imagen)
-                        .param("nombre", nombre)
-                        .param("descripcion", "Descripción de " + nombre)
-                        .header(HttpHeaders.AUTHORIZATION, bearer(tokenAdmin)))
-                .andExpect(status().isCreated())
-                .andReturn();
-
-        return objectMapper.readTree(resultado.getResponse().getContentAsString()).get("id").asLong();
-    }
 }
