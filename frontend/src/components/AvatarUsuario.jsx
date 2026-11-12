@@ -75,6 +75,15 @@ export default function AvatarUsuario() {
             Mis favoritos{cantidad > 0 ? ` (${cantidad})` : ""}
           </Link>
 
+          <Link
+            to="/mis-reservas"
+            className="btn btn-secondary avatar__salir"
+            role="menuitem"
+            onClick={() => setAbierto(false)}
+          >
+            Mis reservas
+          </Link>
+
           <button
             type="button"
             className="btn btn-secondary avatar__salir"

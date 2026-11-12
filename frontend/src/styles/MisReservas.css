@@ -1,0 +1,78 @@
+/* Historial de reservas del usuario. */
+.mis-reservas {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  /* Mismo encuadre que el resto de las páginas del sitio. */
+  padding: var(--space-6) var(--padding-lateral) var(--space-8);
+}
+
+.mis-reservas__titulo {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  margin: 0;
+}
+
+.mis-reservas__lista {
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.reserva-item {
+  display: flex;
+  /* .card trae flex-direction: column; acá las filas van en horizontal. */
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-4);
+  flex-wrap: wrap;
+}
+
+.reserva-item__titulo {
+  margin: 0 0 var(--space-1);
+}
+
+.reserva-item__titulo a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.reserva-item__titulo a:hover {
+  text-decoration: underline;
+}
+
+.reserva-item__fechas {
+  margin: 0 0 var(--space-1);
+}
+
+.reserva-item__detalle {
+  margin: 0;
+  color: var(--color-neutral-400);
+  font-size: 0.875rem;
+}
+
+.reserva-item__monto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.reserva-item__total {
+  font-size: 1.125rem;
+  white-space: nowrap;
+}
+
+.mis-reservas__vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-8);
+}
