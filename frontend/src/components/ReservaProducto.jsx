@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CalendarioDisponibilidad from "./CalendarioDisponibilidad";
-import { crearReserva, obtenerDisponibilidad } from "../api/reservas";
+import { obtenerDisponibilidad } from "../api/reservas";
 import { nochesOcupadasEntre } from "../utils/calendario";
-import { mensajeDeError } from "../api/client";
 import useSesion from "../hooks/useSesion";
+import { formatearPrecio, totalDeEstadia } from "../utils/precio";
 import "../styles/ReservaProducto.css";
 
 const SIN_SELECCION = { entrada: "", salida: "" };
@@ -17,20 +17,21 @@ export function noches(entrada, salida) {
 }
 
 /**
- * Bloque de reserva del detalle: el calendario con la disponibilidad y, debajo,
- * el resumen de la estadía elegida con el botón para confirmarla.
+ * Bloque de reserva del detalle: el calendario con la disponibilidad y el resumen
+ * de la estadía elegida. No reserva: lleva a la página de reserva, que es donde se
+ * revisan los datos antes de confirmar. Sin sesión iniciada manda a ingresar y
+ * vuelve acá con las fechas ya elegidas.
  */
 export default function ReservaProducto({ producto }) {
   const { autenticado } = useSesion();
+  const navegar = useNavigate();
 
   const [seleccion, setSeleccion] = useState(SIN_SELECCION);
   const [huespedes, setHuespedes] = useState(2);
-  const [reservando, setReservando] = useState(false);
   const [error, setError] = useState("");
-  const [confirmada, setConfirmada] = useState(null);
-  // Fuerza a recargar la disponibilidad después de reservar.
-  const [version, setVersion] = useState(0);
   const [ocupadas, setOcupadas] = useState([]);
+  // Fuerza a recargar la disponibilidad al volver de reservar.
+  const [version] = useState(0);
 
   // Misma consulta que hace el calendario, para poder avisar si el rango elegido
   // pisa una reserva antes de que el usuario intente confirmarla.
@@ -50,24 +51,21 @@ export default function ReservaProducto({ producto }) {
   const enConflicto = nochesOcupadasEntre(seleccion.entrada, seleccion.salida, ocupadas);
   const listaParaReservar = cantidadDeNoches > 0 && enConflicto.length === 0;
 
-  async function reservar() {
-    setError("");
-    setReservando(true);
-    try {
-      const reserva = await crearReserva({
-        productoId: producto.id,
-        entrada: seleccion.entrada,
-        salida: seleccion.salida,
-        huespedes,
+  function continuar() {
+    const destino = {
+      pathname: `/reservar/${producto.id}`,
+      search: `?entrada=${seleccion.entrada}&salida=${seleccion.salida}&huespedes=${huespedes}`,
+    };
+
+    // Sin sesión no se puede reservar: se manda a ingresar guardando a dónde volver,
+    // así las fechas elegidas no se pierden en el camino.
+    if (!autenticado) {
+      navegar("/ingresar", {
+        state: { desde: `${destino.pathname}${destino.search}`, motivo: "reservar" },
       });
-      setConfirmada(reserva);
-      setSeleccion(SIN_SELECCION);
-      setVersion((previa) => previa + 1);
-    } catch (e) {
-      setError(mensajeDeError(e, "No se pudo confirmar la reserva"));
-    } finally {
-      setReservando(false);
+      return;
     }
+    navegar(`${destino.pathname}${destino.search}`);
   }
 
   return (
@@ -76,11 +74,6 @@ export default function ReservaProducto({ producto }) {
         Disponibilidad
       </h2>
 
-      {confirmada && (
-        <p className="mensaje mensaje--exito">
-          Reserva confirmada del {confirmada.entrada} al {confirmada.salida}.
-        </p>
-      )}
       {error && <p className="mensaje mensaje--error">{error}</p>}
 
       <CalendarioDisponibilidad
@@ -90,7 +83,6 @@ export default function ReservaProducto({ producto }) {
         onSeleccionar={(nueva) => {
           setSeleccion(nueva);
           setError("");
-          setConfirmada(null);
         }}
       />
 
@@ -108,6 +100,19 @@ export default function ReservaProducto({ producto }) {
                 Del {seleccion.entrada} al {seleccion.salida} ·{" "}
                 {cantidadDeNoches === 1 ? "1 noche" : `${cantidadDeNoches} noches`}
               </p>
+              {totalDeEstadia(producto.precioPorNoche, seleccion.entrada, seleccion.salida) && (
+                <p className="reserva__total">
+                  Total:{" "}
+                  <strong>
+                    {formatearPrecio(
+                      totalDeEstadia(producto.precioPorNoche, seleccion.entrada, seleccion.salida)
+                    )}
+                  </strong>{" "}
+                  <small>
+                    ({formatearPrecio(producto.precioPorNoche)} × {cantidadDeNoches})
+                  </small>
+                </p>
+              )}
               {enConflicto.length > 0 && (
                 <p className="reserva__conflicto">
                   {enConflicto.length === 1
@@ -134,20 +139,22 @@ export default function ReservaProducto({ producto }) {
             />
           </div>
 
-          {autenticado ? (
+          <div className="reserva__accion">
+            {!autenticado && (
+              <p className="reserva__aviso-sesion">
+                Para reservar hace falta iniciar sesión. Te llevamos y volvés acá con las
+                fechas que elegiste.
+              </p>
+            )}
             <button
               type="button"
               className="btn btn-primary"
-              disabled={!listaParaReservar || reservando}
-              onClick={reservar}
+              disabled={!listaParaReservar}
+              onClick={continuar}
             >
-              {reservando ? "Confirmando…" : "Reservar"}
+              Reservar
             </button>
-          ) : (
-            <Link to="/ingresar" className="btn btn-primary">
-              Iniciá sesión para reservar
-            </Link>
-          )}
+          </div>
         </div>
       </div>
     </section>

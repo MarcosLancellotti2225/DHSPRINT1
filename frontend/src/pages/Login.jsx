@@ -19,6 +19,9 @@ export default function Login() {
 
   const navegar = useNavigate();
   const ubicacion = useLocation();
+  // Quien llega acá desde el botón de reservar necesita saber por qué se le pide
+  // la sesión; si no, parece que el sitio lo expulsó.
+  const vieneAReservar = ubicacion.state?.motivo === "reservar";
   const { ingresar } = useSesion();
 
   const [formulario, setFormulario] = useState(FORMULARIO_VACIO);
@@ -59,6 +62,13 @@ export default function Login() {
       <div className="card elev-md autenticacion__panel">
         <h1 className="autenticacion__titulo">Iniciar sesión</h1>
         <p className="autenticacion__bajada">Entrá con tu email y tu contraseña.</p>
+
+        {vieneAReservar && (
+          <p className="mensaje mensaje--aviso" role="status">
+            Para reservar hace falta tener la sesión iniciada. Apenas entres volvés a tu
+            reserva con las fechas que elegiste.
+          </p>
+        )}
 
         {error && <p className="mensaje mensaje--error">{error}</p>}
 

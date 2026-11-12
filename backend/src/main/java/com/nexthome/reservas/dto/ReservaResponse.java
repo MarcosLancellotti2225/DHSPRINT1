@@ -2,6 +2,7 @@ package com.nexthome.reservas.dto;
 
 import com.nexthome.reservas.model.Reserva;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record ReservaResponse(
@@ -12,6 +13,8 @@ public record ReservaResponse(
         LocalDate salida,
         int huespedes,
         int noches,
+        BigDecimal precioPorNoche,
+        BigDecimal total,
         boolean finalizada) {
 
     public static ReservaResponse desde(Reserva reserva) {
@@ -22,7 +25,9 @@ public record ReservaResponse(
                 reserva.getEntrada(),
                 reserva.getSalida(),
                 reserva.getHuespedes(),
-                (int) java.time.temporal.ChronoUnit.DAYS.between(reserva.getEntrada(), reserva.getSalida()),
+                reserva.getNoches(),
+                reserva.getPrecioPorNoche(),
+                reserva.getTotal(),
                 reserva.estaFinalizada());
     }
 }

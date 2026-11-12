@@ -1,0 +1,165 @@
+/* Página de reserva: revisar el alojamiento, los datos y la estadía antes de confirmar. */
+.reservar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  /* Mismo encuadre que el resto de las páginas del sitio. */
+  padding: var(--space-6) var(--padding-lateral) var(--space-8);
+}
+
+.reservar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.reservar__titulo {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  margin: 0;
+}
+
+.reservar__cuerpo {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.reservar__bloque {
+  padding: var(--space-4);
+}
+
+.reservar__producto {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+
+.reservar__imagen {
+  width: 140px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.reservar__ciudad,
+.reservar__nota {
+  color: var(--color-neutral-400);
+  margin: var(--space-2) 0 0;
+}
+
+.reservar__nota {
+  font-size: 0.875rem;
+}
+
+.reservar__puntuacion {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+/* Pares dato/valor de las secciones. */
+.reservar__datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.reservar__datos dt {
+  color: var(--color-neutral-400);
+  font-size: 0.875rem;
+  margin-bottom: var(--space-1);
+}
+
+.reservar__datos dd {
+  margin: 0;
+}
+
+.reservar__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-neutral-700);
+}
+
+.reservar__total-detalle {
+  color: var(--color-neutral-400);
+}
+
+.reservar__total-monto {
+  font-size: 1.5rem;
+}
+
+.reservar__acciones {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.reservar__confirmar {
+  min-width: 220px;
+}
+
+.reservar__vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-8);
+}
+
+/* Confirmación: una sola tarjeta centrada. */
+.confirmada__panel {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--space-8);
+  text-align: center;
+}
+
+.confirmada__marca {
+  font-size: 2.5rem;
+  line-height: 1;
+  margin: 0 0 var(--space-3);
+}
+
+.confirmada__titulo {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  margin: 0 0 var(--space-2);
+}
+
+.confirmada__bajada {
+  color: var(--color-neutral-400);
+  margin: 0 0 var(--space-6);
+}
+
+.confirmada__datos {
+  text-align: left;
+  margin-bottom: var(--space-6);
+}
+
+.confirmada__acciones {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .reservar__producto {
+    flex-direction: column;
+  }
+
+  .reservar__imagen {
+    width: 100%;
+    height: 180px;
+  }
+}

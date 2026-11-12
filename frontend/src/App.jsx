@@ -4,6 +4,7 @@ import { ProveedorFavoritos } from "./context/FavoritosContext";
 import Layout from "./components/Layout";
 import RutaProtegida from "./components/RutaProtegida";
 import Home from "./pages/Home";
+import Busqueda from "./pages/Busqueda";
 import DetalleProducto from "./pages/DetalleProducto";
 import Registro from "./pages/Registro";
 import Login from "./pages/Login";
@@ -15,6 +16,9 @@ import AdminCategorias from "./pages/AdminCategorias";
 import AdminCaracteristicas from "./pages/AdminCaracteristicas";
 import AdminUsuarios from "./pages/AdminUsuarios";
 import Favoritos from "./pages/Favoritos";
+import Reservar from "./pages/Reservar";
+import ReservaConfirmada from "./pages/ReservaConfirmada";
+import MisReservas from "./pages/MisReservas";
 import NoEncontrada from "./pages/NoEncontrada";
 
 export default function App() {
@@ -25,13 +29,18 @@ export default function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/busqueda" element={<Busqueda />} />
             <Route path="/producto/:id" element={<DetalleProducto />} />
             <Route path="/crear-cuenta" element={<Registro />} />
             <Route path="/ingresar" element={<Login />} />
 
-            {/* Los favoritos son de la cuenta: hace falta sesión, de cualquier rol. */}
+            {/* Los favoritos y las reservas son de la cuenta: hace falta sesión,
+                de cualquier rol. */}
             <Route element={<RutaProtegida />}>
               <Route path="/favoritos" element={<Favoritos />} />
+              <Route path="/reservar/:id" element={<Reservar />} />
+              <Route path="/reserva-confirmada" element={<ReservaConfirmada />} />
+              <Route path="/mis-reservas" element={<MisReservas />} />
             </Route>
 
             {/* El panel es sólo para administradores. El backend valida el rol en

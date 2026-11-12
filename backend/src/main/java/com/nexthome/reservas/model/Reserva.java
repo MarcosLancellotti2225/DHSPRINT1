@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 
@@ -46,6 +47,13 @@ public class Reserva {
     @Column(nullable = false)
     private int huespedes;
 
+    /**
+     * Precio por noche al momento de reservar. Se copia y no se lee del producto porque
+     * si mañana se cambia la tarifa, el total de una reserva ya hecha no debe moverse.
+     */
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal precioPorNoche = BigDecimal.ZERO;
+
     @Column(nullable = false)
     private Instant creadaEn = Instant.now();
 
@@ -58,6 +66,9 @@ public class Reserva {
         this.entrada = entrada;
         this.salida = salida;
         this.huespedes = huespedes;
+        // La tarifa se copia acá: a partir de ahora la reserva vale lo que valía al
+        // momento de hacerla, sin importar lo que pase después con el precio del producto.
+        this.precioPorNoche = producto.getPrecioPorNoche();
     }
 
     /** Una estadía está terminada cuando ya pasó su fecha de salida. */
@@ -107,6 +118,24 @@ public class Reserva {
 
     public int getHuespedes() {
         return huespedes;
+    }
+
+    public BigDecimal getPrecioPorNoche() {
+        return precioPorNoche;
+    }
+
+    public void setPrecioPorNoche(BigDecimal precioPorNoche) {
+        this.precioPorNoche = precioPorNoche;
+    }
+
+    /** Noches de la estadía, contadas como rango media abierto. */
+    public int getNoches() {
+        return (int) java.time.temporal.ChronoUnit.DAYS.between(entrada, salida);
+    }
+
+    /** Lo que sale la estadía completa: la tarifa congelada por las noches. */
+    public BigDecimal getTotal() {
+        return precioPorNoche.multiply(BigDecimal.valueOf(getNoches()));
     }
 
     public void setHuespedes(int huespedes) {
