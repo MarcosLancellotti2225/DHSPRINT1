@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,27 +48,48 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     Page<Long> buscarPaginaDeIds(Pageable pageable);
 
     /**
-     * Misma paginación, acotada por ciudad, por categorías y por disponibilidad en un
-     * rango de fechas. Los tres filtros son opcionales: con {@code ciudadId} en null o
-     * las banderas en true, esa condición no se aplica. Van como banderas y no como
-     * consultas separadas porque un {@code in} con lista vacía no existe en JPQL, y con
-     * tres filtros harían falta ocho consultas casi iguales.
+     * Misma paginación, acotada por ciudad, categorías, disponibilidad en un rango de
+     * fechas, capacidad, precio y características. Todos los filtros son opcionales:
+     * con el parámetro en null o la bandera en true, esa condición no se aplica. Van
+     * como banderas y no como consultas separadas porque un {@code in} con lista vacía
+     * no existe en JPQL, y con siete filtros harían falta decenas de consultas casi
+     * iguales.
+     *
+     * <p>Las características se piden <em>todas</em>, no cualquiera: quien filtra por
+     * "pileta" y "cochera" quiere las dos cosas. Por eso se cuentan las coincidencias
+     * y se comparan contra la cantidad pedida.
      */
     @Query(value = """
             select p.id from Producto p
             where (:ciudadId is null or p.ciudad.id = :ciudadId)
               and (:sinFiltroDeCategorias = true or p.categoria.id in :categoriaIds)
               and (:sinFiltroDeFechas = true or p.id not in :ocupadosIds)
+              and (:huespedes is null or p.capacidad >= :huespedes)
+              and (:precioMinimo is null or p.precioPorNoche >= :precioMinimo)
+              and (:precioMaximo is null or p.precioPorNoche <= :precioMaximo)
+              and (:sinFiltroDeCaracteristicas = true or (
+                    select count(c) from Producto otro join otro.caracteristicas c
+                    where otro.id = p.id and c.id in :caracteristicaIds
+                  ) = :cantidadDeCaracteristicas)
             """,
             countQuery = """
             select count(p) from Producto p
             where (:ciudadId is null or p.ciudad.id = :ciudadId)
               and (:sinFiltroDeCategorias = true or p.categoria.id in :categoriaIds)
               and (:sinFiltroDeFechas = true or p.id not in :ocupadosIds)
+              and (:huespedes is null or p.capacidad >= :huespedes)
+              and (:precioMinimo is null or p.precioPorNoche >= :precioMinimo)
+              and (:precioMaximo is null or p.precioPorNoche <= :precioMaximo)
+              and (:sinFiltroDeCaracteristicas = true or (
+                    select count(c) from Producto otro join otro.caracteristicas c
+                    where otro.id = p.id and c.id in :caracteristicaIds
+                  ) = :cantidadDeCaracteristicas)
             """)
     Page<Long> buscarPagina(Long ciudadId, boolean sinFiltroDeCategorias, List<Long> categoriaIds,
-                            boolean sinFiltroDeFechas, List<Long> ocupadosIds,
-                            Pageable pageable);
+                            boolean sinFiltroDeFechas, List<Long> ocupadosIds, Integer huespedes,
+                            BigDecimal precioMinimo, BigDecimal precioMaximo,
+                            boolean sinFiltroDeCaracteristicas, List<Long> caracteristicaIds,
+                            long cantidadDeCaracteristicas, Pageable pageable);
 
     long countByCiudadId(Long ciudadId);
 

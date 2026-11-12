@@ -1,5 +1,6 @@
 package com.nexthome.reservas.controller;
 
+import com.nexthome.reservas.dto.CriteriosDeBusqueda;
 import com.nexthome.reservas.dto.PaginaResponse;
 import com.nexthome.reservas.dto.ProductoEdicionRequest;
 import com.nexthome.reservas.dto.ProductoRequest;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -49,8 +51,9 @@ public class ProductoController {
 
     /**
      * Catálogo paginado. Con {@code ciudad} se acota a un destino, con {@code categorias}
-     * a esas categorías y con {@code entrada} y {@code salida} a lo que esté libre en ese
-     * rango; los filtros y la paginación se resuelven juntos en la base.
+     * a esas categorías, con {@code entrada} y {@code salida} a lo que esté libre en ese
+     * rango, y con {@code huespedes} a lo que tenga capacidad suficiente; los filtros y la
+     * paginación se resuelven juntos en la base.
      */
     @GetMapping
     public PaginaResponse<ProductoResponse> listar(
@@ -59,8 +62,14 @@ public class ProductoController {
             @RequestParam(required = false) Long ciudad,
             @RequestParam(required = false) List<Long> categorias,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate entrada,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate salida) {
-        return service.listarPaginado(page, size, ciudad, categorias, entrada, salida);
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate salida,
+            @RequestParam(required = false) Integer huespedes,
+            @RequestParam(required = false) BigDecimal precioMinimo,
+            @RequestParam(required = false) BigDecimal precioMaximo,
+            @RequestParam(required = false) List<Long> caracteristicas) {
+        var criterios = new CriteriosDeBusqueda(ciudad, categorias, entrada, salida, huespedes,
+                precioMinimo, precioMaximo, caracteristicas);
+        return service.listarPaginado(page, size, criterios);
     }
 
     @GetMapping("/random")
