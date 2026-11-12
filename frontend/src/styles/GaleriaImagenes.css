@@ -15,18 +15,35 @@
   height: 100%;
 }
 
+/* Cada foto es un botón: abre el carrusel en esa imagen. */
+.nh-gallery__abrir {
+  display: block;
+  padding: 0;
+  cursor: pointer;
+  background: var(--color-surface);
+  border: none;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
 .nh-gallery__principal,
 .nh-gallery__item {
   width: 100%;
   height: 100%;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  background: var(--color-surface);
 }
 
-.nh-gallery__principal.imagen-producto,
-.nh-gallery__item.imagen-producto {
+.nh-gallery__imagen.imagen-producto {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  transition: transform 220ms ease, opacity 150ms ease;
+}
+
+.nh-gallery__abrir:hover .nh-gallery__imagen,
+.nh-gallery__abrir:focus-visible .nh-gallery__imagen {
+  transform: scale(1.03);
+  opacity: 0.9;
 }
 
 .nh-gallery__ver-mas {
@@ -63,9 +80,25 @@
     height: 160px;
   }
 
+  .nh-gallery-side {
+    gap: var(--space-2);
+  }
+
   .nh-gallery__ver-mas {
     position: static;
     width: 100%;
     margin-top: var(--space-3);
+  }
+}
+
+/* El zoom al pasar el mouse es decorativo. */
+@media (prefers-reduced-motion: reduce) {
+  .nh-gallery__imagen.imagen-producto {
+    transition: none;
+  }
+
+  .nh-gallery__abrir:hover .nh-gallery__imagen,
+  .nh-gallery__abrir:focus-visible .nh-gallery__imagen {
+    transform: none;
   }
 }
