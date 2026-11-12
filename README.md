@@ -1,4 +1,4 @@
-# NextHome · Tu próxima estadía, en un clic
+# 🏡 NextHome · Tu próxima estadía, en un clic
 
 NextHome es un sitio de reservas de alojamientos: hoteles, departamentos, cabañas y hostels.
 Lo armé como Desafío Profesional, tomando como referencia sitios del estilo de Booking pero
@@ -12,7 +12,7 @@ para gestionar el catálogo.
 Son dos aplicaciones que conviven en el mismo repositorio: una API en **Java con Spring
 Boot** (`backend/`) y un sitio en **React con Vite** (`frontend/`).
 
-## Tecnologías
+## ⚙️ Tecnologías
 
 **Backend**
 
@@ -40,7 +40,7 @@ Boot** (`backend/`) y un sitio en **React con Vite** (`frontend/`).
 Sin framework de UI: los estilos son CSS propio, con el sistema de diseño en
 `frontend/src/styles/index.css`.
 
-## Qué se puede hacer
+## ✨ Qué se puede hacer
 
 **Como visitante**
 
@@ -182,11 +182,18 @@ Dos aclaraciones importantes:
 - **El panel no anda en celulares**, y es a propósito. Si entrás desde una pantalla chica
   te muestra un cartel explicándote que uses una computadora.
 
-## Para levantarlo
+## 🚀 Para levantarlo
 
 Vas a necesitar **Java 21 o más**, **Maven** y **Node 18 o más**.
 
-Son dos terminales, una para cada aplicación.
+Primero, cloná el repositorio:
+
+```bash
+git clone https://github.com/MarcosLancellotti2225/DHSPRINT1.git
+cd DHSPRINT1
+```
+
+Después son dos terminales, una para cada aplicación.
 
 En la primera, el backend:
 
@@ -241,7 +248,7 @@ identificado, no hace falta volver a loguearte. Después se entra por `/ingresar
 Las contraseñas se guardan hasheadas con BCrypt: nunca se guardan en texto plano ni se
 devuelven en ninguna respuesta de la API.
 
-## Configuración
+## 🔧 Configuración
 
 El frontend sólo necesita saber dónde está la API. Por defecto asume `http://localhost:8080`,
 y si necesitás otra cosa creás un `frontend/.env` con `VITE_API_URL` apuntando a donde sea
@@ -296,7 +303,7 @@ Si tu PostgreSQL no está en `localhost:5432` o usa otro usuario, pasale `DB_URL
 
 Con eso los alojamientos que cargues sobreviven a los reinicios.
 
-## La API
+## 📬 La API
 
 Todo cuelga de `http://localhost:8080/api`. La autenticación es por **JWT**: el token se
 manda en el header `Authorization: Bearer <token>`. No hay sesión de servidor, porque el
@@ -412,7 +419,7 @@ datos, `401` si no estás identificado o el token no sirve, `403` si tu rol no a
 si el recurso no existe, `409` si hay un nombre o un email repetido y `413` si alguna foto
 pesa más de 10 MB.
 
-## Seguridad
+## 🔐 Seguridad
 
 El rol se valida **en el backend, en cada endpoint**. Que el frontend esconda los botones
 del panel es sólo comodidad: si alguien copia el token de un usuario común e intenta hacer
@@ -422,14 +429,14 @@ El rol se relee de la base en cada request, no se confía en lo que dice el toke
 un administrador le quita el permiso a alguien, el cambio es efectivo de inmediato aunque
 esa persona siga teniendo su token vigente.
 
-## Las pruebas
+## 🧪 Las pruebas
 
 ```bash
-cd backend && mvn test        # 130 pruebas de la API
-cd frontend && npm test       # 258 pruebas de componentes y páginas
+cd backend && mvn test        # 131 pruebas de la API
+cd frontend && npm test       # 261 pruebas de componentes y páginas
 ```
 
-**388 pruebas en total**, todas en verde. El detalle por archivo está en el
+**392 pruebas en total**, todas en verde. El detalle por archivo está en el
 [plan de pruebas](docs/plan-de-pruebas.md).
 
 Del lado del backend se prueban el registro, el login con credenciales válidas e inválidas,
@@ -467,7 +474,7 @@ Del Sprint 4: la validación de la estadía contra la capacidad, el cálculo de 
 la confirmación que redirige si se entra sin haber reservado, el historial separado entre
 próximas y anteriores, y el botón de WhatsApp.
 
-## Fotos de ejemplo
+## 🖼️ Fotos de ejemplo
 
 Las fotos de los alojamientos y las categorías de ejemplo son de **Pexels**, que las
 ofrece con licencia de uso libre. Están en `backend/src/main/resources/imagenes-ejemplo/`:
@@ -480,7 +487,7 @@ Para cambiar las fotos de un alojamiento alcanza con reemplazar los archivos de 
 carpeta y reiniciar el backend. Si a alguno le faltan, se genera un paisaje en su lugar,
 así que la carga nunca queda sin imágenes.
 
-## Capturas
+## 📸 Capturas
 
 **Home con el buscador, las categorías y las recomendaciones**
 
@@ -515,7 +522,7 @@ correo.
 
 ![Alta de alojamiento](docs/capturas/07-admin-alta.jpg)
 
-## Deploy
+## ☁️ Deploy
 
 El proyecto **no está desplegado**: se entrega para correr en local, con las instrucciones
 de arriba. La decisión fue deliberada: un deploy gratuito duerme el servidor tras unos
@@ -534,7 +541,7 @@ Lo único que habría que resolver antes es el almacenamiento de las fotos: hoy 
 local, que en estas plataformas se borra en cada redeploy. Haría falta un servicio aparte
 (S3, Cloudinary) o un volumen persistente.
 
-## Modelo de datos
+## 🗂️ Modelo de datos
 
 ![Modelo de datos de NextHome](docs/modelo-de-datos.svg)
 
@@ -553,7 +560,7 @@ después cambia la tarifa, el total de lo ya reservado no se mueve.
 El esquema lo genera Hibernate desde las entidades (`spring.jpa.hibernate.ddl-auto=update`),
 así que el diagrama refleja lo que crea la aplicación al arrancar.
 
-## Documentación
+## 📚 Documentación
 
 En `docs/` están los documentos de gestión del desafío:
 
@@ -564,7 +571,7 @@ En `docs/` están los documentos de gestión del desafío:
   corrigieron.
 - **[Modelo de datos](docs/modelo-de-datos.svg)**: el diagrama de entidades y relaciones.
 
-## Cómo está organizado
+## 🧱 Cómo está organizado
 
 El backend sigue la separación clásica por capas: `controller` recibe los pedidos, `service`
 tiene la lógica, `repository` habla con la base y `model` son las entidades. Aparte están
@@ -590,14 +597,14 @@ La única dependencia visual externa es la tipografía **Inter**, que se carga d
 Fonts. Si el proyecto tiene que funcionar sin internet, conviene descargarla y servirla
 desde `public/`.
 
-## Autor
+## 👤 Autor
 
 **Marcos Lancellotti** — [MarcosLancellotti2225](https://github.com/MarcosLancellotti2225)
 
 Proyecto desarrollado como Desafío Profesional de la carrera de Certified Tech Developer
 de **Digital House**, entregado por sprints.
 
-## Licencia
+## 📄 Licencia
 
 Este proyecto se publica con fines educativos, como trabajo final de cursada. El código
 es de uso libre para consulta y aprendizaje.

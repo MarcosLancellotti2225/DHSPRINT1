@@ -8,6 +8,21 @@ import { enTextoLargo } from "./Reservar";
 import "../styles/MisReservas.css";
 
 /**
+ * Fecha en que se hizo la reserva. Es distinta de las fechas de la estadía, y el
+ * historial muestra las dos: una dice cuándo se reservó, la otra cuándo se usa.
+ */
+export function fechaDeReserva(instante) {
+  if (!instante) return "";
+  const fecha = new Date(instante);
+  if (Number.isNaN(fecha.getTime())) return "";
+  return fecha.toLocaleDateString("es-AR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+/**
  * Separa las reservas en las que todavía no terminaron y las que ya pasaron. El
  * backend ya marca cuáles están finalizadas, así que acá sólo se agrupan: lo que
  * viene primero es lo que el usuario puede llegar a necesitar.
@@ -34,6 +49,11 @@ function FilaDeReserva({ reserva }) {
           {reserva.huespedes} {reserva.huespedes === 1 ? "huésped" : "huéspedes"} ·
           reserva #{reserva.id}
         </p>
+        {fechaDeReserva(reserva.creadaEn) && (
+          <p className="reserva-item__creada">
+            Reservada el {fechaDeReserva(reserva.creadaEn)}
+          </p>
+        )}
       </div>
 
       <div className="reserva-item__monto">

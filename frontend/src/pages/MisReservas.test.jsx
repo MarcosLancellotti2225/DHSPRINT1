@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import MisReservas, { separarPorEstado } from "./MisReservas";
+import MisReservas, { fechaDeReserva, separarPorEstado } from "./MisReservas";
 import { listarMisReservas } from "../api/reservas";
 
 vi.mock("../api/reservas", () => ({ listarMisReservas: vi.fn() }));
@@ -17,6 +17,7 @@ function reserva(id, extra = {}) {
     noches: 3,
     precioPorNoche: 50000,
     total: 150000,
+    creadaEn: "2026-11-02T14:30:00Z",
     finalizada: false,
     ...extra,
   };
@@ -82,5 +83,29 @@ describe("Mis reservas", () => {
     renderizar();
 
     expect(await screen.findByText(/no se pudieron cargar tus reservas/i)).toBeInTheDocument();
+  });
+
+  // La fecha en que se reservó es distinta de las fechas de la estadía, y el
+  // historial tiene que mostrar las dos.
+  it("muestra cuando se hizo la reserva", async () => {
+    listarMisReservas.mockResolvedValue([reserva(1)]);
+
+    renderizar();
+
+    expect(await screen.findByText(/reservada el 2 de noviembre de 2026/i)).toBeInTheDocument();
+  });
+
+  it("no muestra la fecha de reserva si el backend no la manda", async () => {
+    listarMisReservas.mockResolvedValue([reserva(1, { creadaEn: null })]);
+
+    renderizar();
+
+    await screen.findByText("Alojamiento 1");
+    expect(screen.queryByText(/reservada el/i)).not.toBeInTheDocument();
+  });
+
+  it("ignora una fecha de reserva invalida", () => {
+    expect(fechaDeReserva("no es una fecha")).toBe("");
+    expect(fechaDeReserva(null)).toBe("");
   });
 });

@@ -2,13 +2,13 @@
 
 Casos de prueba derivados de las historias de usuario, y su estado de ejecución.
 
-- **Automatizadas:** 130 del backend (JUnit + MockMvc) y 258 del frontend (Vitest +
-  Testing Library), **388 en total**.
+- **Automatizadas:** 131 del backend (JUnit + MockMvc) y 261 del frontend (Vitest +
+  Testing Library), **392 en total**.
 - **Última ejecución:** todas en verde.
 
 ```bash
-cd backend && mvn test      # 119
-cd frontend && npm test     # 258
+cd backend && mvn test      # 131
+cd frontend && npm test     # 261
 ```
 
 ---
@@ -233,6 +233,8 @@ Cada caso indica dónde está automatizado. **M** = verificación manual.
 | 33.1 | Ver el historial | Separa próximas de anteriores | `MisReservas.test.jsx` |
 | 33.2 | Sin reservas | Muestra el estado vacío | `MisReservas.test.jsx` |
 | 33.3 | Cada usuario ve lo suyo | No aparecen reservas de otros | `ReservaControllerTest` |
+| 33.4 | Fecha en que se hizo la reserva | Se muestra además de la estadía | `ReservaControllerTest`, `MisReservas.test.jsx` |
+| 33.5 | Orden del historial | Por fecha de entrada, la más próxima primero | `ReservaRepository` (consulta) |
 
 ### #34 Contacto por WhatsApp
 
@@ -260,7 +262,7 @@ frontend el registro, el login, el avatar, la galería y el panel.
 
 ## 3. Cobertura por archivo
 
-### Backend · 130 pruebas
+### Backend · 131 pruebas
 
 | Clase | Casos |
 | --- | --- |
@@ -273,7 +275,7 @@ frontend el registro, el login, el avatar, la galería y el panel.
 | `CaracteristicaControllerTest` | 9 |
 | `UsuarioControllerTest` | 7 |
 
-### Frontend · 258 pruebas
+### Frontend · 261 pruebas
 
 | Archivo | Casos |
 | --- | --- |

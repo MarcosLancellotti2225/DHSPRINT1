@@ -238,6 +238,20 @@ class ReservaControllerTest extends PruebaDeApi {
     }
 
     @Test
+    @DisplayName("el historial dice cuándo se hizo cada reserva")
+    void elHistorialTraeLaFechaDeReserva() throws Exception {
+        // La fecha en que se reservó es distinta de las fechas de la estadía: el
+        // historial las muestra por separado.
+        long id = crearProducto("Hotel del Valle");
+        mockMvc.perform(reservar(id, HOY.plusDays(10), HOY.plusDays(13), tokenAna));
+
+        mockMvc.perform(get("/api/reservas/mias").header(HttpHeaders.AUTHORIZATION, bearer(tokenAna)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].creadaEn").exists())
+                .andExpect(jsonPath("$[0].entrada").value(HOY.plusDays(10).toString()));
+    }
+
+    @Test
     @DisplayName("al eliminar un alojamiento se sueltan sus reservas")
     void alEliminarElProductoSeSueltanLasReservas() throws Exception {
         long id = crearProducto("Hotel del Valle");
