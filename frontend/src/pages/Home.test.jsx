@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import Home from "./Home";
 import { listarProductos, listarProductosAleatorios } from "../api/productos";
 import { listarCategorias } from "../api/categorias";
@@ -46,18 +46,39 @@ function pagina(productos, extra = {}) {
   };
 }
 
+/** Deja a la vista la URL actual, para comprobar a dónde navega el buscador. */
+function UrlActual() {
+  const { pathname, search } = useLocation();
+  return <output data-testid="url">{`${pathname}${search}`}</output>;
+}
+
 function renderizarHome() {
   return render(
     <MemoryRouter>
       <Home />
+      <UrlActual />
     </MemoryRouter>
   );
 }
 
-async function buscarBariloche(usuario) {
+function urlActual() {
+  return screen.getByTestId("url").textContent;
+}
+
+async function buscarBariloche(usuario, { huespedes, entrada, salida } = {}) {
   const destino = await screen.findByLabelText(/destino/i);
   await usuario.type(destino, "bari");
   await usuario.click(await screen.findByRole("option", { name: /bariloche/i }));
+
+  if (entrada) await usuario.type(screen.getByLabelText(/check-in/i), entrada);
+  if (salida) await usuario.type(screen.getByLabelText(/check-out/i), salida);
+
+  if (huespedes !== undefined) {
+    const campo = screen.getByLabelText(/huéspedes/i);
+    await usuario.clear(campo);
+    await usuario.type(campo, String(huespedes));
+  }
+
   await usuario.click(screen.getByRole("button", { name: /realizar búsqueda/i }));
 }
 
@@ -93,7 +114,7 @@ describe("Home", () => {
     renderizarHome();
 
     expect(await screen.findByRole("heading", { name: /todos los alojamientos/i })).toBeInTheDocument();
-    await waitFor(() => expect(listarProductos).toHaveBeenCalledWith(0, 10, [], null, null));
+    await waitFor(() => expect(listarProductos).toHaveBeenCalledWith(0, 10, []));
   });
 
   it("mantiene visibles las categorías y las recomendaciones", async () => {
@@ -104,64 +125,63 @@ describe("Home", () => {
   });
 
   // --- Búsqueda (historia #22) --------------------------------------------
+  //
+  // La home no filtra: buscar lleva a /busqueda con los criterios en la URL.
+  // Que los resultados aparezcan y se puedan seguir filtrando se prueba en
+  // Busqueda.test.jsx.
 
-  it("busca los alojamientos del destino elegido", async () => {
-    listarProductos.mockResolvedValue(pagina([producto(1)]));
-
+  it("lleva a la pagina de busqueda con el destino elegido", async () => {
     const usuario = userEvent.setup();
     renderizarHome();
     await buscarBariloche(usuario);
 
-    await waitFor(() => expect(listarProductos).toHaveBeenLastCalledWith(0, 10, [], BARILOCHE.id, expect.objectContaining({ ciudad: BARILOCHE })));
-    expect(await screen.findByRole("heading", { name: /alojamientos en bariloche/i })).toBeInTheDocument();
+    await waitFor(() => expect(urlActual()).toContain("/busqueda"));
+    expect(urlActual()).toContain(`ciudad=${BARILOCHE.id}`);
   });
 
-  it("al buscar siguen estando las categorías y las recomendaciones", async () => {
-    listarProductos.mockResolvedValue(pagina([producto(1)]));
-
+  it("lleva las fechas y los huespedes a la busqueda", async () => {
     const usuario = userEvent.setup();
     renderizarHome();
-    await buscarBariloche(usuario);
+    await buscarBariloche(usuario, { huespedes: 4, entrada: "2030-01-10", salida: "2030-01-12" });
 
-    expect(await screen.findByRole("heading", { name: /alojamientos en bariloche/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Categorías" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /recomendados para vos/i })).toBeInTheDocument();
+    await waitFor(() => expect(urlActual()).toContain("/busqueda"));
+    const url = urlActual();
+    expect(url).toContain("entrada=2030-01-10");
+    expect(url).toContain("salida=2030-01-12");
+    expect(url).toContain("huespedes=4");
   });
 
-  it("combina el destino con el filtro por categoría", async () => {
-    listarProductos.mockResolvedValue(pagina([producto(1)]));
-
+  it("lleva las categorias elegidas en la home a la busqueda", async () => {
     const usuario = userEvent.setup();
     renderizarHome();
+
+    await usuario.click(await screen.findByRole("button", { name: /cabañas/i }));
     await buscarBariloche(usuario);
+
+    await waitFor(() => expect(urlActual()).toContain("/busqueda"));
+    expect(urlActual()).toContain(`categorias=${CABANIAS.id}`);
+  });
+
+  it("no navega si no se eligio un destino", async () => {
+    const usuario = userEvent.setup();
+    renderizarHome();
+
+    await usuario.click(await screen.findByRole("button", { name: /realizar búsqueda/i }));
+
+    expect(await screen.findByText(/elegí un destino/i)).toBeInTheDocument();
+    expect(urlActual()).toBe("/");
+  });
+
+  it("filtra el catalogo por categoria sin salir de la home", async () => {
+    const usuario = userEvent.setup();
+    renderizarHome();
+
     await usuario.click(await screen.findByRole("button", { name: /cabañas/i }));
 
     await waitFor(() =>
-      expect(listarProductos).toHaveBeenLastCalledWith(0, 10, [CABANIAS.id], BARILOCHE.id, expect.objectContaining({ ciudad: BARILOCHE }))
+      expect(listarProductos).toHaveBeenLastCalledWith(0, 10, [CABANIAS.id])
     );
-  });
-
-  it("avisa cuando el destino no tiene alojamientos", async () => {
-    listarProductos.mockResolvedValue(pagina([]));
-
-    const usuario = userEvent.setup();
-    renderizarHome();
-    await buscarBariloche(usuario);
-
-    expect(await screen.findByText(/no encontramos alojamientos disponibles en bariloche/i)).toBeInTheDocument();
-  });
-
-  it("vuelve al catálogo completo al quitar la búsqueda", async () => {
-    listarProductos.mockResolvedValue(pagina([producto(1)]));
-
-    const usuario = userEvent.setup();
-    renderizarHome();
-    await buscarBariloche(usuario);
-
-    await usuario.click(await screen.findByRole("button", { name: /ver todos los destinos/i }));
-
-    expect(await screen.findByRole("heading", { name: /todos los alojamientos/i })).toBeInTheDocument();
-    await waitFor(() => expect(listarProductos).toHaveBeenLastCalledWith(0, 10, [], null, null));
+    expect(urlActual()).toBe("/");
   });
 
   it("muestra el paginador cuando hay más de una página", async () => {

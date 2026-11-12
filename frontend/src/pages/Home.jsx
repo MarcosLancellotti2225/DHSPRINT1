@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Buscador from "../components/Buscador";
 import Categorias from "../components/Categorias";
 import ProductoCard from "../components/ProductoCard";
@@ -8,19 +9,23 @@ import { listarCategorias } from "../api/categorias";
 import { listarCiudades } from "../api/ciudades";
 import { mensajeDeError } from "../api/client";
 import useTituloPagina from "../hooks/useTituloPagina";
+import { escribirFiltros, FILTROS_VACIOS } from "../utils/filtrosDeBusqueda";
 import "../styles/Home.css";
 
 const RECOMENDADOS = 10;
 
 /**
- * Home del sitio: buscador, categorías, recomendaciones y el listado de alojamientos.
+ * Home del sitio: buscador, categorías, recomendaciones y el catálogo de alojamientos.
  *
- * El listado muestra el catálogo completo y, al buscar un destino, pasa a mostrar los
- * resultados de esa búsqueda. Las categorías y las recomendaciones quedan siempre
- * visibles, antes y después de buscar, como está definido para la página de inicio.
+ * Buscar no filtra esta página: lleva a `/busqueda` con los criterios en la URL. Antes
+ * los resultados aparecían acá abajo, debajo de las categorías y las recomendaciones,
+ * y la búsqueda parecía no hacer nada porque el resultado caía fuera de la pantalla.
+ * Con una página propia los resultados se ven de entrada, se pueden seguir filtrando
+ * y la búsqueda queda en una URL que se puede compartir.
  */
 export default function Home() {
   useTituloPagina("Tu próxima estadía, en un clic");
+  const navegar = useNavigate();
 
   const [ciudades, setCiudades] = useState([]);
   const [cargandoCiudades, setCargandoCiudades] = useState(true);
@@ -32,14 +37,11 @@ export default function Home() {
   const [cargandoCategorias, setCargandoCategorias] = useState(true);
   const [seleccionadas, setSeleccionadas] = useState([]);
 
-  // null mientras no se haya buscado ningún destino.
-  const [busqueda, setBusqueda] = useState(null);
   const [pagina, setPagina] = useState(0);
   const [datosPagina, setDatosPagina] = useState(null);
   const [cargandoPagina, setCargandoPagina] = useState(true);
 
   const [error, setError] = useState("");
-  const listadoRef = useRef(null);
 
   useEffect(() => {
     let vigente = true;
@@ -66,12 +68,12 @@ export default function Home() {
     };
   }, []);
 
-  // Listado de a 10. El destino y las categorías los resuelve el backend.
+  // Catálogo de a 10, filtrable por categoría. El filtrado lo resuelve el backend.
   useEffect(() => {
     let vigente = true;
     setCargandoPagina(true);
 
-    listarProductos(pagina, TAMANIO_PAGINA, seleccionadas, busqueda?.ciudad?.id ?? null, busqueda)
+    listarProductos(pagina, TAMANIO_PAGINA, seleccionadas)
       .then((datos) => vigente && setDatosPagina(datos))
       .catch((e) => vigente && setError(mensajeDeError(e, "No se pudo cargar el listado de alojamientos")))
       .finally(() => vigente && setCargandoPagina(false));
@@ -79,22 +81,29 @@ export default function Home() {
     return () => {
       vigente = false;
     };
-  }, [pagina, seleccionadas, busqueda]);
+  }, [pagina, seleccionadas]);
 
-  const buscar = useCallback((datos) => {
-    setBusqueda(datos);
-    setPagina(0);
-    listadoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, []);
-
-  const limpiarBusqueda = useCallback(() => {
-    setBusqueda(null);
-    setPagina(0);
-  }, []);
+  // Buscar no filtra la home: lleva a la página de búsqueda con los criterios
+  // en la URL, donde se siguen filtrando.
+  const buscar = useCallback(
+    (datos) => {
+      const filtros = {
+        ...FILTROS_VACIOS,
+        ciudadId: datos.ciudad?.id ?? null,
+        entrada: datos.entrada ?? "",
+        salida: datos.salida ?? "",
+        huespedes: datos.huespedes ?? 0,
+        // Las categorías elegidas en la home viajan con la búsqueda.
+        categorias: seleccionadas,
+      };
+      navegar(`/busqueda?${escribirFiltros(filtros, 0)}`);
+    },
+    [navegar, seleccionadas]
+  );
 
   const cambiarPagina = useCallback((nueva) => {
     setPagina(nueva);
-    listadoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setCargandoPagina(true);
   }, []);
 
   // Al cambiar el filtro se vuelve a la primera página: la que se estaba viendo
@@ -124,7 +133,6 @@ export default function Home() {
         onLimpiar={limpiarFiltros}
         cantidadFiltrada={datosPagina?.totalElementos ?? 0}
         totalProductos={datosPagina?.totalSinFiltro ?? 0}
-        nombreDelConjunto={busqueda?.ciudad?.nombre}
         cargando={cargandoCategorias}
       />
 
@@ -153,35 +161,28 @@ export default function Home() {
         )}
       </section>
 
-      <section className="home__bloque" aria-labelledby="listado-titulo" ref={listadoRef}>
+      <section className="home__bloque" aria-labelledby="listado-titulo">
         <div className="home__encabezado">
           <h2 id="listado-titulo" className="titulo-seccion home__titulo">
-            {busqueda
-              ? `Alojamientos en ${busqueda.ciudad.nombre}` +
-                (busqueda.entrada && busqueda.salida
-                  ? ` · ${busqueda.entrada} al ${busqueda.salida}`
-                  : "")
-              : "Todos los alojamientos"}
+            Todos los alojamientos
           </h2>
-          {busqueda && (
-            <button type="button" className="btn btn-ghost" onClick={limpiarBusqueda}>
-              Ver todos los destinos
-            </button>
-          )}
         </div>
 
         {cargandoPagina ? (
-          <p className="estado-vacio">Buscando alojamientos…</p>
+          <p className="estado-vacio">Cargando alojamientos…</p>
         ) : !datosPagina || datosPagina.contenido.length === 0 ? (
-          <p className="estado-vacio">
-            {busqueda
-              ? `No encontramos alojamientos disponibles en ${busqueda.ciudad.nombre}${
-                  busqueda.entrada && busqueda.salida ? " para esas fechas" : ""
-                }${hayFiltro ? " y las categorías elegidas" : ""}.`
-              : hayFiltro
+          <div className="home__sin-resultados">
+            <p className="estado-vacio">
+              {hayFiltro
                 ? "Ningún alojamiento coincide con las categorías elegidas."
                 : "Todavía no hay alojamientos cargados."}
-          </p>
+            </p>
+            {hayFiltro && (
+              <button type="button" className="btn btn-ghost" onClick={limpiarFiltros}>
+                Quitar las categorías elegidas
+              </button>
+            )}
+          </div>
         ) : (
           <>
             <ul className="nh-products">

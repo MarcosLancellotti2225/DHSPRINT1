@@ -47,11 +47,54 @@ export function validarBusqueda({ ciudadId, entrada, salida }) {
   return errores;
 }
 
-export default function Buscador({ ciudades = [], cargandoCiudades = false, onBuscar }) {
-  const [formulario, setFormulario] = useState(BUSQUEDA_VACIA);
+/**
+ * Arma el estado del formulario a partir de una búsqueda ya hecha, para que el
+ * buscador de la página de resultados aparezca con lo que se buscó y no vacío.
+ */
+function formularioDesde(valores) {
+  if (!valores) return BUSQUEDA_VACIA;
+  return {
+    destino: valores.ciudad ? `${valores.ciudad.nombre}, ${valores.ciudad.pais}` : "",
+    ciudadId: valores.ciudad?.id ?? "",
+    entrada: valores.entrada ?? "",
+    salida: valores.salida ?? "",
+    huespedes: valores.huespedes > 0 ? valores.huespedes : BUSQUEDA_VACIA.huespedes,
+  };
+}
+
+export default function Buscador({
+  ciudades = [],
+  cargandoCiudades = false,
+  onBuscar,
+  valoresIniciales = null,
+  titulo = "Buscá ofertas en hoteles, cabañas y mucho más",
+  bajada = "Elegí tu destino y las fechas de tu estadía. Te mostramos los alojamientos disponibles para que compares y reserves en un clic.",
+}) {
+  const [formulario, setFormulario] = useState(() => formularioDesde(valoresIniciales));
   const [errores, setErrores] = useState({});
   const [abierto, setAbierto] = useState(false);
   const contenedorRef = useRef(null);
+  const destinoRef = useRef(null);
+  // focus() corre antes de que el re-render actualice `errores`, así que onFocus
+  // leería el valor viejo y reabriría la lista justo sobre el mensaje de error.
+  const hayErrorDeDestinoRef = useRef(false);
+  const entradaRef = useRef(null);
+  const salidaRef = useRef(null);
+
+  // Las ciudades llegan por fetch, así que el nombre del destino elegido puede
+  // aparecer después del primer render. Sin esto el campo quedaría vacío aunque la
+  // URL tenga un destino.
+  const ciudadInicial = valoresIniciales?.ciudad;
+  const idInicial = ciudadInicial?.id;
+  const nombreInicial = ciudadInicial ? `${ciudadInicial.nombre}, ${ciudadInicial.pais}` : "";
+  useEffect(() => {
+    if (!idInicial) return;
+    setFormulario((previo) =>
+      String(previo.ciudadId) === String(idInicial)
+        ? previo
+        : { ...previo, destino: nombreInicial, ciudadId: idInicial }
+    );
+  }, [idInicial, nombreInicial]);
 
   const sugerencias = useMemo(
     () => sugerenciasPara(ciudades, formulario.destino),
@@ -80,6 +123,7 @@ export default function Buscador({ ciudades = [], cargandoCiudades = false, onBu
     // Al editar el texto se suelta la ciudad elegida: hay que volver a elegir una.
     setFormulario((previo) => ({ ...previo, destino: value, ciudadId: "" }));
     setErrores((previos) => ({ ...previos, destino: undefined }));
+    hayErrorDeDestinoRef.current = false;
     setAbierto(true);
   }
 
@@ -99,13 +143,19 @@ export default function Buscador({ ciudades = [], cargandoCiudades = false, onBu
     const encontrados = validarBusqueda(formulario);
     if (Object.keys(encontrados).length > 0) {
       setErrores(encontrados);
-      setAbierto(Boolean(encontrados.destino));
+      // La lista de sugerencias abierta tapa el mensaje: se cierra y se enfoca el
+      // campo que falta, así el error se lee y se sabe dónde corregir.
+      setAbierto(false);
+      hayErrorDeDestinoRef.current = Boolean(encontrados.destino);
+      if (encontrados.destino) destinoRef.current?.focus();
+      else if (encontrados.entrada) entradaRef.current?.focus();
+      else if (encontrados.salida) salidaRef.current?.focus();
       return;
     }
 
     setAbierto(false);
     const ciudad = ciudades.find((otra) => String(otra.id) === String(formulario.ciudadId));
-    onBuscar({ ...formulario, ciudad });
+    onBuscar({ ...formulario, huespedes: Number(formulario.huespedes) || 1, ciudad });
   }
 
   const mensaje = errores.destino ?? errores.entrada ?? errores.salida;
@@ -113,12 +163,9 @@ export default function Buscador({ ciudades = [], cargandoCiudades = false, onBu
   return (
     <section className="card elev-md buscador" aria-labelledby="buscador-titulo">
       <h1 id="buscador-titulo" className="buscador__titulo">
-        Buscá ofertas en hoteles, cabañas y mucho más
+        {titulo}
       </h1>
-      <p className="buscador__bajada">
-        Elegí tu destino y las fechas de tu estadía. Te mostramos los alojamientos
-        disponibles para que compares y reserves en un clic.
-      </p>
+      <p className="buscador__bajada">{bajada}</p>
 
       <form className="buscador__formulario" onSubmit={alEnviar} noValidate>
         <div className="buscador__campos">
@@ -127,6 +174,7 @@ export default function Buscador({ ciudades = [], cargandoCiudades = false, onBu
             <input
               id="destino"
               name="destino"
+              ref={destinoRef}
               className="input"
               type="text"
               autoComplete="off"
@@ -134,7 +182,13 @@ export default function Buscador({ ciudades = [], cargandoCiudades = false, onBu
               disabled={cargandoCiudades}
               value={formulario.destino}
               onChange={alEscribirDestino}
-              onFocus={() => setAbierto(true)}
+              onFocus={() => {
+                if (hayErrorDeDestinoRef.current) {
+                  hayErrorDeDestinoRef.current = false;
+                  return;
+                }
+                setAbierto(true);
+              }}
               role="combobox"
               aria-expanded={abierto}
               aria-controls="sugerencias-destino"
@@ -175,6 +229,7 @@ export default function Buscador({ ciudades = [], cargandoCiudades = false, onBu
               <input
                 id="entrada"
                 name="entrada"
+                ref={entradaRef}
                 className="input"
                 type="date"
                 min={HOY}
@@ -189,6 +244,7 @@ export default function Buscador({ ciudades = [], cargandoCiudades = false, onBu
               <input
                 id="salida"
                 name="salida"
+                ref={salidaRef}
                 className="input"
                 type="date"
                 // No se puede salir antes de entrar.

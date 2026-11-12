@@ -1,0 +1,179 @@
+.busqueda {
+  flex: 1;
+  padding: var(--space-6) var(--padding-lateral) var(--space-8);
+}
+
+/*
+ * Filtros a la izquierda en una columna fija y resultados a la derecha ocupando
+ * el resto. En pantallas chicas los filtros pasan arriba, apilados.
+ */
+.busqueda__cuerpo {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .busqueda__cuerpo {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* El encabezado no tiene que quedar debajo de la barra superior al paginar. */
+.busqueda__resultados {
+  scroll-margin-top: 90px;
+}
+
+.busqueda__encabezado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.busqueda__titulo {
+  margin: 0;
+}
+
+.busqueda__contador {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-neutral-400);
+  white-space: nowrap;
+}
+
+/* Bloque que reemplaza al listado cuando la búsqueda no trae nada: el motivo y
+   los atajos para aflojar el filtro que la dejó vacía. */
+.busqueda__sin-resultados {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: center;
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+}
+
+.busqueda__atajos p {
+  margin: 0 0 var(--space-2);
+  font-size: 0.875rem;
+  color: var(--color-neutral-400);
+}
+
+.busqueda__atajos ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: center;
+}
+
+/* --- Estados de carga ---------------------------------------------------- */
+
+/*
+ * Mientras se busca, la lista anterior se queda puesta y se atenúa. Reemplazarla
+ * por un cartel hacía desaparecer la grilla y la página saltaba en cada click.
+ */
+.busqueda__listado {
+  transition: opacity 180ms ease;
+}
+
+.busqueda__listado--ocupado {
+  opacity: 0.45;
+  /* No se puede clickear lo que está por ser reemplazado. */
+  pointer-events: none;
+}
+
+.busqueda__buscando {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.busqueda__spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: busqueda-girar 600ms linear infinite;
+}
+
+@keyframes busqueda-girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- Esqueletos de la primera carga -------------------------------------- */
+
+.esqueleto-tarjeta {
+  flex-direction: row;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.esqueleto-tarjeta__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1;
+  padding-top: var(--space-2);
+}
+
+.esqueleto {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--color-neutral-900) 25%,
+    var(--color-neutral-800) 37%,
+    var(--color-neutral-900) 63%
+  );
+  background-size: 400% 100%;
+  animation: esqueleto-brillo 1400ms ease-in-out infinite;
+}
+
+.esqueleto-tarjeta__imagen {
+  width: 140px;
+  height: 100px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+}
+
+.esqueleto-tarjeta__titulo {
+  height: 16px;
+  width: 55%;
+}
+
+.esqueleto-tarjeta__linea {
+  height: 11px;
+  width: 100%;
+}
+
+.esqueleto-tarjeta__linea--corta {
+  width: 70%;
+}
+
+@keyframes esqueleto-brillo {
+  from {
+    background-position: 100% 50%;
+  }
+  to {
+    background-position: 0 50%;
+  }
+}
+
+/*
+ * Con movimiento reducido no hay giro ni brillo: el estado se sigue entendiendo
+ * por la atenuación y el texto "Buscando…".
+ */
+@media (prefers-reduced-motion: reduce) {
+  .busqueda__spinner,
+  .esqueleto {
+    animation: none;
+  }
+}
