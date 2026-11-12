@@ -12,6 +12,34 @@ para gestionar el catálogo.
 Son dos aplicaciones que conviven en el mismo repositorio: una API en **Java con Spring
 Boot** (`backend/`) y un sitio en **React con Vite** (`frontend/`).
 
+## Tecnologías
+
+**Backend**
+
+| Qué | Versión |
+| --- | --- |
+| Java | 21 |
+| Spring Boot | 3.4.1 |
+| Spring Web, Data JPA, Security, Validation, Mail | (starters de Boot) |
+| jjwt (JSON Web Token) | 0.12.6 |
+| H2 (desarrollo) / PostgreSQL (producción) | según perfil |
+| Maven | 3.9.16 (incluye wrapper: `./mvnw`) |
+| JUnit 5 + MockMvc + AssertJ | (spring-boot-starter-test) |
+
+**Frontend**
+
+| Qué | Versión |
+| --- | --- |
+| React | 19.2 |
+| Vite | 8.2 |
+| React Router | 7.18 |
+| Axios | 1.19 |
+| Vitest | 4.1 |
+| Testing Library (React, jest-dom, user-event) | 16.3 / 7.0 / 14.6 |
+
+Sin framework de UI: los estilos son CSS propio, con el sistema de diseño en
+`frontend/src/styles/index.css`.
+
 ## Qué se puede hacer
 
 **Como visitante**
@@ -244,12 +272,27 @@ lea este repositorio puede firmarse un token de administrador) y **`ADMIN_PASSWO
 
 ### Pasar de H2 a PostgreSQL
 
-No hay que tocar una línea de Java. Está todo preparado en el perfil `prod`:
+No hay que tocar una línea de Java. Está todo preparado en el perfil `prod`.
+
+Primero, creá la base:
+
+```sql
+CREATE DATABASE nexthome;
+```
+
+Las tablas las crea solo Hibernate al arrancar (`ddl-auto=update`), así que no hay script
+de esquema que correr. La carga inicial —administrador, ciudades, categorías,
+características y los 12 alojamientos de ejemplo— también se ejecuta sola la primera vez.
+
+Después levantá el backend con el perfil:
 
 ```bash
 cd backend
 mvn spring-boot:run -Dspring-boot.run.profiles=prod
 ```
+
+Si tu PostgreSQL no está en `localhost:5432` o usa otro usuario, pasale `DB_URL`,
+`DB_USER` y `DB_PASSWORD` como variables de entorno.
 
 Con eso los alojamientos que cargues sobreviven a los reinicios.
 
@@ -258,6 +301,36 @@ Con eso los alojamientos que cargues sobreviven a los reinicios.
 Todo cuelga de `http://localhost:8080/api`. La autenticación es por **JWT**: el token se
 manda en el header `Authorization: Bearer <token>`. No hay sesión de servidor, porque el
 frontend es una SPA aparte.
+
+En la columna **Auth**: ❌ público, 🔒 requiere sesión, 👑 administrador.
+
+| Método | Endpoint | Descripción | Auth |
+| --- | --- | --- | --- |
+| POST | `/api/auth/registro` | Crea una cuenta y devuelve el token | ❌ |
+| POST | `/api/auth/login` | Inicia sesión | ❌ |
+| GET | `/api/auth/perfil` | Datos del usuario del token | 🔒 |
+| GET | `/api/productos` | Catálogo paginado, con todos los filtros | ❌ |
+| GET | `/api/productos/{id}` | Detalle de un alojamiento | ❌ |
+| GET | `/api/productos/random` | Recomendaciones aleatorias del home | ❌ |
+| POST | `/api/productos` | Alta de alojamiento (multipart, con fotos) | 👑 |
+| PUT | `/api/productos/{id}` | Edición | 👑 |
+| DELETE | `/api/productos/{id}` | Baja | 👑 |
+| GET | `/api/ciudades` | Destinos para el buscador | ❌ |
+| GET | `/api/categorias` | Categorías | ❌ |
+| GET | `/api/caracteristicas` | Características | ❌ |
+| GET | `/api/politicas` | Políticas de uso del alojamiento | ❌ |
+| POST/PUT/DELETE | `/api/categorias`, `/api/caracteristicas` | Su gestión | 👑 |
+| GET | `/api/reservas/disponibilidad/{productoId}` | Tramos ocupados | ❌ |
+| POST | `/api/reservas` | Crea una reserva | 🔒 |
+| GET | `/api/reservas/mias` | Historial del usuario | 🔒 |
+| GET | `/api/favoritos` | Favoritos del usuario | 🔒 |
+| PUT / DELETE | `/api/favoritos/{productoId}` | Marcar y desmarcar | 🔒 |
+| GET | `/api/productos/{id}/valoraciones` | Promedio y reseñas | ❌ |
+| POST | `/api/productos/{id}/valoraciones` | Puntuar (sólo si se hospedó) | 🔒 |
+| GET | `/api/usuarios` | Listado de usuarios | 👑 |
+| PATCH | `/api/usuarios/{id}/rol` | Dar o quitar permisos de administrador | 👑 |
+
+El detalle de cada uno, con sus parámetros y códigos de respuesta:
 
 **Autenticación** (público)
 
@@ -441,6 +514,25 @@ correo.
 **Panel de administración**, formulario de alta de alojamiento.
 
 ![Alta de alojamiento](docs/capturas/07-admin-alta.jpg)
+
+## Deploy
+
+El proyecto **no está desplegado**: se entrega para correr en local, con las instrucciones
+de arriba. La decisión fue deliberada: un deploy gratuito duerme el servidor tras unos
+minutos de inactividad y la primera carga tarda medio minuto, lo que da una peor impresión
+que correrlo local.
+
+Dicho eso, está preparado para desplegarse sin tocar código:
+
+- **Backend** (Railway, Render o similar): el perfil `prod` ya usa PostgreSQL. Hay que
+  setear `DB_URL`, `DB_USER`, `DB_PASSWORD`, `JWT_SECRET`, `ADMIN_PASSWORD`, `UPLOADS_DIR`
+  y `CORS_ORIGINS` con el dominio del frontend.
+- **Frontend** (Vercel o Netlify): `npm run build` genera `dist/`. Hay que setear
+  `VITE_API_URL` apuntando al backend desplegado.
+
+Lo único que habría que resolver antes es el almacenamiento de las fotos: hoy van al disco
+local, que en estas plataformas se borra en cada redeploy. Haría falta un servicio aparte
+(S3, Cloudinary) o un volumen persistente.
 
 ## Modelo de datos
 
