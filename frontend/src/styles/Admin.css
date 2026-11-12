@@ -192,3 +192,8 @@
   object-fit: cover;
   border-radius: var(--radius-sm);
 }
+
+/* Archivo que no se va a poder subir: se marca en la lista de elegidos. */
+.admin__archivo--pesado {
+  color: var(--color-accent-300);
+}

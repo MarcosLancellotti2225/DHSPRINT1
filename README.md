@@ -22,16 +22,37 @@ alojamientos, distinta en cada visita.
 El buscador es el centro del home: tiene su título, una bajada que explica para qué sirve,
 el destino con **autocompletado** (escribís "bari" y te sugiere Bariloche, ignorando tildes
 y mayúsculas, y también encontrás por país), el rango de fechas con check-in y check-out, y
-los huéspedes. Al buscar, el listado pasa a mostrar los alojamientos de ese destino. Las
-categorías y las recomendaciones **siguen visibles siempre**, antes y después de buscar.
+los huéspedes. Buscar te lleva a la **página de búsqueda**, con los resultados a la vista.
 
-El filtro por categorías se combina con el destino: podés marcar varias a la vez y el
-contador te dice cuántos cumplen el filtro sobre el total. El filtrado y la búsqueda los
-resuelve el backend, no el navegador, así que se combinan bien con la paginación. Con "Ver
-todos los destinos" volvés al catálogo completo.
+En el home, el filtro por categorías acota el catálogo y el contador te dice cuántos
+cumplen el filtro sobre el total. Si marcás categorías y después buscás, se van con la
+búsqueda.
+
+**La página de búsqueda** (`/busqueda`) tiene el buscador arriba, los filtros en una
+columna a la izquierda y los resultados a la derecha:
+
+- **Estadía**: check-in, check-out y huéspedes.
+- **Precio por noche**: un rango con mínimo y máximo. Se aplica al confirmarlo y no
+  mientras escribís, para no disparar una búsqueda por cada tecla.
+- **Categorías**: podés marcar varias; alcanza con que el alojamiento esté en una.
+- **Características**: acá es al revés, se piden **todas** las que marques. Si elegís
+  pileta y cochera, sólo aparecen los que tienen las dos.
+
+Los filtros viven en la **URL**: `/busqueda?ciudad=1&huespedes=4&precioMinimo=90000`. Eso
+hace que una búsqueda se pueda compartir por link, que el botón "atrás" del navegador
+deshaga el último filtro y que recargar no pierda nada. Si la búsqueda queda vacía, te dice
+cuál filtro la dejó así y te ofrece aflojarlo con un clic.
+
+La búsqueda **espera a que termines de elegir**: la URL responde a cada click, pero la
+consulta sale recién cuando parás, así que tildar tres filtros seguidos es una sola
+búsqueda y no tres. Mientras tanto los resultados anteriores se quedan en pantalla,
+atenuados, con un indicador de que algo está en curso: la lista no se borra ni la página
+pega un salto en cada click.
 
 Si cargás las dos fechas, la búsqueda deja afuera lo que ya está reservado en ese rango.
 Con una sola fecha no alcanza para saber qué está ocupado, así que en ese caso no filtra.
+Los huéspedes también acotan el resultado: se descartan los alojamientos donde no entra esa
+cantidad de gente.
 
 En el detalle, el bloque **Disponibilidad** tiene arriba los campos de ingreso y egreso, y
 debajo un calendario doble, dos meses separados por una división, con las fechas ocupadas
@@ -77,17 +98,43 @@ todo en el momento y te avisa campo por campo qué falta, sin borrarte lo que ya
 Si el email ya está en uso te lo dice explícitamente.
 
 Una vez adentro, el header cambia: en lugar de los botones de cuenta aparece un avatar con
-tus iniciales. Desplegándolo tenés tus datos y la opción de cerrar sesión. La sesión
-sobrevive a las recargas de página, y al cerrarla seguís navegando el sitio como anónimo
-sin que nada te bloquee.
+tus iniciales. Desplegándolo tenés tus datos, **Mis favoritos**, **Mis reservas** y la
+opción de cerrar sesión. La sesión sobrevive a las recargas de página, y al cerrarla seguís
+navegando el sitio como anónimo sin que nada te bloquee.
+
+**Reservar**
+
+Desde el detalle elegís las fechas en el calendario y el bloque te muestra las noches y el
+total antes de seguir. "Reservar" te lleva a una **página de reserva aparte**, no confirma
+en el acto: ahí revisás el alojamiento, tus datos, las fechas y el total desglosado
+(precio por noche × noches). Confirmar una reserva no debería pasar de un clic sin revisión.
+
+Si todavía no iniciaste sesión, el bloque te lo avisa **antes** de que lo intentes, y el
+botón te lleva a ingresar guardando a dónde volver: entrás y caés de nuevo en tu reserva,
+con las fechas que habías elegido. La página de login explica por qué se te pidió la sesión.
+
+Al confirmar llegás a una **pantalla de confirmación** con el número de reserva y el
+detalle completo, y te mandamos el mismo detalle por correo. Esa pantalla vive en el estado
+de la navegación y no en la URL: recargarla no crea otra reserva ni muestra una vieja.
+
+En **Mis reservas** tenés tu historial, separado entre próximas estadías y anteriores, con
+las fechas, las noches, los huéspedes y lo que pagaste. El precio queda congelado en la
+reserva: si después cambia la tarifa del alojamiento, lo que ya reservaste sigue valiendo
+lo mismo.
+
+En cualquier página, abajo a la derecha, hay un **botón de WhatsApp** para consultar. No
+hace falta tener sesión: es justamente para quien todavía no se decidió.
 
 **Como administrador**
 
 Entrás por `/administracion` y tenés seis funciones:
 
 - **Lista de productos**: ver el catálogo, editar cualquier alojamiento o eliminarlo.
-- **Agregar producto**: nombre, descripción, ciudad, categoría, características y fotos.
-  Sin ciudad, el alojamiento no aparece en las búsquedas por destino.
+- **Agregar producto**: nombre, descripción, capacidad, ciudad, categoría, características
+  y fotos. La ciudad y la categoría son obligatorias: sin ellas el alojamiento no entra ni
+  en la búsqueda por destino ni en el filtro del home. El formulario valida todo antes de
+  enviar, marca el campo con problema y te lleva el foco ahí. Si una foto supera los 10 MB,
+  te dice cuál y cuánto pesa en el momento de elegirla.
 - **Editar producto**: lo mismo, sobre uno ya publicado. Si no elegís fotos nuevas se
   conservan las que tenía; si elegís, reemplazan a las anteriores.
 - **Agregar categoría**: título, descripción e imagen representativa. También se editan y
@@ -170,7 +217,8 @@ devuelven en ninguna respuesta de la API.
 
 El frontend sólo necesita saber dónde está la API. Por defecto asume `http://localhost:8080`,
 y si necesitás otra cosa creás un `frontend/.env` con `VITE_API_URL` apuntando a donde sea
-(hay un `.env.example` de referencia).
+(hay un `.env.example` de referencia). También lee `VITE_WHATSAPP_NUMERO`, el número del
+botón de contacto, en formato internacional y sin signos.
 
 El backend anda sin configurar nada en desarrollo. Estas son las variables que lee, todas
 con un valor por defecto razonable:
@@ -184,6 +232,12 @@ con un valor por defecto razonable:
 | `DB_URL`, `DB_USER`, `DB_PASSWORD` | PostgreSQL, sólo en el perfil `prod`. | PostgreSQL local |
 | `UPLOADS_DIR` | Dónde se guardan las fotos, sólo en `prod`. | `/var/lib/nexthome/uploads` |
 | `CORS_ORIGINS` | Orígenes que pueden consumir la API, sólo en `prod`. | `http://localhost:5174` |
+| `CORREO_HABILITADO` | Si se envían de verdad los correos de confirmación. En `false` quedan escritos en el log. | `false` |
+| `CORREO_DESDE` | Remitente de los correos. | `no-reply@nexthome.com` |
+| `SMTP_HOST`, `SMTP_PORT` | Servidor de correo. | `smtp.gmail.com`, `587` |
+| `SMTP_USUARIO`, `SMTP_PASSWORD` | Credenciales del servidor de correo. | vacías |
+
+Hay un `backend/.env.example` con todas, listo para copiar como `.env`.
 
 En producción hay dos que sí o sí hay que setear: **`JWT_SECRET`** (si no, cualquiera que
 lea este repositorio puede firmarse un token de administrador) y **`ADMIN_PASSWORD`**.
@@ -223,7 +277,12 @@ frontend es una SPA aparte.
 - `GET /ciudades` trae los destinos disponibles para el buscador. Es público.
 - `GET /politicas` trae las políticas de uso que se muestran en el detalle. Es público.
 - `GET /productos?entrada=2026-11-10&salida=2026-11-13` deja afuera lo reservado en ese
-  rango. Se combina con `ciudad` y `categorias`.
+  rango. Se combina con `ciudad`, `categorias` y `huespedes`, que descarta lo que tenga
+  menos capacidad que la pedida.
+- `GET /productos?precioMinimo=50000&precioMaximo=120000` acota por precio por noche. Si
+  vienen dados vuelta se entienden como un rango igual. También `&caracteristicas=2&caracteristicas=9`,
+  que pide los alojamientos que tengan **todas** las indicadas, no cualquiera de ellas:
+  quien filtra por pileta y cochera quiere las dos cosas.
 
 **Reservas**
 
@@ -231,6 +290,12 @@ frontend es una SPA aparte.
   de hoy en adelante. Es público: se consulta antes de decidirse.
 - `POST /reservas` crea una reserva. Hace falta sesión iniciada. Responde `409` si esas
   fechas ya están tomadas y `400` si el rango no tiene sentido o supera las 30 noches.
+  La respuesta trae `precioPorNoche`, `noches` y `total`. El precio se **copia** a la
+  reserva al crearla: si después se cambia la tarifa del alojamiento, lo que ya se
+  reservó sigue valiendo lo mismo.
+  Al confirmarse se manda un correo al usuario. Sin SMTP configurado
+  (`CORREO_HABILITADO=false`, que es el valor por defecto) el correo no se envía: queda
+  escrito en el log, para que una reserva válida no falle porque no se pueda avisar.
 - `GET /reservas/mias` trae las reservas del usuario identificado.
 
 **Valoraciones**
@@ -287,9 +352,12 @@ esa persona siga teniendo su token vigente.
 ## Las pruebas
 
 ```bash
-cd backend && mvn test        # 112 pruebas de la API
-cd frontend && npm test       # 163 pruebas de componentes y páginas
+cd backend && mvn test        # 130 pruebas de la API
+cd frontend && npm test       # 256 pruebas de componentes y páginas
 ```
+
+**386 pruebas en total**, todas en verde. El detalle por archivo está en el
+[plan de pruebas](docs/plan-de-pruebas.md).
 
 Del lado del backend se prueban el registro, el login con credenciales válidas e inválidas,
 el acceso denegado a los endpoints protegidos sin token y con rol insuficiente, el CRUD de
@@ -302,12 +370,29 @@ búsqueda por fechas descarte lo ocupado. Y las valoraciones: que sólo puntúe 
 hospedó, que volver a puntuar actualice en vez de duplicar, y que el promedio se calcule
 bien.
 
+Los filtros del buscador tienen sus propias pruebas: el rango de precio, el rango invertido
+que se ordena solo, el filtro por características pidiendo todas las elegidas, y los tres
+combinados con la capacidad. El envío del correo se prueba con un remitente falso: que no
+mande nada sin SMTP configurado, que arme el detalle de la reserva cuando está habilitado,
+y que un fallo de envío no tumbe la reserva.
+
 Del lado del frontend, los formularios de registro y login con sus validaciones, el avatar
 con las iniciales, el cierre de sesión, el bloque de características del detalle, la validación del buscador y
-su autocompletado, la búsqueda por destino en el home, el filtro por categorías, el corazón
+su autocompletado, el filtro por categorías, el corazón
 de favoritos, la lista de favoritos, el bloque de políticas, la ventana para compartir en
 redes, el calendario de disponibilidad con su manejo de errores, las estrellas y el bloque de
 opiniones, y el listado de usuarios del panel.
+
+La página de búsqueda se prueba entera: que los filtros se lean de la URL y se escriban en
+ella, que una URL escrita a mano con datos inválidos no rompa la página, que el rango de
+precio avise si está invertido, y que varios filtros tildados seguidos disparen **una sola**
+búsqueda y no una por click. Hay un caso de ida y vuelta que garantiza que lo que se escribe
+en la URL se vuelve a leer igual: si eso se rompe, el botón "atrás" dejaría la página
+desincronizada.
+
+Del Sprint 4: la validación de la estadía contra la capacidad, el cálculo de noches y total,
+la confirmación que redirige si se entra sin haber reservado, el historial separado entre
+próximas y anteriores, y el botón de WhatsApp.
 
 ## Fotos de ejemplo
 
@@ -322,15 +407,70 @@ Para cambiar las fotos de un alojamiento alcanza con reemplazar los archivos de 
 carpeta y reiniciar el backend. Si a alguno le faltan, se genera un paisaje en su lugar,
 así que la carga nunca queda sin imágenes.
 
+## Capturas
+
+**Home con el buscador, las categorías y las recomendaciones**
+
+![Home de NextHome](docs/capturas/01-home.jpg)
+
+**Página de búsqueda**, con los filtros a la izquierda y los resultados a la derecha. Los
+criterios van en la URL, así que la búsqueda se puede compartir por link y el botón "atrás"
+deshace el último filtro.
+
+![Resultados de búsqueda en Bariloche](docs/capturas/03-busqueda.jpg)
+
+**Detalle del alojamiento**, con el precio por noche y la capacidad en el encabezado, y
+la galería de cinco fotos.
+
+![Detalle de un alojamiento](docs/capturas/02-detalle.jpg)
+
+**Página de reserva**: el alojamiento, los datos del usuario y la estadía, con el total
+desglosado, para revisar antes de confirmar.
+
+![Página de reserva](docs/capturas/04-reservar.jpg)
+
+**Confirmación**, con el número de reserva y el detalle. El mismo detalle se manda por
+correo.
+
+![Reserva confirmada](docs/capturas/05-confirmacion.jpg)
+
+**Historial de reservas**, separado entre próximas estadías y anteriores.
+
+![Mis reservas](docs/capturas/06-mis-reservas.jpg)
+
+**Panel de administración**, formulario de alta de alojamiento.
+
+![Alta de alojamiento](docs/capturas/07-admin-alta.jpg)
+
+## Modelo de datos
+
+![Modelo de datos de NextHome](docs/modelo-de-datos.svg)
+
+Once tablas. `productos` es el centro: cuelga de `ciudades` y `categorias`, tiene sus
+imágenes en `producto_imagenes` y se vincula con `caracteristicas` por la tabla
+intermedia `producto_caracteristicas`.
+
+Las tres tablas que cruzan usuario y producto son `reservas`, `favoritos` y
+`valoraciones`. Las dos últimas tienen un único compuesto `(usuario_id, producto_id)`:
+no se puede marcar dos veces el mismo favorito ni valorar dos veces el mismo alojamiento.
+`reservas` no lo tiene, porque el mismo usuario sí puede volver en otras fechas.
+
+`reservas` guarda su propio `precio_por_noche`, copiado del producto al reservar. Si
+después cambia la tarifa, el total de lo ya reservado no se mueve.
+
+El esquema lo genera Hibernate desde las entidades (`spring.jpa.hibernate.ddl-auto=update`),
+así que el diagrama refleja lo que crea la aplicación al arrancar.
+
 ## Documentación
 
-En `docs/` están los dos documentos de gestión del desafío:
+En `docs/` están los documentos de gestión del desafío:
 
 - **[Bitácora](docs/bitacora.md)**: la definición del proyecto, el alcance, las decisiones
   de arquitectura con su porqué, el avance sprint a sprint y la deuda técnica conocida.
 - **[Plan de pruebas](docs/plan-de-pruebas.md)**: los casos derivados de cada historia de
   usuario, dónde está automatizado cada uno, y los defectos que se encontraron y
   corrigieron.
+- **[Modelo de datos](docs/modelo-de-datos.svg)**: el diagrama de entidades y relaciones.
 
 ## Cómo está organizado
 
@@ -357,3 +497,18 @@ lo traduce a un SVG. Cambiar la ilustración no obliga a migrar datos.
 La única dependencia visual externa es la tipografía **Inter**, que se carga desde Google
 Fonts. Si el proyecto tiene que funcionar sin internet, conviene descargarla y servirla
 desde `public/`.
+
+## Autor
+
+**Marcos Lancellotti** — [MarcosLancellotti2225](https://github.com/MarcosLancellotti2225)
+
+Proyecto desarrollado como Desafío Profesional de la carrera de Certified Tech Developer
+de **Digital House**, entregado por sprints.
+
+## Licencia
+
+Este proyecto se publica con fines educativos, como trabajo final de cursada. El código
+es de uso libre para consulta y aprendizaje.
+
+Las fotos de los alojamientos son imágenes de ejemplo generadas para el proyecto y los
+datos de contacto son de prueba: no corresponden a alojamientos reales.

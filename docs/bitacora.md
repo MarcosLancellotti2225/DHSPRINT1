@@ -72,13 +72,15 @@ Politica  (independiente: aplica a todo el catálogo)
 
 Las decisiones que no son obvias y que convendría poder defender.
 
-### El rol se relee de la base en cada request
+### El rol se lee de la base, y sólo de ahí
 
-El token JWT lleva el rol, pero no se confía en él: el filtro de autenticación vuelve a
-leer el usuario. Si un administrador le quita el permiso a alguien, el cambio es efectivo
-de inmediato aunque esa persona siga con su token vigente. Confiar en el claim habría sido
-más rápido, pero dejaría una ventana de hasta dos horas con permisos que ya no
-corresponden.
+El token lleva únicamente el email. El rol lo resuelve el filtro de autenticación
+consultando al usuario en cada request, así que si un administrador le quita el permiso a
+alguien, el cambio es efectivo de inmediato aunque esa persona siga con su token vigente.
+
+Durante un tiempo el token también incluía el rol como claim, pero nadie lo leía: eran dos
+fuentes para el mismo dato, y la del token podía quedar desactualizada. Se eliminó para que
+haya una sola respuesta a la pregunta de qué puede hacer cada usuario.
 
 ### Las fechas de reserva usan un rango semiabierto
 
@@ -147,7 +149,129 @@ Los cuatro los encontraron las pruebas antes de llegar al navegador.
 
 ---
 
-## 4. Deuda técnica conocida
+## 4. Correcciones sobre la devolución
+
+Observaciones del profesorado sobre los sprints 2 y 3, y cómo se resolvieron.
+
+| Observación | Resolución |
+| --- | --- |
+| Los errores de campo pasaban desapercibidos | Cada error se muestra junto a su campo, con `aria-invalid`, y el foco va al primero con problema |
+| Faltaba validar nombre y descripción en el frontend | Se validan antes de enviar, con largo mínimo (5 y 20 caracteres), igual que en el backend |
+| Ciudad y categoría no eran obligatorias | Ahora lo son en los dos lados: sin ellas el alojamiento no entraría en la búsqueda ni en el filtro |
+| Los errores de imagen no decían qué archivo fallaba | El aviso nombra el archivo y su peso, y aparece al elegirlo, no al enviar |
+| Las imágenes grandes rompían la descripción | La galería tiene un techo de alto y recorta en lugar de estirar el bloque |
+| El claim `rol` del JWT no lo leía nadie | Se eliminó: el rol se resuelve sólo contra la base |
+| El campo "Huéspedes" del buscador no hacía nada | `Producto` tiene capacidad y el buscador filtra por ella |
+| La página de categorías se llamaba "Agregar categoría" | Pasó a "Categorías", que es lo que hace |
+
+## 5. Sprint 4 · Reservas
+
+**El precio no existía.** El proyecto llegó al Sprint 4 sin un campo de precio: no estaba
+en `Producto`, ni en el formulario de alta, ni en las tarjetas. Una aplicación de reservas
+sin precio no se sostiene, y la reserva necesitaba el total, así que se agregó primero:
+`precioPorNoche` en la entidad, en los DTO con validación, en el formulario de
+administración, en las tarjetas y en el detalle, y con precio cargado en los 12
+alojamientos de ejemplo.
+
+Se usó `BigDecimal` y no `double`. Con plata, los errores de redondeo del punto flotante
+se acumulan al multiplicar por la cantidad de noches, y el total termina con centavos que
+nadie puede explicar.
+
+**El precio se congela en la reserva.** La reserva guarda su propio `precioPorNoche`,
+copiado del producto al crearla, en vez de leerlo del alojamiento cada vez. Si se guardara
+sólo la referencia, cambiar la tarifa modificaría el total de reservas ya hechas, que es
+lo contrario de lo que espera quien reservó.
+
+**Reservar es una página aparte, no un botón.** El bloque del detalle selecciona las
+fechas y navega a `/reservar/:id`, donde se revisan el alojamiento, los datos del usuario
+y la estadía antes de confirmar. Confirmar una reserva no debería pasar de un solo clic
+sin una pantalla de revisión.
+
+Las fechas viajan por la URL (`?entrada=…&salida=…&huespedes=…`) para que la página sea
+enlazable y sobreviva a una recarga. Pero eso significa que se pueden editar a mano, así
+que la página valida el rango y la capacidad antes de habilitar el botón, además de la
+validación del backend.
+
+**La confirmación va por el estado de la navegación, no por la URL.** Es una pantalla de
+un solo uso: con los datos en la URL, recargar mostraría una confirmación vieja, y
+compartir el enlace mostraría la reserva de otro. Sin ese estado, la página redirige al
+historial.
+
+**Sin sesión se avisa antes, no después.** El bloque de reserva muestra que hace falta
+iniciar sesión *antes* de que el usuario lo intente, y al mandarlo a ingresar guarda a
+dónde volver, así las fechas elegidas no se pierden. La página de login explica por qué se
+le pidió la sesión, para que no parezca que el sitio lo expulsó.
+
+**El correo no puede tumbar la reserva.** `CorreoService` envía la confirmación después de
+que la reserva quedó guardada, y atrapa cualquier error de envío. Una reserva válida no
+tiene por qué fallar porque el servidor de correo no responda.
+
+Sin SMTP configurado (`CORREO_HABILITADO=false`, el valor por defecto) el correo no se
+envía: se escribe completo en el log. En desarrollo no hay servidor de correo, y así se
+puede verificar el contenido del mensaje sin montar uno.
+
+**El filtro de huéspedes no filtraba.** Venía del Sprint 3: el campo estaba en el
+buscador, pero el frontend no mandaba el dato y el backend no tenía dónde guardarlo. Se
+corrigió junto con el precio, y se aprovechó para sumar los filtros de rango de precio y
+de características.
+
+Las características se piden **todas**, no cualquiera: quien filtra por pileta y cochera
+quiere las dos cosas. En JPQL se resolvió contando las coincidencias y comparándolas
+contra la cantidad pedida.
+
+**El resultado de la búsqueda quedaba fuera de pantalla.** El listado iba debajo de las
+categorías y las recomendaciones, como define el diseño del home, así que al buscar no se
+veía nada moverse y parecía que el botón estaba roto. El primer intento fue bajar la
+página sola hasta el listado, y funcionaba, pero no resolvía el problema de fondo: el
+usuario buscaba y terminaba a mitad del home, con los resultados compitiendo contra dos
+bloques que no tenían nada que ver con lo que había pedido.
+
+**La búsqueda pasó a tener su propia página.** `/busqueda` muestra los resultados de
+entrada, con los filtros en una columna al lado. El home volvió a ser lo que debía: la
+vitrina, con el buscador, las categorías y las recomendaciones.
+
+**Los filtros viven en la URL, no en el estado del componente.** `/busqueda` lee todo de
+la query string (`?ciudad=1&huespedes=4&precioMinimo=90000`) y el efecto que trae los
+resultados depende sólo de ella. Tres cosas salen gratis de esa decisión: la búsqueda se
+comparte por link, el botón "atrás" del navegador deshace el último filtro, y recargar no
+pierde nada. La alternativa —estado local sincronizado con la URL— son dos fuentes de
+verdad que se desfasan.
+
+Como la URL se puede escribir a mano, `leerFiltros` descarta en silencio lo que no sirve:
+un id que no es número, una fecha mal formada, media fecha sin la otra. Una URL rota tiene
+que degradar a una búsqueda más amplia, nunca a una página en blanco.
+
+**El precio se aplica al confirmarlo, no al tipear.** A diferencia del resto de los
+filtros, que suben a la URL al instante, el rango de precio tiene su botón: escribir "1"
+de camino a "10000" dispararía una búsqueda por cada tecla, y ninguna de las intermedias
+es la que el usuario quiso.
+
+**La búsqueda espera a que el usuario termine de clickear.** Con cada filtro pegándole al
+backend al instante, tildar tres categorías eran tres búsquedas y tres parpadeos de la
+lista. Ahora la URL se actualiza con cada click —sigue siendo inmediata, y el botón
+"atrás" recorre cada paso— pero la búsqueda sale recién 400 ms después del último cambio:
+tres clicks seguidos son **una** sola consulta. Medido en el navegador.
+
+Son dos ritmos distintos a propósito. La URL es estado de la interfaz y tiene que
+responder ya; la consulta al backend es cara y puede esperar a que el usuario termine de
+decidir.
+
+**La lista anterior no se borra mientras se busca.** Antes el listado se reemplazaba por
+un cartel de "Buscando alojamientos…": la grilla desaparecía, la página se encogía y daba
+un salto en cada click. Ahora los resultados viejos se quedan en su lugar, atenuados y sin
+poder clickearse, con un indicador animado en el contador. El contenido se reemplaza recién
+cuando llegan los datos nuevos, así que la página no se mueve.
+
+En la primera carga no hay nada que atenuar, así que van esqueletos: siluetas de tarjetas
+que ocupan el espacio que van a ocupar los resultados. El objetivo es el mismo, que la
+página no dé un salto cuando el contenido aparece.
+
+Toda la animación se apaga con `prefers-reduced-motion`: el estado se sigue entendiendo
+por la atenuación y por el texto.
+
+---
+
+## 6. Deuda técnica conocida
 
 Cosas que quedaron pendientes y conviene no ocultar:
 

@@ -2,13 +2,13 @@
 
 Casos de prueba derivados de las historias de usuario, y su estado de ejecución.
 
-- **Automatizadas:** 112 del backend (JUnit + MockMvc) y 163 del frontend (Vitest +
-  Testing Library), **275 en total**.
+- **Automatizadas:** 130 del backend (JUnit + MockMvc) y 256 del frontend (Vitest +
+  Testing Library), **386 en total**.
 - **Última ejecución:** todas en verde.
 
 ```bash
-cd backend && mvn test      # 112
-cd frontend && npm test     # 163
+cd backend && mvn test      # 119
+cd frontend && npm test     # 256
 ```
 
 ---
@@ -64,6 +64,22 @@ Cada caso indica dónde está automatizado. **M** = verificación manual.
 | 22.10 | Combinar destino + categoría | Aplica los dos filtros | `ProductoControllerTest`, `Home.test.jsx` |
 | 22.11 | Al buscar, el home conserva su diseño | Categorías y recomendaciones siguen visibles | `Home.test.jsx` |
 | 22.12 | Filtro combinado con paginación | Máximo 10 por página | `ProductoControllerTest` |
+| 22.13 | Buscar para N huéspedes | Descarta los de capacidad menor | `ProductoControllerTest` |
+| 22.14 | Capacidad justa | El alojamiento entra en el resultado | `ProductoControllerTest` |
+| 22.15 | Sin huéspedes | No se filtra por capacidad | `ProductoControllerTest` |
+
+### Correcciones sobre la devolución
+
+| # | Caso | Resultado esperado | Dónde |
+| --- | --- | --- | --- |
+| C.1 | Enviar el alta vacía | Error en cada campo y foco en el primero | `AdminNuevoProducto.test.jsx` |
+| C.2 | Nombre de menos de 5 caracteres | Se rechaza antes de llamar a la API | `AdminNuevoProducto.test.jsx` |
+| C.3 | Descripción de menos de 20 | Se rechaza antes de llamar a la API | `AdminNuevoProducto.test.jsx` |
+| C.4 | Corregir un campo con error | El error desaparece | `AdminNuevoProducto.test.jsx` |
+| C.5 | Alta sin ciudad ni categoría | No llama a la API; el backend responde 400 | `AdminNuevoProducto.test.jsx`, `ProductoControllerTest` |
+| C.6 | Capacidad fuera de 1 a 20 | El backend responde 400 | `ProductoControllerTest` |
+| C.7 | Imagen de más de 10 MB | Nombra el archivo y su peso al elegirlo | **M** (verificado en navegador) |
+| C.8 | Galería con imágenes grandes | No desplaza la descripción | **M** |
 
 ### #23 Visualizar disponibilidad
 
@@ -178,11 +194,11 @@ frontend el registro, el login, el avatar, la galería y el panel.
 
 ## 3. Cobertura por archivo
 
-### Backend · 112 pruebas
+### Backend · 130 pruebas
 
 | Clase | Casos |
 | --- | --- |
-| `ProductoControllerTest` | 28 |
+| `ProductoControllerTest` | 35 |
 | `ReservaControllerTest` | 17 |
 | `ValoracionControllerTest` | 15 |
 | `AutenticacionControllerTest` | 14 |
@@ -191,10 +207,13 @@ frontend el registro, el login, el avatar, la galería y el panel.
 | `CaracteristicaControllerTest` | 9 |
 | `UsuarioControllerTest` | 7 |
 
-### Frontend · 163 pruebas
+### Frontend · 256 pruebas
 
 | Archivo | Casos |
 | --- | --- |
+| `Busqueda.test.jsx` | 31 |
+| `filtrosDeBusqueda.test.js` | 25 |
+| `useValorDemorado.test.js` | 4 |
 | `Buscador.test.jsx` | 16 |
 | `calendario.test.js` | 14 |
 | `CalendarioDisponibilidad.test.jsx` | 13 |

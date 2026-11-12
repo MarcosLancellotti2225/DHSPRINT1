@@ -16,7 +16,7 @@ import "../styles/Admin.css";
 const FORMULARIO_VACIO = { titulo: "", descripcion: "", imagen: "" };
 
 export default function AdminCategorias() {
-  useTituloPagina("Agregar categoría");
+  useTituloPagina("Categorías");
 
   const [categorias, setCategorias] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -133,7 +133,7 @@ export default function AdminCategorias() {
   );
 
   return (
-    <PanelAdmin titulo="Agregar categoría" acciones={acciones}>
+    <PanelAdmin titulo="Categorías" acciones={acciones}>
       {aviso && <p className="mensaje mensaje--exito">{aviso}</p>}
       {error && <p className="mensaje mensaje--error">{error}</p>}
 

@@ -19,8 +19,8 @@ const FUNCIONES = [
   },
   {
     id: "categorias",
-    titulo: "Agregar categoría",
-    descripcion: "Crear y editar las categorías con las que se organiza el catálogo.",
+    titulo: "Categorías",
+    descripcion: "Crear, editar y eliminar las categorías con las que se organiza el catálogo.",
     ruta: "/administracion/categorias",
   },
   {

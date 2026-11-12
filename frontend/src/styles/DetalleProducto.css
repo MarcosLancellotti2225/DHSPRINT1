@@ -31,6 +31,22 @@
   padding: var(--space-6) var(--padding-lateral) var(--space-8);
 }
 
+/* La galería no debe empujar ni tapar al texto: se le pone un techo de alto y las
+   imágenes se recortan en lugar de estirar el bloque. */
+.detalle__cuerpo .nh-gallery {
+  max-height: 60vh;
+}
+
+.detalle__cuerpo .nh-gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detalle__descripcion {
+  margin-top: var(--space-6);
+}
+
 .detalle__texto {
   font-size: 15.5px;
   line-height: 1.6;
@@ -67,4 +83,27 @@
   gap: var(--space-2);
   font-size: 13px;
   color: var(--color-neutral-300);
+}
+
+/* Precio y capacidad, bajo el título del alojamiento. */
+.detalle__datos {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: var(--space-2) 0 0;
+}
+
+.detalle__precio {
+  font-size: 1.25rem;
+}
+
+.detalle__precio small {
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--color-neutral-400);
+}
+
+.detalle__capacidad {
+  color: var(--color-neutral-400);
 }

@@ -22,14 +22,15 @@ import java.util.Optional;
  *
  * No hay sesión de servidor: el frontend es una SPA aparte y manda el token en
  * cada request dentro del header {@code Authorization: Bearer ...}.
+ *
+ * El token lleva sólo el email: el rol se lee de la base en cada request. Guardarlo
+ * también acá obligaría a decidir cuál de los dos manda, y un permiso revocado seguiría
+ * valiendo hasta que el token venza.
  */
 @Service
 public class JwtService {
 
     private static final Logger log = LoggerFactory.getLogger(JwtService.class);
-
-    /** Nombre del claim donde viaja el rol, para no tener que ir a la base en cada request. */
-    static final String CLAIM_ROL = "rol";
 
     private final SecretKey clave;
     private final Duration duracion;
@@ -50,7 +51,6 @@ public class JwtService {
         Instant ahora = Instant.now();
         return Jwts.builder()
                 .subject(usuario.getEmail())
-                .claim(CLAIM_ROL, usuario.getRol().name())
                 .issuedAt(Date.from(ahora))
                 .expiration(Date.from(ahora.plus(duracion)))
                 .signWith(clave)

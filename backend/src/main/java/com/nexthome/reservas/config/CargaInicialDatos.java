@@ -46,6 +46,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -92,7 +93,8 @@ public class CargaInicialDatos {
     }
 
     private record Alojamiento(String nombre, String descripcion, Paleta paleta,
-                               String ciudad, String categoria, List<String> caracteristicas) {
+                               String ciudad, String categoria, int capacidad,
+                               String precioPorNoche, List<String> caracteristicas) {
     }
 
     /** Políticas de uso, iguales para todo el catálogo. */
@@ -163,62 +165,62 @@ public class CargaInicialDatos {
                     "Frente al mar y a diez minutos del centro, el Costa Serena combina habitaciones amplias con vista al océano, "
                             + "desayuno buffet incluido y una piscina climatizada abierta todo el año. Ideal para escapadas largas.",
                     new Paleta(new Color(0x1B4965), new Color(0x62B6CB)),
-                    "Punta del Este", "Hoteles", List.of("Wi-Fi", "Pileta", "Desayuno incluido", "Aire acondicionado", "Televisión")),
+                    "Punta del Este", "Hoteles", 4, "78000.00", List.of("Wi-Fi", "Pileta", "Desayuno incluido", "Aire acondicionado", "Televisión")),
             new Alojamiento("Cabañas del Bosque",
                     "Seis cabañas de madera repartidas en dos hectáreas de bosque de coníferas, cada una con hogar a leña, "
                             + "parrilla propia y galería privada. Un lugar silencioso para desconectar sin resignar comodidad.",
                     new Paleta(new Color(0x2D5016), new Color(0x8FBC5A)),
-                    "Bariloche", "Cabañas", List.of("Wi-Fi", "Cocina equipada", "Estacionamiento", "Apto mascotas")),
+                    "Bariloche", "Cabañas", 6, "92000.00", List.of("Wi-Fi", "Cocina equipada", "Estacionamiento", "Apto mascotas")),
             new Alojamiento("Loft Centro Histórico",
                     "Loft de dos ambientes en un edificio reciclado de 1910, a una cuadra de la plaza principal. "
                             + "Techos de seis metros, cocina totalmente equipada y espacio de trabajo con fibra óptica.",
                     new Paleta(new Color(0x6B2737), new Color(0xE08D79)),
-                    "Cartagena", "Departamentos", List.of("Wi-Fi", "Cocina equipada", "Aire acondicionado", "Televisión")),
+                    "Cartagena", "Departamentos", 5, "64000.00", List.of("Wi-Fi", "Cocina equipada", "Aire acondicionado", "Televisión")),
             new Alojamiento("Posada Valle Andino",
                     "Posada de montaña a 1.800 metros de altura, con doce habitaciones, restaurante de cocina regional "
                             + "y salidas guiadas de trekking. Las mejores vistas del valle se ven desde el desayunador.",
                     new Paleta(new Color(0x3D348B), new Color(0x7678ED)),
-                    "Mendoza", "Hoteles", List.of("Wi-Fi", "Desayuno incluido", "Estacionamiento", "Apto mascotas")),
+                    "Mendoza", "Hoteles", 4, "58000.00", List.of("Wi-Fi", "Desayuno incluido", "Estacionamiento", "Apto mascotas")),
             new Alojamiento("Resort Bahía Azul",
                     "Complejo todo incluido sobre una bahía protegida: tres piscinas, spa, club infantil y deportes náuticos. "
                             + "Las habitaciones superiores tienen balcón privado con hamaca y vista directa al agua.",
                     new Paleta(new Color(0x006D77), new Color(0x83C5BE)),
-                    "Cartagena", "Resorts", List.of("Wi-Fi", "Pileta", "Spa", "Gimnasio", "Desayuno incluido", "Aire acondicionado")),
+                    "Cartagena", "Resorts", 6, "145000.00", List.of("Wi-Fi", "Pileta", "Spa", "Gimnasio", "Desayuno incluido", "Aire acondicionado")),
             new Alojamiento("Hostel Puerto Viejo",
                     "Hostel de ambiente relajado a doscientos metros del puerto, con habitaciones compartidas y privadas, "
                             + "cocina comunitaria, terraza con hamacas y bicicletas gratuitas para recorrer la costanera.",
                     new Paleta(new Color(0x9C6644), new Color(0xE6CCB2)),
-                    "Cartagena", "Hostels", List.of("Wi-Fi", "Cocina equipada", "Apto mascotas")),
+                    "Cartagena", "Hostels", 8, "27000.00", List.of("Wi-Fi", "Cocina equipada", "Apto mascotas")),
             new Alojamiento("Departamento Vista Río",
                     "Departamento de tres ambientes en un piso alto con balcón corrido y vista panorámica al río. "
                             + "Edificio con pileta, gimnasio y cochera cubierta incluida en la estadía.",
                     new Paleta(new Color(0x14213D), new Color(0x4A6FA5)),
-                    "Buenos Aires", "Departamentos", List.of("Wi-Fi", "Pileta", "Gimnasio", "Estacionamiento", "Cocina equipada")),
+                    "Buenos Aires", "Departamentos", 5, "71000.00", List.of("Wi-Fi", "Pileta", "Gimnasio", "Estacionamiento", "Cocina equipada")),
             new Alojamiento("Estancia Los Álamos",
                     "Casco de estancia restaurado sobre 400 hectáreas de campo, con cabalgatas, asados criollos y pensión completa. "
                             + "Siete habitaciones con baño en suite y una biblioteca con chimenea.",
                     new Paleta(new Color(0x774936), new Color(0xC9A227)),
-                    "Mendoza", "Casas", List.of("Wi-Fi", "Desayuno incluido", "Estacionamiento", "Apto mascotas", "Pileta")),
+                    "Mendoza", "Casas", 10, "168000.00", List.of("Wi-Fi", "Desayuno incluido", "Estacionamiento", "Apto mascotas", "Pileta")),
             new Alojamiento("Suites del Lago",
                     "Suites independientes al borde del lago, con muelle propio, kayaks a disposición y desayuno servido en la habitación. "
                             + "Cada suite tiene ventanal completo orientado al amanecer.",
                     new Paleta(new Color(0x1D3557), new Color(0xA8DADC)),
-                    "Bariloche", "Hoteles", List.of("Wi-Fi", "Desayuno incluido", "Spa", "Televisión")),
+                    "Bariloche", "Hoteles", 4, "86000.00", List.of("Wi-Fi", "Desayuno incluido", "Spa", "Televisión")),
             new Alojamiento("Casa Colonial Palermo",
                     "Casa colonial de dos plantas con patio andaluz, cuatro habitaciones y living con biblioteca. "
                             + "Está en pleno barrio de Palermo, rodeada de bares, restaurantes y galerías de arte.",
                     new Paleta(new Color(0x5F0F40), new Color(0xE36414)),
-                    "Buenos Aires", "Casas", List.of("Wi-Fi", "Cocina equipada", "Aire acondicionado", "Televisión")),
+                    "Buenos Aires", "Casas", 10, "132000.00", List.of("Wi-Fi", "Cocina equipada", "Aire acondicionado", "Televisión")),
             new Alojamiento("Refugio Nieve Grande",
                     "Refugio a pie de pista con guardaesquís, secadora de botas y after ski frente a la chimenea. "
                             + "Media pensión incluida y traslado gratuito a la base del cerro cada media hora.",
                     new Paleta(new Color(0x264653), new Color(0xB8D8D8)),
-                    "Bariloche", "Cabañas", List.of("Wi-Fi", "Desayuno incluido", "Spa", "Estacionamiento")),
+                    "Bariloche", "Cabañas", 6, "104000.00", List.of("Wi-Fi", "Desayuno incluido", "Spa", "Estacionamiento")),
             new Alojamiento("Villa Olivos del Sur",
                     "Villa mediterránea entre olivares, con piscina de borde infinito, quincho techado y capacidad para diez personas. "
                             + "Incluye degustación de aceites de la finca y servicio de limpieza diario.",
                     new Paleta(new Color(0x606C38), new Color(0xDDA15E)),
-                    "Mendoza", "Casas", List.of("Wi-Fi", "Pileta", "Cocina equipada", "Estacionamiento", "Aire acondicionado"))
+                    "Mendoza", "Casas", 10, "195000.00", List.of("Wi-Fi", "Pileta", "Cocina equipada", "Estacionamiento", "Aire acondicionado"))
     );
 
     private final ResourcePatternResolver recursos = new PathMatchingResourcePatternResolver();
@@ -342,6 +344,8 @@ public class CargaInicialDatos {
 
         for (Alojamiento ejemplo : EJEMPLOS) {
             Producto producto = new Producto(ejemplo.nombre(), ejemplo.descripcion());
+            producto.setCapacidad(ejemplo.capacidad());
+            producto.setPrecioPorNoche(new BigDecimal(ejemplo.precioPorNoche()));
             producto.setCiudad(ciudades.get(ejemplo.ciudad()));
             producto.setCategoria(categorias.get(ejemplo.categoria()));
 
